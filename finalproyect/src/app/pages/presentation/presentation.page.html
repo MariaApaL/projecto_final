@@ -1,0 +1,34 @@
+<!-- <app-swiper></app-swiper>
+
+onboarding-->
+
+
+
+<ion-content>
+
+  <div class="slide-container">
+    <ion-row class="banners">
+      <swiper [config]="bannerConfig">
+        <ng-template swiperSlide *ngFor="let slide of slides">
+          <div>
+            <ion-label>
+             
+              <img src="{{slide?.img_no}}"/>
+              
+            </ion-label>
+          </div>
+        </ng-template>
+      </swiper>
+    </ion-row>
+  </div>
+
+<div class="start-button">
+
+  <ion-button (click)="goToLogin()">Empecemos</ion-button>
+</div>
+
+
+    
+  
+  </ion-content>
+  
