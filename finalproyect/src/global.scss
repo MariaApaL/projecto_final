@@ -23,6 +23,7 @@
 @import "~@ionic/angular/css/float-elements.css";
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
+
 @import "~@ionic/angular/css/flex-utils.css";
 
 @import "swiper/scss";
@@ -36,16 +37,20 @@
     opacity: 1;
 }
 .swiper-pagination-bullet-active {
-    background-color: var() !important;
-    width: 40px;
+    background-color: var(--ion-color-tertiary)!important;
+    width: 70px;
     border-radius: 4px;
 }
 
 
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
+@font-face {
+  font-family: 'MyFont';
+  src: url('/assets/fonts/Aceh-Medium.ttf');
+}
 * {
-  font-family: 'Lato', sans-serif;
+  font-family: 'MyFont', sans-serif;
 }
 
 .additional-info {

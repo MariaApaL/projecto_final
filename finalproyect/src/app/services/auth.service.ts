@@ -1,61 +1,61 @@
-import { Observable } from 'rxjs';
-import { HttpClient, HttpInterceptor } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { url } from 'inspector';
-import { setTimeout } from 'timers';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService{
+export class AuthService {
 
+  constructor(private http: HttpClient) { }
 
-  
-  constructor(private http:HttpClient) { 
-    
-  }
-  
   private url = 'http://localhost:3300';
-  
-  // onLoginUser(user:string, pwd:string):Observable<any>{
 
-  //   console.log('user:', user, ' pwd:', pwd);
+
+
+  login(user: string, password: string): Observable<any> {
+
+    console.log('user:', user, ' password:', password);
+
+    const url = `${this.url}/login`;
+
+    let data = {};
+
+    // Si el valor proporcionado es un correo electrónico
+    if (user.includes('@')) {
+      data = { email: user, password: password };
+    } else {
+      // Si el valor proporcionado es un nombre de usuario
+      data = { user: user, password: password };
+    }
+
+    return this.http.post(url, data)
     
-  //   const url = `${this.url}/user/login`;
+}
 
-  //   return this.http.post(url, {
-  //     user: user,
-  //     pwd: pwd
-  //   })
-  // }
+register(user: string, name: string, password: string, email: string): Observable < any > {
 
-  // onRegister(user:string, pwd:string, email:string, age:string):Observable<any>{
+  console.log('user:', user, ' password:', password);
 
-  //   console.log('user:', user, ' pwd:', pwd);
-    
-  //   const url = `${this.url}/user/newUser`;
+  const url = `${this.url}/register`;
 
-  //   return this.http.post(url, {
-  //     user: user,
-  //     pwd: pwd,
-  //     email:email,
-  //     age:age
-  //   })
+  return this.http.post(url, {
+    user: user,
+    name: name,
+    password: password,
+    email: email,
 
-  // }
+  })
 
-  // loggedIn():boolean{ //Comprueba si el token existe o no
-  //   return !!localStorage.getItem('token');
-  // }
+}  
 
-  // getToken(){ //Devuelve el token
+logout(): void {
+  localStorage.removeItem('token');
+}
 
-  //   return localStorage.getItem('token');
-  // }
+getToken(){ //Devuelve el token
 
-  // onLogOut(){
-  //   localStorage.removeItem('token');
-  // }
-
+  return localStorage.getItem('token');
+}
 
 }

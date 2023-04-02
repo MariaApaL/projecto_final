@@ -1,10 +1,12 @@
-import { AuthService } from './../../services/auth.service';
-import { Component, OnInit, Pipe } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+// import { AuthService } from './../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-//Es un componente que ya trae ionic y sirve para navegar entre paginas
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
+import { catchError, throwError } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 
 
@@ -14,106 +16,125 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  
+
   public form: FormGroup;
 
-  login:boolean = true;
-  estado: String = "login";
+  login: boolean = true;
 
-  
-  constructor(private formBuilder: FormBuilder, 
-    private navCtrl: NavController,
-    private router: Router,
-    private auth:AuthService) { 
+  errorLog: string;
+  errorLogHidden: boolean = false;
+  isLoggedIn = false;
+  isLoginFailed = false;
+  errorMessage = '';
+  roles: string[] = [];
+
+
+  constructor(private router: Router,
+    private auth: AuthService,
+    private tokenStorage:TokenStorageService,
+    private navCtrl: NavController,private alertController: AlertController) {
 
     this.form = new FormGroup({
-      username: new FormControl('', Validators.required),
+      user: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(10)]),
+      usermail: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      name: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      age: new FormControl('',Validators.required),
-      pwd: new FormControl('', Validators.required),
-      rpwd: new FormControl('', Validators.required)
+      // age: new FormControl('',[Validators.required, Validators.min(18), Validators.max(110)]),
+      password: new FormControl('', [Validators.required, Validators.pattern(/^(?=(?:.*\d))(?=.*[A-Z])(?=.*[a-z])(?=.*[.,*!?¿¡/#$%&])\S{8,30}$/
+      )]),
     })
   }
+
   
+
   passwordIcon = 'eye-off';
   passwordType = 'password';
 
+
+
+
   ngOnInit() {
-    // this.form = new LoginPageForm(this.formBuilder).createForm();
+    if (this.tokenStorage.getToken()) {
+      this.isLoggedIn = true;
+      this.roles = this.tokenStorage.getUser().roles;
+    }
+
+    console.log(this.form.controls.email.touched);
+
   }
 
-  // return this.formBuilder.group({
-  //   name:['',[Validators.required,Validators.maxLength(10)]],
-  //   email:['',[Validators.required, Validators.email]],
-  //   password:['', [Validators.required, Validators.minLength(8)]]
-  //   // Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}')
-  // });
 
-  // changeText(){
-  //   if (this.estado === "login") {
-  //     this.estado = "register";
-  //   } else {
-  //     this.estado = "login";
-  //   }
-  // }
-  
 
   // Método para el icono del ojo en la contraseña
-  passwordOn() {
-    this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
-    this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
-  }
+  // passwordOn() {
+  //   this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+  //   this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+  // }
 
-  segmentChanged(event:any){
+  segmentChanged(event: any) {
     const chose = event.detail.value;
 
     this.login = chose === 'login';
   }
 
-  checkPassword(){
-    const pwd = this.form.controls.pwd.value;
-    const confirmPwd = this.form.controls.rpwd.value;
+  checkPassword() {
+    const password = this.form.controls.password.value;
+    const confirmpassword = this.form.controls.rpassword.value;
 
-    return pwd === confirmPwd ? true : false;
+    return password === confirmpassword ? true : false;
   }
-  
-  // onLogin(){
-  //   const username = this.form.controls.username.value;
-  //   const pwd = this.form.controls.pwd.value;
 
-  //   this.auth.onLoginUser(username, pwd).subscribe({
-  //     next: res => {
-  //       console.log(res);
-  //       localStorage.setItem('token', res.token); //Guardamos el token el el LocalStorage
-  //       this.router.navigate(['/profile'], {replaceUrl:true}); //Replace url borra el historial para evitar errores de navegacion
-  //     },
-  //     error: err => {console.error(err);
-  //     }
-  //   })
-  // }
+  onLogin() {
+    const usermail = this.form.controls.usermail.value.trim().toLowerCase();
+    const password = this.form.controls.password.value.trim();
 
-  // onRegister(){
-
-  //   if(this.form.valid){
-  //     const username = this.form.controls.username.value;
-  //     const pwd = this.form.controls.pwd.value;
-  //     const email = this.form.controls.email.value;
-  //     const age = this.form.controls.age.value;
-  
-  //     this.auth.onRegister(username, pwd, email, age).subscribe({
-  //       next: res => {
-  //         console.log(res);
-  //         this.onLogin();
-  //       },
-  //       error: err => {console.error(err);}
-  //     })
-
-  //   }else{
-  //     console.error('Faltan valores');
-      
-  //   }
     
-  // }
+    this.auth.login(usermail, password).subscribe({
+      next: res => {
+        
+        this.tokenStorage.saveUser(res);
+        this.isLoginFailed = false;
+        this.isLoggedIn = true;
+        console.log(res);
+        console.log(this.tokenStorage.saveToken(res.accessToken))
+        this.roles = this.tokenStorage.getUser().roles;
+        if(this.roles.includes("ROLE_ADMIN")){
+
+        this.router.navigate(['/home-admin'], { replaceUrl: true });
+        }else{
+           //console.log(localStorage.setItem('token', res.accessToken)) //Guardamos el token el el LocalStorage
+        this.router.navigate(['/home/main'], { replaceUrl: true }); //Replace url borra el historial para evitar errores de navegacion
+        }  
+       
+      },
+      error: err => {
+        this.presentAlert("Error al iniciar sesión", err.error.message )
+        console.error(err);
+      }
+    });
+  }
+
+  async presentAlert(header: string, message: string){
+    const alert = await this.alertController.create({
+      cssClass:"",
+      header:header,
+      message:message,
+      buttons:["OK"]
+    });
+    await alert.present();
+    const{ role }= await alert.onDidDismiss();
+    console.log('onDismiss resolved with role', role);
+  }
+    
+  loginDisabled() {
+    if (this.form.controls.user.valid && this.form.controls.password.value != '') {
+      return false
+    }
+
+    return true;
+  }
+
+
 
 
 }

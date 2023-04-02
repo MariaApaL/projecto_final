@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal/bottom-sheet-modal.component';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 
 @Component({
@@ -10,21 +11,11 @@ import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal
 })
 export class UserPagePage implements OnInit {
 
-  slideOpts = {};
-  stories: any[] = [];
-  buttonValue = 'grid';
-  buttonItems: any[] = [];
-  posts: any[] = [];
+  currentUser: any;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController,private token: TokenStorageService) {}
   ngOnInit() {
-    
-  
-    this.buttonItems = [
-      {value: 'grid', icon: 'grid'},
-      {value: 'reels', icon: 'film'},
-      {value: 'photos', icon: 'images'},
-    ];
+    this.currentUser = this.token.getUser();
     
   }
   
@@ -40,10 +31,6 @@ export class UserPagePage implements OnInit {
 
 
 
-  buttonsChanged(event) {
-    console.log(event.detail.value);
-    this.buttonValue = event.detail.value;
-  }
 
 }
 

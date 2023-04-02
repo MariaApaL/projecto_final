@@ -1,66 +1,74 @@
-<ion-header>
-  <!-- <ion-toolbar> -->
-
-    <!-- Div que contiene el boton para ir atras y el texto de cabecera -->
-
-    <div id="login-header">
-
-      <!-- Boton Para Volver atras -->
-      <!-- <ion-buttons slot="start">
-        <ion-back-button defaultHref="/" text="Atrás"></ion-back-button>
-      </ion-buttons> -->
-      <!-- <ion-text (click)="changeText()" color="primary">{{estado}}</ion-text> -->
-      <!-- <ion-text *ngIf="!login" color="primary">Registrarse</ion-text> -->
-    </div>
-
-  <!-- </ion-toolbar> -->
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+ 
+     
+      <ion-buttons slot="start">
+        <ion-back-button  color="primary" defaultHref="/presentation"></ion-back-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button color="lettering" [routerLink]="['/signup']">Registrarse</ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+  
 </ion-header>
-
+ 
 <ion-content class="ion-padding">
 
-  <ion-segment value="login" (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="login">
-      <ion-label>Login</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="register">
-      <ion-label>Register</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  <div class="login-section">
+  <div class="heading ion-padding">
+   <h1>¡Bienvenido de nuevo!</h1>
+   <p>Inicia sesión para continuar</p>
+  </div> 
+
+  <div class="login-form">
+  <form id="form" [formGroup]="form">
+    
+     <!-- ITEM USER O EMAIL-->
+     <ion-item>
+      <ion-label color="secondary" position="floating">Usuario o Email</ion-label>
+      <ion-input formControlName="usermail"  maxlength="20" type="text"></ion-input>
+    </ion-item>
 
 
-  <form [formGroup]="form">
+    <!-- CONTROL DE ERRORES  -->  
+    <app-error-message class="validator" [field]="form.controls.usermail" [empty]="true" message="Campo Obligatorio"></app-error-message>
+    <app-error-message  class="validator" [field]="form.controls.usermail" [valid]="true" message="Formato errorneo"></app-error-message>
+     <!-- MUESTRA EL ERROR -->
+    <ion-item class="validator"*ngIf="this.errorLogHidden" id="errorOnLog" color="danger"><p>{{errorLog}}</p></ion-item>
+
+
+      <!-- ITEM CONTRASEÑA -->
     <ion-item>
-      <ion-label position="floating">Usuario</ion-label>
-      <ion-input formControlName="username" type="text"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="!login">
-      <ion-label position="floating">Email</ion-label>
-      <ion-input formControlName="email" type="email"></ion-input>
-    </ion-item>
-    <ion-item *ngIf="!login">
-      <ion-label position="floating">Age</ion-label>
-      <ion-input formControlName="age" type="number"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input formControlName="pwd" [type]="passwordType">
+      
+      <ion-label color="secondary" position="floating">Contraseña</ion-label>
+      <ion-input formControlName="password" [type]="passwordType">   
       </ion-input>
-      <ion-button slot="end" (click)="passwordOn()">
+    
+      <!-- Boton de ojo -->
+      <!-- <ion-button class="eye"  (click)="passwordOn()"> 
         <ion-icon id="eye-icon" [name]="passwordIcon"></ion-icon>
-      </ion-button>
+      </ion-button>  -->
     </ion-item>
-    <ion-item *ngIf="!login">
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input formControlName="rpwd" [type]="passwordType">
-      </ion-input>
-      <ion-button slot="end" (click)="passwordOn()">
-        <ion-icon id="eye-icon" [name]="passwordIcon"></ion-icon>
-      </ion-button>
-    </ion-item>
+   
 
-    <ion-button *ngIf="login" class="submit ion-margin-top" size="full" (click)="onLogin()">Iniciar</ion-button>
-    <ion-button *ngIf="!login" class="submit ion-margin-top" size="full" (click)="onRegister()">Registrar</ion-button>
+    <div class="validator">
+    <!-- CONTROL DE ERRORES  -->
+   
+
+  </div>
   </form>
-
+  
+   <ion-button class="submit ion-padding" expand="block" (click)="onLogin()" >Iniciar</ion-button>
+   
+   <ion-list lines="none">
+   <ion-item>
+    <span>Recordarme siempre</span>
+    <ion-toggle slot="end" color="medium" [checked]="true"></ion-toggle>
+  </ion-item>
+  </ion-list>
+  
+  <p [routerLink]="['/forgot-pass']" class="forgot ion-padding">Forgot Password?</p>
+  </div>
+</div> 
 
 </ion-content>

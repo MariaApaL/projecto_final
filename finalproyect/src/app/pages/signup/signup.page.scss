@@ -1,0 +1,119 @@
+ion-toolbar {
+  --background: #f5f5f3;
+}
+
+ion-content {
+ 
+  --background: #f5f5f3;
+
+
+  .login-section {
+    height: 90vh;
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    margin: auto;
+    border-top-right-radius: 46px;
+    border-top-left-radius: 46px;
+
+    .heading {
+      margin-top: 20px;
+
+      h1 {
+        font-size: 1.6rem;
+        font-weight: bolder;
+        color: rgb(14, 10, 10);
+      }
+
+      p {
+        margin-top: 30px;
+        font-size: 1rem;
+        color: rgb(11, 9, 9);
+        margin-bottom:0;
+
+      }
+    }
+
+  }
+
+  .login-form{
+    margin-bottom:7rem;
+  }
+  #form {
+
+    
+     ion-item {
+      //  --background: #eeeaea;
+      //  --padding-start: 10px;
+    //    --highlight-height: 0px;
+       --border-width:0;
+       
+       --min-height:20px;
+        margin-right:2rem;
+      //   border-radius:5px;
+    //   height: 70px;
+    //   margin: 17px;
+   }
+
+   .validator{
+    // --border-width:0;
+    //    --padding-top:0;
+    //    --min-height:40px;
+       margin-right: 2rem;
+       margin-left:1.2rem;
+    //     color:red;
+   }
+    
+
+
+
+  }
+
+  .submit {
+    // text-align: center;
+    // width:100%;
+    // font-weight:bold;
+    // border-radius: 50px;
+    --box-shadow: none;
+    --border-radius: 5px;
+    --background: linear-gradient(90deg,
+        rgba(250, 87, 142, 1) 0%,
+        rgba(254, 171, 142, 1) 100%);
+    height: 80px;
+    font-size: 1rem;
+    color: #fff;
+    margin-top:2rem;
+    margin-bottom: 1rem;
+    text-transform: initial;
+  }
+
+   .forgot {
+
+    margin:10px;
+    text-align: center;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+ 
+
+  ion-toggle {
+    zoom: 0.8;
+    span{
+    margin-bottom: 1rem;
+    color:black;
+  }
+  }
+
+}
+
+// .eye{
+  // font-size: 10px;
+  // text-align: left;
+  // direction: rtl;
+  // padding-left:19rem;
+  
+// }

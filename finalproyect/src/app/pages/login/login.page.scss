@@ -1,24 +1,133 @@
-#login-header {
-  display: flex;
-  flex-direction: row;
+ion-toolbar {
+  --background: #fef1ee;
+   background-image: url('/../../../../assets//blob.svg');
+
+  // background-size: cover;
+ 
 }
 
+ion-content {
 
-// ion-icon .eye-icon{
-//   font-size: 20px;
-//   text-align: left;
-//   direction: rtl;
+  --background: #fef1ee;
+  
+
+  .blue-blob{
+    margin-left:40%;
+  }
+
+  .login-section {
+    height: 64vh;
+    width: 100%;
+    max-width: 500px;
+    background: #fefefe;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    margin: auto;
+    border-top-right-radius: 46px;
+    border-top-left-radius: 46px;
+
+    .heading {
+      margin-top: 20px;
+
+      h1 {
+        font-size: 1.6rem;
+        font-weight: bolder;
+        color: var(--ion-color-lettering);
+      }
+
+      p {
+        margin-top: 30px;
+        font-size: 1rem;
+        color: var(--ion-color-lettering);
+        margin-bottom: 0;
+
+      }
+    }
+
+  }
+
+  .login-form {
+    margin-bottom: 7rem;
+  }
+
+  #form {
+
+
+    ion-item {
+      //  --background: #eeeaea;
+      //  --padding-start: 10px;
+      //    --highlight-height: 0px;
+      --border-width: 0;
+
+      --min-height: 20px;
+      margin-right: 2rem;
+      //   border-radius:5px;
+      //   height: 70px;
+      //   margin: 17px;
+    }
+
+    .validator {
+      // --border-width:0;
+      //    --padding-top:0;
+      //    --min-height:40px;
+      margin-right: 2rem;
+      margin-left: 1.2rem;
+      //     color:red;
+    }
+
+
+
+
+  }
+
+  .submit {
+    // text-align: center;
+    // width:100%;
+    // font-weight:bold;
+    // border-radius: 50px;
+    --box-shadow: none;
+    --border-radius: 60px;
+    --background: linear-gradient(90deg,
+        rgb(81, 54, 125) 0%,
+        rgb(61, 32, 115) 100%);
+
+    // rgba(250, 87, 142, 1) 0%,
+    // rgba(246,231,252,255) 100%)
+    // rgba(246, 139, 100, 255) 0%,
+    // rgba(255, 177, 131, 255),100%);
+    height: 80px;
+    font-size: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    text-transform: initial;
+  }
+
+  .forgot {
+
+    margin: 10px;
+    text-align: center;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+
+
+  ion-toggle {
+    zoom: 0.8;
+
+    span {
+      margin-bottom: 1rem;
+      color: black;
+    }
+  }
+
+}
+
+// .eye{
+// font-size: 10px;
+// text-align: left;
+// direction: rtl;
+// padding-left:19rem;
+
 // }
-
-p {
-  margin: auto;
-  text-align: center;
-}
-
-.submit{
-  border-radius: 40px;
-}
-
-a {
-  text-decoration: none;
-}

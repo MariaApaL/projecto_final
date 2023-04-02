@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home/main', //REDIRECCIONA A 'HOME/INICIO'
+    redirectTo: 'presentation', //REDIRECCIONA A 'HOME/INICIO'
     pathMatch: 'full'
   },
   {
@@ -18,6 +19,23 @@ const routes: Routes = [
   {
     path: 'presentation',
     loadChildren: () => import('./pages/presentation/presentation.module').then( m => m.PresentationPageModule)
+  },
+  {
+    path: 'signup',
+    loadChildren: () => import('./pages/signup/signup.module').then( m => m.SignupPageModule)
+  },
+  {
+    path: 'forgot-pass',
+    loadChildren: () => import('./pages/forgot-pass/forgot-pass.module').then( m => m.ForgotPassPageModule)
+  },
+  {
+    path: 'new-pass',
+    loadChildren: () => import('./pages/new-pass/new-pass.module').then( m => m.NewPassPageModule)
+  },
+  {
+    path: 'home-admin',
+    loadChildren: () => import('./pages/home-admin/home-admin.module').then( m => m.HomeAdminPageModule),
+    
   }
 ];
 @NgModule({

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
+
 import SwiperCore, { SwiperOptions, Pagination } from 'swiper';
 // install Swiper modules
 SwiperCore.use([Pagination]);
-
 
 
 @Component({
@@ -13,10 +13,13 @@ SwiperCore.use([Pagination]);
 })
 export class PresentationPage implements OnInit {
   slides: any[] = [];
+  content?: string;
   bannerConfig!: SwiperOptions;
   featureConfig!: SwiperOptions;
  
   constructor(private navCtrl: NavController) { }
+
+  
 
   ngOnInit() {
     this.slides= [
@@ -24,6 +27,7 @@ export class PresentationPage implements OnInit {
       { id: 2, img_no: '../../../../assets/events/event1.svg'},
       { id: 3, img_no: '../../../../assets/events/event1.svg'}
     ];
+    
    
   }
 
