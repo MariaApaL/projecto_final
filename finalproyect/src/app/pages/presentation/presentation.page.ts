@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 import SwiperCore, { SwiperOptions, Pagination } from 'swiper';
 // install Swiper modules
@@ -17,11 +18,39 @@ export class PresentationPage implements OnInit {
   bannerConfig!: SwiperOptions;
   featureConfig!: SwiperOptions;
  
-  constructor(private navCtrl: NavController) { }
+  roles: string[] = [];
 
+  constructor(
+    private navCtrl: NavController,  
+    private auth: AuthService) { 
+     
+    }
+    
   
-
   ngOnInit() {
+
+    //Si el usuario esta ya loggeado, se redirige a la pagina principal
+    
+    const usuario = localStorage.getItem('userId');
+    
+    if (usuario) {
+      this.auth.getUser().subscribe({
+        next: user => {
+          this.roles = user.roles;
+          if (this.roles.includes('ROLE_ADMIN')) {
+            this.navCtrl.navigateForward(['/home-admin']);
+          } else {
+            this.navCtrl.navigateForward(['/home/main']);
+          }
+          console.log(this.roles);
+        },
+        error: err => {
+          console.error(err);
+        }
+      });
+    }
+    
+
     this.slides= [
       { id: 1, img_no: '../../../../assets/events/event1.svg'},
       { id: 2, img_no: '../../../../assets/events/event1.svg'},

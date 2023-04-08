@@ -12,58 +12,50 @@
 
 <ion-content class="ion-padding">
 
-  <div class="login-section">
+  <div class="regis-section">
     <div class="heading ion-padding">
       <h1>¡Empieza a descubrir!</h1>
-      <p>Hazte una cuenta para comenzar</p>
     </div>
 
-    <div class="login-form">
+    <div class="regis-form">
 
       <form id="form" [formGroup]="form">
         <!-- ITEM USER NAME-->
         <ion-item>
           <ion-label position="floating">Usuario</ion-label>
-          <ion-input formControlName="user" type="text"></ion-input>
+          <ion-input formControlName="user" maxlength="20" type="text"></ion-input>
         </ion-item>
 
         <!-- CONTROL DE ERRORES  -->
-        <div class="validator">
-          <app-error-message [field]="form.controls.user" [empty]="true"
-            message="Usuario Obligatorio"></app-error-message>
-          <app-error-message [field]="form.controls.user" [valid]="true" message="Formato errorneo"></app-error-message>
-        </div>
-        <!-- MUESTRA EL ERROR -->
-        <ion-note class="validator" *ngIf="this.errorLogHidden" id="errorOnLog" color="danger">{{errorLog}}</ion-note>
-
-
+ 
+        <app-error-message class="validator" [field]="form.controls.user" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.user" [valid]="true" message="Formato errorneo"></app-error-message>
+       
         <!-- ITEM Nombre -->
         <ion-item>
           <ion-label position="floating">Nombre</ion-label>
-          <ion-input formControlName="name" type="text"></ion-input>
+          <ion-input formControlName="name" maxlength="30" type="text"></ion-input>
         </ion-item>
 
         <!-- CONTROL DE ERRORES -->
-        <div class="validator">
-          <app-error-message  [field]="form.controls.name" [empty]="true"
-            message="Nombre Obligatorio"></app-error-message>
-          <app-error-message  [field]="form.controls.name" [valid]="true"
+       
+          <app-error-message class="validator" [field]="form.controls.name" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+          <app-error-message class="validator" [field]="form.controls.name" [valid]="true"
             message="Formato errorneo"></app-error-message>
-        </div>
-        <!-- MUESTRA EL ERROR -->
-        <ion-note class="validator" *ngIf="this.errorLogHidden" id="errorOnLog" color="danger">{{errorLog}}</ion-note>
-
+   
         <!-- ITEM EMAIL -->
         <ion-item>
           <ion-label position="floating">Email</ion-label>
           <ion-input formControlName="email" type="email"></ion-input>
         </ion-item>
         <!-- CONTROL DE ERRORES -->
-        <div class="validator">
-          <app-error-message [field]="form.controls.email" [empty]="true"
-            message="Mail obrigatorio"></app-error-message>
-          <app-error-message [field]="form.controls.email" [valid] message="Formato errorneo"></app-error-message>
-        </div>
+   
+          <app-error-message class="validator" [field]="form.controls.email" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+          <app-error-message class="validator" [field]="form.controls.email" [valid] message="Formato errorneo"></app-error-message>
+      
 
         <!-- ITEM CONTRASEÑA -->
         <ion-item>
@@ -76,12 +68,12 @@
           </ion-button>
         </ion-item>
         <!-- CONTROL DE ERRORES  -->
-        <div class="validator">
-        <app-error-message [field]="form.controls.password" [empty]="true"
-          message="Contrase Obligatoria"></app-error-message>
-        <app-error-message [field]="form.controls.password" [valid]="true"
+       
+        <app-error-message class="validator" [field]="form.controls.password" [empty]="true"
+          message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.password" [valid]="true"
           message="Debe tener min 8 caracteres, 1 caracter especial y 1 mayúscula"></app-error-message>
-        </div>
+        
 
          <!-- ITEM REPETIR CONTRASEÑA  -->
          <ion-item>
@@ -95,19 +87,18 @@
           </ion-button>
         </ion-item>
         <!-- CONTROL DE ERRORES  -->
-        <div class="validator">
-        <app-error-message [field]="form.controls.password" [fieldExtra]="form.controls.rpassword" [samepass]="true"
-          message="No es igual"></app-error-message>
-        </div>
-
-        <!-- <ion-button class="submit ion-padding" expand="block" (click)="onRegister()"
-          [disabled]="!this.form.valid">Registrar</ion-button> -->
-          <ion-button class="submit ion-padding" expand="block" (click)="onRegister()">Registrar</ion-button>
+        <app-error-message class="validator" [field]="form.controls.password" [empty]="true"
+          message="Campo Obligario"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.password" [fieldExtra]="form.controls.rpassword" [samepass]="true"
+          message="No coinciden"></app-error-message>
+          
+  
+          <ion-button class="submit ion-padding" [disabled]="!this.form.valid" expand="block" (click)="onRegister()">Registrar</ion-button>
 
           <ion-list lines="none">
             <ion-item>
              <span>Recordarme siempre</span>
-             <ion-toggle slot="end" color="medium" [checked]="true"></ion-toggle>
+             <ion-toggle slot="end" color="" [checked]="true"></ion-toggle>
            </ion-item>
            </ion-list>
 

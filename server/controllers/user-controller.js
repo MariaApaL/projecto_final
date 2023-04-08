@@ -7,24 +7,26 @@ const Role = db.role;
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
 
+function checkWords(...args) {
+  for (let i = 0; i < palabrasProhibidas.length; i++) {
+    if (args[i].toUpperCase().includes(palabrasProhibidas[i].toLocaleUpperCase()))
+      return res.status(400).send({ message: "Error, palabras prohibidas" });
+  }
+}
 
 
 exports.signup = async (req, res) => {
   try {
 
     const { user, name, email, password, bio, picture } = req.body;
-    //Busca si el nombre de usuario o el email contienen palabras incorrectas        
-    for (let i = 0; i < palabrasProhibidas.length; i++) {
-      if (user.toUpperCase().includes(palabrasProhibidas[i].toLocaleUpperCase()) ||
-        email.includes(palabrasProhibidas[i].toLocaleUpperCase()) || name.includes(palabrasProhibidas[i].toLocaleUpperCase()))
-        return res.status(400).send({ message: "Error, palabras prohibidas" });
-    }
+    //Busca si el nombre de usuario o el email contienen palabras incorrectas  
+    checkWords(user, name, email, bio);
+
 
     const hashPassword = await bcrypt.hash(password, 8);
     //controlamos que el nick y el email se creen como minuscula en la base de datos
 
-    user.toLowerCase();
-    email.toLowerCase();
+
     const newUser = new User({
 
       user: user.toLowerCase(),
@@ -34,6 +36,7 @@ exports.signup = async (req, res) => {
       bio: bio,
       picture: picture,
     });
+
 
 
 
@@ -60,9 +63,13 @@ exports.login = async (req, res) => {
         { email: req.body.email }
       ]
     }).populate("roles", "-__v");
-    if (!user) {
+    if (!user || user.deleted == true) {
       return res.status(404).send({ message: "El Usuario o Contraseña no son correctos." });
+    } else if (user.blocked == true) {
+      return res.status(404).send({ message: "El Usuario esta bloqueado." });
+
     }
+
 
     const passwordIsValid = bcrypt.compareSync(
       req.body.password,
@@ -77,7 +84,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id }, config.secret, {
-      expiresIn: 86400 // 24 horas
+      expiresIn: "1y" // Un año de expiración
     });
 
     const authorities = user.roles.map((role) => `ROLE_${role.name.toUpperCase()}`);
@@ -105,102 +112,87 @@ exports.getUsers = async (req, res) => {
 };
 
 
-//Actualiza a un usuario por su nombre de usuario
-
+//Actualiza a un usuario con su id
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    const { user, name, email, password, bio, picture } = req.body;
-
-    for (let i = 0; i < palabrasProhibidas.length; i++) {
-      if (user.toUpperCase().includes(palabrasProhibidas[i].toLocaleUpperCase()) ||
-        email.includes(palabrasProhibidas[i].toLocaleUpperCase()) || name.includes(palabrasProhibidas[i].toLocaleUpperCase()))
-        return res.status(400).send({ message: "Error, palabras prohibidas" });
-    }
-
-    const hashPassword = await bcrypt.hash(password, 8);
-
-    const updatedUser = {
-      user: user.toLowerCase,
-      name: name,
-      password: hashPassword,
-      email:email.toLowerCase,
-      bio: bio,
-      picture: picture,
-    };
-
-    const userExists = await User.findOne({ $or: [{ user: updatedUser.user }, { email: updatedUser.email }], _id: { $ne: userId } });
-    if (userExists) {
-      return res.status(409).send({ message: "Nombre de usuario o correo electrónico ya está en uso" });
-    }
-
-    const newUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
-    if (!newUser) {
-      return res.status(404).send({ message: "Usuario no encontrado" });
-    }
-
-    res.send({ message: "Usuario actualizado con éxito", user });
-  } catch (err) {
-    res.status(500).send({ message: "Error al actualizar usuario", err });
-  }
-
-};
-
-exports.updateUserNoPass = async (req, res) => {
-  const userId = req.params.id;
-
-  try {
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).send({ message: "Usuario no encontrado" });
     }
 
-    const { user: newUsername, name, email, bio, picture } = req.body;
-
-
-    for (let i = 0; i < palabrasProhibidas.length; i++) {
-      if (newUsername.toUpperCase().includes(palabrasProhibidas[i].toLocaleUpperCase()) ||
-        email.includes(palabrasProhibidas[i].toLocaleUpperCase()) || name.includes(palabrasProhibidas[i].toLocaleUpperCase()))
-        return res.status(400).send({ message: "Error, palabras prohibidas" });
+    const fieldsToUpdate = {};
+    for (const field in req.body) {
+      console.log("field:", field);
+      if (req.body.hasOwnProperty(field)) {
+        console.log(req.body.hasOwnProperty(field));
+        fieldsToUpdate[field] = req.body[field];
     }
-    // Verificar si el nuevo nombre de usuario ya está en uso por otro usuario
-    if (newUsername && newUsername !== user.user) {
-      const existingUser = await User.findOne({ user: newUsername });
+    }
 
-      if (existingUser) {
-        return res.status(400).send({ message: "Error, este nombre de usuario ya está en uso" });
+    //console.log(fieldsToUpdate);
+    const upUser = fieldsToUpdate.hasOwnProperty("user") ? fieldsToUpdate.user.toLowerCase() : null;
+    const upEmail = fieldsToUpdate.hasOwnProperty("email") ? fieldsToUpdate.email.toLowerCase() : null;
+    const upName = fieldsToUpdate.hasOwnProperty("name") ? fieldsToUpdate.name.toLowerCase() : null;
+    const upBio = fieldsToUpdate.hasOwnProperty("bio") ? fieldsToUpdate.bio.toLowerCase() : null;
+
+    //comprobamos que el nuevo nombre de usuario o el nuevo email no esten en uso
+    if (upUser || upEmail) {
+      const userExists = await User.findOne({ $or: [{ user: fieldsToUpdate.user }, { email: fieldsToUpdate.email }], _id: { $ne: userId } });
+      if (userExists) {
+        return res.status(409).send({ message: "Nombre de usuario o correo electrónico ya está en uso" });
       }
-
-      user.user = newUsername;
     }
+    
+    //comprobamos que el nuevo nombre de usuario o el nuevo email no contengan palabras prohibidas
+    checkWords(upUser, upName, upEmail, upBio);
 
-    // Verificar si el nuevo correo electrónico ya está en uso por otro usuario
-    if (email && email !== user.email) {
-      const existingEmail = await User.findOne({ email });
-
-      if (existingEmail) {
-        return res.status(400).send({ message: "Error, este correo electrónico ya está en uso" });
-      }
-
-      user.email = email;
-    }
-
-    // Actualizar los campos permitidos del usuario
-    if (name) user.name = name;
-    if (bio) user.bio = bio;
-    if (picture) user.picture = picture;
-
-    // Guardar el usuario actualizado en la base de datos
-    const updatedUser = await user.save();
-
-    res.send({ message: "Usuario actualizado con éxito", user: updatedUser });
+    const updatedUser = await User.findByIdAndUpdate(userId, fieldsToUpdate, { new: true });
+    res.send({ message: "Usuario actualizado con éxito", updatedUser });
   } catch (err) {
     res.status(500).send({ message: "Error al actualizar usuario", err });
   }
 };
 
+//CON ESTE UPDATE NO PUEDO ACTUALIZAR LOS CAMPOS QUE YO QUIERA.
+// exports.updateUser = async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+
+//     const { user, name, email, password, bio, blocked, deleted, picture } = req.body;
+
+//     checkWords(user, name, email, bio);
+
+//     const hashPassword = await bcrypt.hash(password, 8);
+
+//     const updatedUser = {
+//       user: user.toLowerCase,
+//       name: name,
+//       password: hashPassword,
+//       email: email.toLowerCase,
+//       bio: bio,
+//       picture: picture,
+//       blocked: blocked,
+//       deleted:deleted,
+//     };
+
+//     const userExists = await User.findOne({ $or: [{ user: updatedUser.user }, { email: updatedUser.email }], _id: { $ne: userId } });
+//     if (userExists) {
+//       return res.status(409).send({ message: "Nombre de usuario o correo electrónico ya está en uso" });
+//     }
+
+//     const newUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+//     if (!newUser) {
+//       return res.status(404).send({ message: "Usuario no encontrado" });
+//     }
+
+//     res.send({ message: "Usuario actualizado con éxito", user });
+//   } catch (err) {
+//     res.status(500).send({ message: "Error al actualizar usuario", err });
+//   }
+
+// };
 
 //Elimina a un usuario por su id
 
@@ -216,8 +208,8 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-//Elimina a un usuario por su nombre de usuario
-exports.deleteUserByUser = async (req, res) => {
+//Pone la propiedad de "deleted" en true para que no se pueda loguear el usuario
+exports.fakeDelete = async (req, res) => {
   try {
     const { user } = req.body;
     const deletedUser = await User.findOneAndDelete({ user: user.toLowerCase() });
@@ -230,16 +222,27 @@ exports.deleteUserByUser = async (req, res) => {
   }
 };
 
-exports.checkUserExists = async (req, res) => {
+exports.getUser = async (req, res) => {
+  const token = req.headers["x-access-token"];
   try {
-    const { user } = req.body;
-    const existingUser = await User.findOne({ $or: [{ username: user }, { email: user }] });
-    if (existingUser) {
-      return res.status(200).send(existingUser);
+    const decoded = jwt.verify(token, config.secret);
+    const existingUser = await User.findById(decoded.id);
+    if (!existingUser) {
+      return res.status(404).send({ message: "Usuario no encontrado" });
     }
-    return res.status(404).send('El usuario no existe');
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send('Error interno del servidor');
+    return res.status(200).send(existingUser);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: "Error interno del servidor" });
   }
 };
+// exports.getUser = async (req, res) => {
+//   try {
+//     // Verificar el token de acceso antes de permitir el acceso al controlador
+//     await verifyToken(req, res);
+//     const user = await User.findById(req.body.id); // selecciona todos los campos excepto la contraseña
+//     res.status(200).json(user);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };

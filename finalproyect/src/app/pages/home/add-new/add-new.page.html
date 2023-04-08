@@ -9,47 +9,70 @@
   
   <ion-content>
     <!-- https://www.youtube.com/watch?v=-Lv647Sqq3I 
-    https://www.youtube.com/watch?v=-rrDc7jb4fw-->
-    <!-- <form >
-    <ion-item>
+    https://www.youtube.com/watch?v=-rrDc7jb4fw -->
+    <form id="form" [formGroup]="form">
+    <!-- SUBIR FOTOS -->
+      <ion-item>
       <ion-label position="stacked">Subir foto</ion-label>
       <ion-input type="file"></ion-input>
     </ion-item>
+    <!-- NOMBRE DEL EVENTO -->
     <ion-item>
       <ion-label position="floating">Nombre del evento</ion-label>
-      <ion-input formControlName="eventname" type="text"></ion-input>
+      <ion-input formControlName="eventname" maxLength="40" type="text"></ion-input>
     </ion-item>
+    <!-- FECHA DEL EVENTO  -->
     <ion-item>
       <ion-label>Fecha</ion-label>
       <ion-datetime-button datetime="datetime"></ion-datetime-button>
 
       <ion-modal [keepContentsMounted]="true">
         <ng-template>
-          <ion-datetime id="datetime"></ion-datetime>
+          <ion-datetime formControlName="date" [(ngModel)]="date" id="datetime"></ion-datetime>
         </ng-template>
       </ion-modal>
       </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Localización</ion-label>
-        <ion-input type="text"></ion-input>
-      </ion-item>
+
+      <!-- NÚMERO DE PLAZAS -->
       <ion-item>
         <ion-label position="stacked">Número de plazas</ion-label>
-        <ion-input type="number"></ion-input>
+        <ion-input formControlName="plazas" type="number"></ion-input>
       </ion-item>
+      <!-- PRECIO DEL EVENTO -->
       <ion-item>
         <ion-label position="stacked">Precio</ion-label>
-        <ion-input type="number"></ion-input>
+        <ion-input formControlName="price" type="number"></ion-input>
       </ion-item>
+
+ 
+     
+      <!-- DESCRIPCIÓN DEL EVENTO -->
       <ion-item>
         <ion-label position="stacked">Descripción</ion-label>
-        <ion-textarea></ion-textarea>
+        <ion-textarea maxLenght="300" formControlName="description"></ion-textarea>
       </ion-item>
-   
-      <ion-button  class="submit ion-margin-top" size="full" (click)="onLogin()">Iniciar</ion-button>
-     
-    </form> -->
 
+      <!-- CATEGORIAS DEL EVENTO -->
+      <!-- <ion-item *ngFor="let checkboxes of checkbox">
+        <ion-checkbox formControlName="category" label-placement="fixed" 
+        [(ngModel)]="checkbox.checked" 
+        [value]="checkbox.value">{{ checkbox.label }}
+      </ion-checkbox>
+    </ion-item>
+     -->
+ 
+        <!-- LUGAR DEL EVENTO -->
+        <ion-item>
+          <ion-label position="stacked">Localización</ion-label>
+          <ion-input id="pac-input" formControlName="location" type="text"/> 
+          
+        </ion-item>
+        
+   
+     
+    </form> 
+    <div id="map"></div>
+    <ion-button  class="submit ion-margin-top" size="expand">Iniciar</ion-button>
   </ion-content>
 
  

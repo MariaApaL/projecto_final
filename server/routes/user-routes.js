@@ -1,4 +1,4 @@
-const { verifySignUp } = require("../middlewares");
+const { verifySignUp, authJwt } = require("../middlewares");
 const controller = require("../controllers/user-controller");
 
 module.exports = function(app) {
@@ -34,12 +34,9 @@ module.exports = function(app) {
 
   app.put("/updateUser/:id", controller.updateUser);
 
-  // ruta PUT para actualizar un usuario pero sin actualizar su contraseña
-  app.put("/updateUserNoPass/:id", controller.updateUserNoPass)
-
   // ruta DELETE para eliminar un usuario
 
-  app.delete("/deleteUserByUser", controller.deleteUserByUser);
+  app.delete("/fakeDelete", controller.fakeDelete);
 
   app.delete("/deleteUser", controller.deleteUser);
 
@@ -49,6 +46,6 @@ module.exports = function(app) {
 
   // ruta GET para obtener un usuario por su nombre o email
 
-  app.get("/getUser",controller.checkUserExists);
+  app.get("/getUser", controller.getUser);
 
 };

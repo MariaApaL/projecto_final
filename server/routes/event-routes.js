@@ -24,43 +24,42 @@ module.exports = function(app) {
     controller.createEvent
   );
   
-// // Ruta get para obtener todos los eventos de la base de datos
+ // Ruta get para obtener todos los eventos de la base de datos
 
-//   app.get("/getAllEvents", controller.getAllEvents);
+ app.get("/getEvents", controller.getEvents);
 
-//  // Ruta get para obtener un evento por su id 
-//   app.get("/getEvent", controller.getEvent);
+// Ruta get para obtener un evento por su id 
+   app.get("/getEvent/:id", controller.getEvent);
 
-//   // ruta POST para actualizar un event
+ // ruta POST para actualizar un event
 
-//   app.post("/updateEvent", controller.updateEvent);
+ app.put("/updateEvent/:id", controller.updateEvent);
 
-//   // ruta DELETE para eliminar un event
+   // ruta DELETE para eliminar un event
 
-//   app.delete("/deleteEvent", controller.deleteEvent);
+ app.delete("/deleteEvent/:id", controller.deleteEvent);
 
 
-//   // ruta GET para obtener evento por category
+  // ruta GET para obtener evento por category
 
-//   app.get("/getEventCategory",controller.getEventCategory);
+ app.get("/getEventCategory/:category",controller.getEventCategory);
 
-//   // ruta GET para obtener eventos por fecha
+   // ruta GET para obtener eventos por fecha
 
-//   app.get("/getEventDate",controller.getEventDate);
+  app.get("/getEventDate",controller.getEventDate);
 
-//   //ruta GET para obtener eventos por nombre
-  
-//   app.get("/getEventName",controller.getEventName);
+   //ruta GET para obtener eventos por lugar
 
-//     //ruta GET para obtener eventos por lugar
+    app.get("/getEventPlace",controller.getEventPlace);
 
-//     app.get("/getEventPlace",controller.getEventPlace);
+   //ruta GET para obtener eventos por autor
+   app.get("/getEventAuthor/:id",controller.getEventAuthor);
 
-//     //ruta GET para obtener eventos por autor
-//     app.get("/getEventAuthor",controller.getEventAuthor);
+      //ruta GET para obtener eventos según palabras buscadas en nombre o descripcion
+    app.get("/getEventWords",controller.getEventWords);
 
-//     //ruta GET para obtener eventos descripcion
-//     app.get("/getEventDescription",controller.getEventDescription);
-
+    //ruta GET para obtener eventos según precio
+    
+    app.get("/getEventPrice",controller.getEventPrice);
 
 };

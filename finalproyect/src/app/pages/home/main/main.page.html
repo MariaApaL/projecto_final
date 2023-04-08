@@ -1,29 +1,48 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="white" no-border>
     <ion-title>
-      Event
+      Events
     </ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="banner">
-    <img src="../../../../assets/banner.svg" />
+    <img src="../../../../assets/pictures/banner.png" />
 
+   
     <div class="caption ion-padding">
-      Join with <br>
-      upcoming events
+      Encuentra y únete<br>
+      a los mejores eventos
+      
     </div>
-
-    <div class="search">
-      <ion-item lines="none" class="ion-no-padding">
-        <ion-searchbar></ion-searchbar>
-        <ion-button slot='end'>
-          <!-- <img src="../../../../assets/filter.svg" /> -->
-          <ion-icon name="options-outline"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </div>
+    <ion-item class="search" lines="none" class="ion-no-padding">  
+      <ion-searchbar class="bar"></ion-searchbar>
+      <ion-button slot='end'>   
+        <ion-icon name="options-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  
+      
+    
+  </div>
+   <!-- ionic dialog modal -->
+  <div class="categories">
+    <ion-row class="ion-margin-top">
+      <ion-label class="ion-margin-start heading">Categories</ion-label>
+      <swiper [config]="config" effect="fade">
+        <ng-template swiperSlide *ngFor="let category of categories">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-thumbnail slot="start">
+                <img [src]="category?.image" />
+              </ion-thumbnail>
+              <ion-label class="ion-text-wrap">{{category?.name}}</ion-label>
+            </ion-item>
+          </ion-card>
+        </ng-template>
+      </swiper>
+    </ion-row>
   </div>
 
   <div class="title">

@@ -36,6 +36,7 @@ app.get("/user", (req, res) => {
 
 require('./routes/user-routes')(app);
 require('./routes/event-routes')(app);
+require('./routes/category-routes')(app);
 
 
 

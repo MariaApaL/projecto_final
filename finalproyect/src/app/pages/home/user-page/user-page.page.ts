@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal/bottom-sheet-modal.component';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { AuthService } from 'src/app/services/auth.service';
+
 
 
 @Component({
@@ -11,11 +12,23 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 })
 export class UserPagePage implements OnInit {
 
-  currentUser: any;
+  currentUser: any = {};
+  event:boolean = false;
 
-  constructor(private modalCtrl: ModalController,private token: TokenStorageService) {}
+  constructor(private modalCtrl: ModalController,private auth: AuthService) {}
   ngOnInit() {
-    this.currentUser = this.token.getUser();
+    //Para poder recoger los datos del usuario y mostrarlos en la página
+    this.auth.getUser().subscribe({
+      next: (data) => {
+        this.currentUser = data;
+        console.log(this.currentUser);
+        console.log(data);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  
     
   }
   
@@ -23,10 +36,19 @@ export class UserPagePage implements OnInit {
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: BottomSheetModalComponent,
-      breakpoints: [0, 0.3, 0.5, 0.8],
-      initialBreakpoint: 0.5
+    
+      breakpoints: [0, 0.3],
+      initialBreakpoint: 0.3,
+      handleBehavior: 'none'
+      
     });
     await modal.present();
+  }
+
+  segmentChanged(event:any){
+    const chose = event.detail.value;
+
+    this.event = chose === 'my-favs';
   }
 
 

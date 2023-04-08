@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: [true, 'Por favor, escriba su nombre']
+        required: false
     },
     password: {
         type: String,
@@ -33,6 +33,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false
 
+    },
+    blocked: {
+        type: Boolean,
+        default:false
+    },
+    deleted: {
+        type: Boolean,
+        default:false
     },
     roles: [
         {

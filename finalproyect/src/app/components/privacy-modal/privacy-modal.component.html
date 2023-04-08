@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ item.label }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item class="ion-margin-top" button="true" *ngFor="let option of options">
+      <ion-icon color="dark" slot="start" [name]="option?.icon"></ion-icon>
+      <ion-label>{{ option?.label }}</ion-label>
+    </ion-item>
+  <ion-button class="ion-margin" (click)="delete()" expand="block">Eliminar Usuario</ion-button>
+  </ion-list>
+</ion-content>

@@ -6,7 +6,7 @@ ion-header {
       padding-right: 14px;
   
       ion-title {
-        --color: white;
+        color: var(--ion-color-lettering);
         font-size: 18px;
       }
     }
@@ -21,59 +21,43 @@ ion-header {
   }
   
   ion-content {
+
+    --background: #fefefe;
+
     .banner {
       position: relative;
+      font-weight: bold;
   
       img {
         width: 100%;
+        height: 30vh;
       }
   
       .caption {
         position: absolute;
         width: 100%;
-        bottom: 55px;
+        bottom: 16vh;
         font-size: 26px;
-        color: white;
+        color: var(--ion-color-lettering);
         padding-left: 26px;
         padding-right: 26px;
       }
   
       .search {
         position: absolute;
-        bottom: -40px;
-        width: calc(100% - 52px);
-        background: white;
-        margin: 16px 26px 16px 26px;
-        padding: 5px 16px 5px 16px;
-        border-radius: 10px;
-        box-shadow: 0px 3px 12px 2px rgba(0, 0, 0, 0.16);
-  
-        ion-item {
-          --inner-padding-end: 0 !important;
-  
-          ion-input {
-            --placeholder-color: #212121 !important;
-            --placeholder-opacity: 0.5;
-            --color: #21212150 !important;
-          }
-  
-        //   ion-icon {
-        //     color: #21212150 !important;
-        //     margin-right: 10px;
-        //   }
-  
-          ion-button {
-            height: 35px;
-            margin-right: 0 !important;
-            --box-shadow: none;
-  
             ion-icon {
               transform: rotateZ(90deg);
             }
           }
         }
-      }
-    }
+      
+        ion-searchbar.bar{
+          --color: var(--ion-color-lettering);
+          --background:transparent;
+          --placeholder-font-style:'MyFont', sans-serif;	
+          ----placeholder-font-weight:bold;
+        }
+    
   
     .title {
       display: flex;
@@ -85,7 +69,7 @@ ion-header {
         margin: 0;
         font-size: 20px;
         font-weight: bold;
-        color: #364F6B;
+        color: var(--ion-color-lettering);
       }
   
       p {

@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+
 
 // import { AuthService } from 'src/app/services/auth.service';
 
@@ -24,7 +24,6 @@ export class SignupPage implements OnInit {
   
   constructor(private router: Router,
     private auth:AuthService,
-    private tokenStorage:TokenStorageService,
     private navCtrl: NavController,
     private alertController: AlertController) { 
 
@@ -81,7 +80,7 @@ export class SignupPage implements OnInit {
     this.auth.register(user, name, password, email).subscribe({
       next: res => {
         console.log(res);
-        this.tokenStorage.signOut();
+        this.auth.logOut();
         this.router.navigate(['/home/main'], {replaceUrl:true});
       },
       error: err => {

@@ -24,11 +24,16 @@ const eventSchema = new mongoose.Schema({
             },
             message: props => `${props.value} no está dentro del rango de fechas permitido`
         }
-      },
+    },
     location: {
         type: String,
         required: [true, 'Por favor, introduzca la ubicación del evento']
     },
+    price: {
+        type: Number,
+        required: [true, 'Por favor, introduzca el precio del evento']
+    },
+
     picture: {
         type: String,
         required: false
@@ -52,7 +57,7 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    comentarios: [
+    comments: [
         {
             author: {
                 type: mongoose.Schema.Types.ObjectId,

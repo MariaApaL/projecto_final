@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+
 
 
 
@@ -17,35 +17,29 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 })
 export class LoginPage implements OnInit {
 
+  //Nuestro Formulario
   public form: FormGroup;
 
-  login: boolean = true;
-
-  errorLog: string;
-  errorLogHidden: boolean = false;
-  isLoggedIn = false;
-  isLoginFailed = false;
-  errorMessage = '';
+// Para obtener el rol del usuario
   roles: string[] = [];
 
+  toggleValue: boolean = false;
 
   constructor(private router: Router,
     private auth: AuthService,
-    private tokenStorage:TokenStorageService,
-    private navCtrl: NavController,private alertController: AlertController) {
+    private alertController: AlertController) {
 
     this.form = new FormGroup({
-      user: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(10)]),
+      user: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]),
       usermail: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       name: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      // age: new FormControl('',[Validators.required, Validators.min(18), Validators.max(110)]),
       password: new FormControl('', [Validators.required, Validators.pattern(/^(?=(?:.*\d))(?=.*[A-Z])(?=.*[a-z])(?=.*[.,*!?¿¡/#$%&])\S{8,30}$/
       )]),
     })
   }
 
-  
+
 
   passwordIcon = 'eye-off';
   passwordType = 'password';
@@ -54,13 +48,19 @@ export class LoginPage implements OnInit {
 
 
   ngOnInit() {
-    if (this.tokenStorage.getToken()) {
-      this.isLoggedIn = true;
-      this.roles = this.tokenStorage.getUser().roles;
-    }
-
-    console.log(this.form.controls.email.touched);
-
+    // if (this.auth.getToken()) {
+    //   this.isLoggedIn = true;
+    //   const id = localStorage.getItem('userId');
+    //   this.auth.getUser().subscribe({
+    //     next: user => {
+    //       this.roles = user.roles;
+    //       console.log(this.roles);
+    //     },
+    //     error: err => {
+    //       console.error(err);
+    //     }
+    //   });
+    // }
   }
 
 
@@ -71,11 +71,6 @@ export class LoginPage implements OnInit {
   //   this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
   // }
 
-  segmentChanged(event: any) {
-    const chose = event.detail.value;
-
-    this.login = chose === 'login';
-  }
 
   checkPassword() {
     const password = this.form.controls.password.value;
@@ -88,51 +83,57 @@ export class LoginPage implements OnInit {
     const usermail = this.form.controls.usermail.value.trim().toLowerCase();
     const password = this.form.controls.password.value.trim();
 
-    
+
     this.auth.login(usermail, password).subscribe({
       next: res => {
-        
-        this.tokenStorage.saveUser(res);
-        this.isLoginFailed = false;
-        this.isLoggedIn = true;
-        console.log(res);
-        console.log(this.tokenStorage.saveToken(res.accessToken))
-        this.roles = this.tokenStorage.getUser().roles;
-        if(this.roles.includes("ROLE_ADMIN")){
 
-        this.router.navigate(['/home-admin'], { replaceUrl: true });
-        }else{
-           //console.log(localStorage.setItem('token', res.accessToken)) //Guardamos el token el el LocalStorage
-        this.router.navigate(['/home/main'], { replaceUrl: true }); //Replace url borra el historial para evitar errores de navegacion
-        }  
-       
+        
+        // Guardamos el token en el localStorage
+        localStorage.setItem('token', res.accessToken);
+        
+        // Guardamos el id del usuario en el localStorage
+        localStorage.setItem('userId', res.id);
+        
+        //Guardamos el rol del usuario en el localStorage
+       const rol =  localStorage.setItem('userRole', res.roles);
+
+        console.log(res);
+        // Guardamos el rol del usuario en el localStorage
+        this.auth.getUser().subscribe(user => {
+          this.roles = user.roles;
+        });
+
+        console.log(this.roles)
+
+        if (this.roles.includes("ROLE_ADMIN")) {
+
+          this.router.navigate(['/home-admin'], { replaceUrl: true });
+        } else {
+
+          this.router.navigate(['/home/main'], { replaceUrl: true }); //Replace url borra el historial para evitar errores de navegacion
+        }
+
       },
       error: err => {
-        this.presentAlert("Error al iniciar sesión", err.error.message )
+        this.presentAlert("Error al iniciar sesión", err.error.message)
         console.error(err);
       }
     });
   }
 
-  async presentAlert(header: string, message: string){
+  async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
-      cssClass:"",
-      header:header,
-      message:message,
-      buttons:["OK"]
+      cssClass: "",
+      header: header,
+      message: message,
+      buttons: ["OK"]
     });
     await alert.present();
-    const{ role }= await alert.onDidDismiss();
+    const { role } = await alert.onDidDismiss();
     console.log('onDismiss resolved with role', role);
   }
-    
-  loginDisabled() {
-    if (this.form.controls.user.valid && this.form.controls.password.value != '') {
-      return false
-    }
 
-    return true;
-  }
+
 
 
 

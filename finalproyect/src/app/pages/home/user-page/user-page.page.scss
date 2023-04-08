@@ -1,49 +1,102 @@
 
 
-.card {
-    margin: 0 auto;
+ion-header{
+    --background: #fef1ee;
+    ion-toolbar{
+        --background: #fef1ee;
+    }
 
-    .header {
-        height: 200px;
-
-        .avatar {
-            width: 160px;
-            height: 160px;
-            position: relative;
-            margin: 0 auto;
-
-            img {
-                display: block;
-                border-radius: 50%;
-                position: absolute;
-                bottom: calc(-1*(80px + 4px));
-                border: 8px solid #9Dc912;
-                background-color: #fff;
-            }
+}
+ion-content{
+ --background: #fef1ee;
+ .profile-pic{
+        
+    width: 150px;
+      height: 150px;
+      margin-left: 30%;
+      margin-top:10%;
+      border-radius: 1000px;
+      border: 1px solid hsl(0, 0%, 86%);
+        
+        
+        img{
+            
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            
         }
     }
-}
-
-.card-body {
-    background-color: #ffffff;
-    padding: 30px;
-    height: calc(100vh - (200px + 56px));
-    overflow: hidden;
-
-    .user-meta {
-        padding-top: 40px;
-
-        .playername {
-            font-size: 24px;
-            font-weight: 600;
-            color: #303940;
+    
+    
+    .profile-stars  li {
+        font-size: 16px;
+        font-weight: 400;
+        margin-right: 40px;
+      }
+      .profile-stars li span {
+        font-weight: 600;
+        color:var(--ion-color-lettering)
+      }
+      .profile-stars  ul {
+        display: flex;
+        list-style: none;
+        margin-left:30px;
+      }
+    
+      .profile-bio{
+        h1,p{
+            color:var(--ion-color-lettering)
         }
+        font-size: 20px;
+        text-align: center;
+      }
+    
+}  
+ 
+ .event-section{
+    
+        height: 45vh;
+        width: 100%;
+        max-width: 500px;
+        background: #fefefe;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: fixed;
+        margin: auto;
+        border-top-right-radius: 46px;
+        border-top-left-radius: 46px;
+    } 
+    ion-segment{
+        height:40px;
+        --background: linear-gradient(90deg,
+        rgba(254,232,230,1) 0%,
+        rgba(246,230,254,1) 100%);
+       
+       ion-segment-button{
+        font-size: 15px;
+        text-align: center;
+        font-weight: bold;
+       } 
 
-        .country {
-            font-size: 90%;
-            color: #949ea6;
-            text-transform: uppercase;
-            margin: 0 auto;
-        }
+       //Cambiar cuando esté seleccionado
+       ion-segment-button::part(indicator-background) {
+        border-radius: 20px;
+        background: #3d2073;
+       
+      }
+      ion-segment-button::part(native) {
+        color:  #3d2073;
+      }
+      //cambiar el color de la letra cuando esté seleccionado
+      .segment-button-checked::part(native) {
+        color: var(--ion-color-secondary);
+      }
+
+      
+
     }
-}
+    
+   
+

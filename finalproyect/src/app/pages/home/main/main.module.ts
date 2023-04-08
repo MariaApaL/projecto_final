@@ -8,6 +8,7 @@ import { MainPageRoutingModule } from './main-routing.module';
 
 import { MainPage } from './main.page';
 import { ComponentsModule } from "../../../components/components.module";
+import { SwiperModule } from 'swiper/angular';
 
 @NgModule({
     declarations: [MainPage],
@@ -16,7 +17,8 @@ import { ComponentsModule } from "../../../components/components.module";
         FormsModule,
         IonicModule,
         MainPageRoutingModule,
-        ComponentsModule
+        ComponentsModule,
+        SwiperModule
     ]
 })
 export class MainPageModule {}
