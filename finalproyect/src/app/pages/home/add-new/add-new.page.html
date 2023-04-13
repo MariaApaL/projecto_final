@@ -13,7 +13,7 @@
     <form id="form" [formGroup]="form">
     <!-- SUBIR FOTOS -->
       <ion-item>
-      <ion-label position="stacked">Subir foto</ion-label>
+      <ion-label position="floating">Subir foto</ion-label>
       <ion-input type="file"></ion-input>
     </ion-item>
     <!-- NOMBRE DEL EVENTO -->
@@ -35,12 +35,12 @@
 
       <!-- NÚMERO DE PLAZAS -->
       <ion-item>
-        <ion-label position="stacked">Número de plazas</ion-label>
+        <ion-label position="floating">Número de plazas</ion-label>
         <ion-input formControlName="plazas" type="number"></ion-input>
       </ion-item>
       <!-- PRECIO DEL EVENTO -->
       <ion-item>
-        <ion-label position="stacked">Precio</ion-label>
+        <ion-label position="floating">Precio</ion-label>
         <ion-input formControlName="price" type="number"></ion-input>
       </ion-item>
 
@@ -48,7 +48,7 @@
      
       <!-- DESCRIPCIÓN DEL EVENTO -->
       <ion-item>
-        <ion-label position="stacked">Descripción</ion-label>
+        <ion-label position="floating">Descripción</ion-label>
         <ion-textarea maxLenght="300" formControlName="description"></ion-textarea>
       </ion-item>
 
@@ -63,15 +63,19 @@
  
         <!-- LUGAR DEL EVENTO -->
         <ion-item>
-          <ion-label position="stacked">Localización</ion-label>
-          <ion-input id="pac-input" formControlName="location" type="text"/> 
+          <ion-label position="floating">Localización</ion-label>
+          <ion-input type="text" placeholder="Search" formControlName="location" (ionChange)="search()"></ion-input>
+          </ion-item>
           
-        </ion-item>
-        
+          <ion-list>
+              <ion-item *ngFor="let prediction of predictions">
+                  {{ prediction.description }}
+              </ion-item>
+          </ion-list> 
    
      
     </form> 
-    <div id="map"></div>
+
     <ion-button  class="submit ion-margin-top" size="expand">Iniciar</ion-button>
   </ion-content>
 

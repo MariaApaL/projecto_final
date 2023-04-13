@@ -15,10 +15,8 @@ import { AuthService } from 'src/app/services/auth.service';
 export class SignupPage implements OnInit {
   public form: FormGroup;
 
-  login:boolean = true;
-
-  errorLog:string;
-  errorLogHidden:boolean = false;
+ //Para el icono del ojo en la contraseña
+  hide = false;
 
   
   

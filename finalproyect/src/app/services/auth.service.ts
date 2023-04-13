@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,8 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
 
   constructor(private http: HttpClient) { }
+
+
 
   private url = 'http://localhost:3300';
   headers = new HttpHeaders().set('Content-Type', 'application/json');

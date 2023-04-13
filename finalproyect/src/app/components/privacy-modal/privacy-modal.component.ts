@@ -11,6 +11,7 @@ export class PrivacyModalComponent implements OnInit {
 
   //recogemos el item que nos mandan desde el bottom-sheet-modal
   @Input() item: any;
+  
   constructor(
     private modalCtrl: ModalController,
     private auth: AuthService,
@@ -22,14 +23,12 @@ export class PrivacyModalComponent implements OnInit {
   options = [
     { icon: "lock-open-outline", label: 'Cambiar Contraseña', redirectTo: '' },
     { icon: "mail-outline", label: 'Cambiar Email', redirectTo: '' },
+    { icon: "mail-outline", label: 'Cambiar Usuario', redirectTo: '' },
   ];
   
   closeModal() {
     this.modalCtrl.dismiss();
   }
-
-
-  
 
    //Función para mostrar una alerta solo cuando el usuario quiere borrar la cuenta
    delete(){

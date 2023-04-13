@@ -1,0 +1,25 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ item.label }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-icon name="close-outline" (click)="closeModal()"></ion-icon>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-icon name="checkmark-outline" color="tertiary" (click)="saveChanges()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input [(ngModel)]="name" (ionChange)="onNameChange($event)" maxLenght="30"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Biografía</ion-label>
+      <ion-input [(ngModel)]="bio" (ionChange)="onBioChange($event)" maxLenght="38"></ion-input>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

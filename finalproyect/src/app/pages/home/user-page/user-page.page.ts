@@ -31,6 +31,19 @@ export class UserPagePage implements OnInit {
   
     
   }
+
+  ionViewDidEnter() {
+    this.auth.getUser().subscribe({
+      next: (data) => {
+        this.currentUser = data;
+        console.log(this.currentUser);
+        console.log(data);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
   
 
   async openModal() {

@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { AbstractType, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Marker } from 'src/app/interfaces/marker';
-//Declaramos la variable google para usar googlemaps
+
 declare let google: any;
 
 @Component({
@@ -18,14 +18,21 @@ export class AddNewPage implements OnInit {
   defaultDate
   checkbox: any[] = [];
   map: any;
-  autocomplete: any;
- place: any;
+
+  //para recoger la localización
+  inputPlace: any;
+  //array de las predicciones
+  places: any[] = [];
+
+  location: any;
+
+  autocompleteService: any;
 
 
   ngOnInit() {
     this.defaultDate = new Date().toISOString();
     // this.loadMap();
-    this.loadSearchBox();
+
     // this.checkbox = [
     //   { label: 'Artes', value: 'artes', checked: false },
     //   { label: 'Deportes', value: 'deportes', checked: false },
@@ -44,11 +51,12 @@ export class AddNewPage implements OnInit {
   constructor(
     private datePipe: DatePipe
   ) {
+    
 
     this.form = new FormGroup({
       eventname: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
       date: new FormControl('', [Validators.required]),
-      location: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      location: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.maxLength(300)]),
       plazas: new FormControl('', [Validators.required]),
       price: new FormControl('', [Validators.required, Validators.min(0)]),
@@ -85,29 +93,25 @@ export class AddNewPage implements OnInit {
 
   // }
 
-  loadSearchBox() {
-    const input: HTMLElement = document.getElementById('pac-input');
-    console.log(input);
-    const options = {
-      fields: ["formatted_address", "geometry", "name"],
-      strictBounds: false,
-      types: ["establishment"],
-    }
-    let infowindow = new google.maps.InfoWindow();
-    let autocomplete = new google.maps.places.Autocomplete(input,options);
+  predictions: any[];
 
-    google.maps.event.addListener(autocomplete, 'place_changed', function() {
-      infowindow.close();
-     
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        return;
+  search() {
+    const query = this.form.get('location').value;
+    if (query) {
+      this.autocompleteService.getPlacePredictions({
+        input: query
+      }, (predictions: any) => {
+        this.predictions = predictions;
+      });
     }
-    console.log(place);
-    autocomplete = place;
-    })
-  };
+  }
 
+
+
+  selectPlace(place) {
+    this.inputPlace = place.description;
+    this.places = [];
+  }
 
 
 

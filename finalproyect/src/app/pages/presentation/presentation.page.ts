@@ -23,13 +23,7 @@ export class PresentationPage implements OnInit {
   constructor(
     private navCtrl: NavController,  
     private auth: AuthService) { 
-     
-    }
-    
-  
-  ngOnInit() {
-
-    //Si el usuario esta ya loggeado, se redirige a la pagina principal
+      //Si el usuario esta ya loggeado, se redirige a la pagina principal
     
     const usuario = localStorage.getItem('userId');
     
@@ -49,6 +43,13 @@ export class PresentationPage implements OnInit {
         }
       });
     }
+     
+    }
+    
+  
+  ngOnInit() {
+
+    
     
 
     this.slides= [

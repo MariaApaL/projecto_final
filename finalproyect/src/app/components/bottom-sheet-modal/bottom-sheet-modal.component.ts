@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PrivacyModalComponent } from '../privacy-modal/privacy-modal.component';
+import { EditModalComponent } from '../edit-modal/edit-modal.component';
 
 
 @Component({
@@ -34,8 +35,10 @@ export class BottomSheetModalComponent implements OnInit {
     if (item.label === 'Cerrar Sesión') {
       this.logOut(item);
     }else if(item.label === 'Privacidad'){
-      this.openModal(item);
+      this.openPrivateModal(item);
       console.log('Privacidad')
+    }else{
+      this.openEditModal(item);
     }
   }
 
@@ -51,7 +54,8 @@ export class BottomSheetModalComponent implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
-            console.log('Confirm Cancel: blah');
+            this.modalCtrl.dismiss();
+            console.log('Confirm Cancel');
           }
         }, {
           text: 'Sí',
@@ -74,8 +78,9 @@ export class BottomSheetModalComponent implements OnInit {
       this.presentAlert();
   }
 
-  //Funcion para abrir el modal
-  async openModal(item) {
+  //Funcion para abrir el modal de privacidad
+  async openPrivateModal(item) {
+    this.modalCtrl.dismiss();
     const modal = await this.modalCtrl.create({
       component: PrivacyModalComponent,
       componentProps: {
@@ -85,6 +90,17 @@ export class BottomSheetModalComponent implements OnInit {
     return await modal.present();
   }
 
+   //Funcion para abrir el modal de editar perfil
+   async openEditModal(item) {
+    this.modalCtrl.dismiss();
+    const modal = await this.modalCtrl.create({
+      component: EditModalComponent,
+      componentProps: {
+        item: item
+      }
+    });
+    return await modal.present();
+  }
 
 
 

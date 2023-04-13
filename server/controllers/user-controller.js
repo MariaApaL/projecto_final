@@ -141,7 +141,7 @@ exports.updateUser = async (req, res) => {
     if (upUser || upEmail) {
       const userExists = await User.findOne({ $or: [{ user: fieldsToUpdate.user }, { email: fieldsToUpdate.email }], _id: { $ne: userId } });
       if (userExists) {
-        return res.status(409).send({ message: "Nombre de usuario o correo electrónico ya está en uso" });
+        return res.status(409).send({ message: "Usuario ya está en uso, intentelo de nuevo" });
       }
     }
     
@@ -236,6 +236,7 @@ exports.getUser = async (req, res) => {
     return res.status(500).send({ message: "Error interno del servidor" });
   }
 };
+
 // exports.getUser = async (req, res) => {
 //   try {
 //     // Verificar el token de acceso antes de permitir el acceso al controlador
