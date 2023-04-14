@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
   selector: 'app-privacy-modal',
   templateUrl: './privacy-modal.component.html',
   styleUrls: ['./privacy-modal.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PrivacyModalComponent implements OnInit {
 
@@ -23,7 +24,7 @@ export class PrivacyModalComponent implements OnInit {
   options = [
     { icon: "lock-open-outline", label: 'Cambiar Contraseña', redirectTo: '' },
     { icon: "mail-outline", label: 'Cambiar Email', redirectTo: '' },
-    { icon: "mail-outline", label: 'Cambiar Usuario', redirectTo: '' },
+    { icon: "person-outline", label: 'Cambiar Usuario', redirectTo: '' },
   ];
   
   closeModal() {

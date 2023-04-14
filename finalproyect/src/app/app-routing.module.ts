@@ -36,7 +36,11 @@ const routes: Routes = [
     path: 'home-admin',
     loadChildren: () => import('./pages/home-admin/home-admin.module').then( m => m.HomeAdminPageModule),
     
+  },  {
+    path: 'edit-profile',
+    loadChildren: () => import('./pages/edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
   }
+
 ];
 @NgModule({
   imports: [

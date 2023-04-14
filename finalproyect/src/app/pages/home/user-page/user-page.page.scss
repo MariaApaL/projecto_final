@@ -7,6 +7,12 @@ ion-header{
     }
 
 }
+
+.config-icon{
+    font-size: 30px;
+    font-weight: bold;
+    color:var(--ion-color-tertiary)
+}
 ion-content{
  --background: #fef1ee;
  .profile-pic{

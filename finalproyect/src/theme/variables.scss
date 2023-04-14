@@ -1,5 +1,19 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
+ // this one I used for my app
+
+
+$font-family-base: 'MyFont';
+$font-family-md-base: 'MyFont';
+$font-family-ios-base: 'MyFont';
+$font-family-wp-base: 'MyFont';
+$font-size-base:  14px;
+@font-face {
+  font-family: 'MyFont';
+  src: url('/assets/fonts/Aceh-Medium.ttf');
+}
+
+$font-family-base: 'MyFont';
 
 /** Ionic CSS Variables **/
 :root {

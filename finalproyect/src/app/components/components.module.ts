@@ -7,7 +7,7 @@ import { BottomSheetModalComponent } from './bottom-sheet-modal/bottom-sheet-mod
 import { FormsModule } from '@angular/forms';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
-import { EditModalComponent } from './edit-modal/edit-modal.component';
+
 
 
 
@@ -20,7 +20,7 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
     PrivacyModalComponent,
     BottomSheetModalComponent,
     ErrorMessageComponent,
-    EditModalComponent
+
    
     
 
@@ -39,7 +39,7 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
     BottomSheetModalComponent,
     ErrorMessageComponent,
     PrivacyModalComponent,
-    EditModalComponent
+   
    
     
 

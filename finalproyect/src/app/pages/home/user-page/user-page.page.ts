@@ -58,6 +58,7 @@ export class UserPagePage implements OnInit {
     await modal.present();
   }
 
+  //Cambia entre favoritos y mis eventos
   segmentChanged(event:any){
     const chose = event.detail.value;
 

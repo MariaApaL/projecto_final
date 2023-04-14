@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'finalproyect',
+  appId: 'com.maria.apa.cat',
+  appName: 'GOut',
   webDir: 'www',
   bundledWebRuntime: false
 };
