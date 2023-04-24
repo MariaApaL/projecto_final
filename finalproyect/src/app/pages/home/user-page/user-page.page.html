@@ -1,0 +1,98 @@
+<!-- https://www.behance.net/gallery/93884721/Event-App 
+https://www.behance.net/search/projects/?search=event+app-->
+
+
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>
+      {{currentUser.user}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openModal()">
+        <ion-icon class="config-icon" name="cog-outline"></ion-icon>
+      </ion-button>
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <!-- USER PROFILE -->
+  <div class="profile-pic">
+    <img src="../../../../assets/persons/person4.svg" alt="">
+
+  </div>
+  <div class="profile-stars">
+      <ul>
+        <li><span>0/5</span> Calificación</li>
+        <li><span>{{eventCount}}</span> Eventos</li>
+      </ul>
+    </div>
+  
+  <div class="profile-bio">
+    <h1>{{currentUser.name}}</h1>
+    <p>{{currentUser.bio}}</p>
+    </div>
+
+    
+   <!-- SEGMENTO DE MEGUSTA Y MIS EVENTOS --> 
+    <div class="event-section">  
+    <ion-segment value="events" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="my-favs">
+        
+          
+          <ion-icon name="heart"></ion-icon>
+        
+      </ion-segment-button>
+      <ion-segment-button value="my-events">
+        <ion-icon name="albums-outline"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+<!-- FIN DEL SEGMENTO DE MEGUSTA Y MIS EVENTOS -->
+
+<!--EVENTOS -->
+    <ion-row class="ion-text-left" *ngIf="!isFav">
+      <ng-container *ngFor="let event of myEvents">
+        <ion-col size="6">
+      <ion-card>
+        <ion-card-header class="ion-no-padding">
+          <img src="../../../../assets/events/event1.svg" />
+        </ion-card-header>
+
+        <ion-card-content>
+          <p class="date">{{ event.date | date:'dd MMM, yyyy HH:mm' }}</p>
+          <h2 class="eventname">{{ event.name }}</h2>
+          <p class="location"><ion-icon name="location"></ion-icon>{{ event.location }}</p>
+
+          <div class="additional-info">
+            <!-- <div class="attendees">
+              <img src="../../../../assets/persons/person1.svg" />
+              <img src="../../../..//assets/persons/person2.svg" />
+              <img src="../../../../assets/persons/person3.svg" />
+              <img src="../../../../assets/persons/person4.svg" />
+              <div class="count">
+                <img src="../../../../assets/persons/person-placeholder.svg" />
+
+                <p>+7</p>
+              </div>
+            </div> -->
+
+            <p class="time">{{event.numPlazas}} Plazas</p>
+          </div>
+          <div class="event-buttons">
+            <ion-button class="delete-button" slot="end" (click)="deleteEvent(event.name,userId)">
+             <ion-icon name="trash-outline" slot="icon-only"/></ion-button>
+            <ion-button class="edit-button" slot="end"  (click)="editEvent(userId)">
+            <ion-icon name="pencil-outline" slot="icon-only"/>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      </ion-col>
+      </ng-container>
+    </ion-row>
+  </div>
+</ion-content>
+
+

@@ -1,0 +1,23 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar >
+    <ion-title class="profile-title">Editar Perfil</ion-title>
+    <ion-buttons class="close-button" (click)="navigateback()" slot="start">
+      <ion-icon  class="close-icon" name="close-outline" ></ion-icon>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input [(ngModel)]="name" (ionChange)="onNameChange($event)" maxLenght="30"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Biografía</ion-label>
+      <ion-input [(ngModel)]="bio" (ionChange)="onBioChange($event)" maxLenght="38"></ion-input>
+    </ion-item>
+  </ion-list>
+<ion-button expand="block" (click)="saveChanges()" class="ion-padding"> Confirmar </ion-button>
+</ion-content>

@@ -1,5 +1,5 @@
 
-const palabrasProhibidas = require("../config/badword")
+const badWords = require("../config/badword")
 const moment = require('moment')
 const db = require("../models");
 const User = db.user;
@@ -7,45 +7,67 @@ const Event = db.event;
 const Category = db.category;
 
 
-function checkWords(...args) {
-  for (let i = 0; i < palabrasProhibidas.length; i++) {
-    if (args[i].toUpperCase().includes(palabrasProhibidas[i].toLocaleUpperCase()))
-      return res.status(400).send({ message: "Error, palabras prohibidas" });
+function checkBadWord(texto, badWords) {
+  return badWords.some(palabra => texto.includes(palabra));
+}
+
+function checkNegative(price, plaza) {
+  if (price < 0 || plaza < 0) {
+    throw new Error("Error, no puede ser negativo");
   }
 }
 
-function checkPrice(price){
-  if(price < 0){
-    return res.status(400).send({ message: "Error, el precio no puede ser negativo" });
-  }
+function validateDate(dateString) {
+  const today = new Date();
+  const oneYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+  const date = new Date(dateString);
+  // if(date <= today || date >= oneYear){
+  //   return false;
+  // }else {
+  //   return true;
+  // }
+  return date > today && date < oneYear;
+  
 }
+
 
 exports.createEvent = async (req, res) => {
   try {
-    const { name, date, location, author, picture, numPlazas, description , price } = req.body;
-    
-    
+    const { name, date, location, author, picture, numPlazas, description, price } = req.body;
 
-    // Comprobar si el usuario existe
-    const existingAuthor = await User.findOne({ _id: author });
-    if (!existingAuthor) {
-      return res.status(400).send({ message: "Error, el usuario especificado no existe" });
+   
+    // Comprobar si contiene palabras prohibidas
+   
+    if(checkBadWord(name, badWords) || checkBadWord(description, badWords)){
+      return res.status(400).send({ message: "Error , utilice otro vocabulario" });
+    }
+    //comprueba que no sea negativo
+    
+    try {
+      checkNegative(price, numPlazas);
+    } catch (err) {
+      return res.status(400).send({ message: err.message });
+    }
+   
+    const newDate = validateDate(date);
+    if (!newDate) {
+      return res.status(400).send({ message: "Error, la fecha no es válida" });
+    }
+    
+    const existingEvent = await Event.findOne({ author: author, date: date });
+    if (existingEvent) {
+      return res.status(400).send({ message: "Error, ya tienes un evento en esa fecha" });
+
     }
 
-    // Comprobar si contiene palabras prohibidas
-    checkWords(name, description);
-    //comprueba que no sea negativo
-    checkPrice(price);
-
-    const moment = require("moment");
-
-    const newDate = moment(date, "DD-MM-YYYY").toDate();
+   
+  
     const newEvent = new Event({
       name: name.toLowerCase(),
-      date: newDate,
+      date: date,
       location: location,
       picture: picture,
-      author: existingAuthor,
+      author: author,
       numPlazas: numPlazas,
       description: description.toLowerCase(),
       price: price,
@@ -98,6 +120,10 @@ exports.updateEvent = async (req, res) => {
     const categoryIds = foundCategories.map(c => c._id);
 
     const newDate = moment(date, "DD-MM-YYYY").toDate();
+    // Comprobar si contiene palabras prohibidas
+    checkWords(name, description);
+    //comprueba que no sea negativo
+    checkNegative(price, numPlazas);
 
     const updateEvent = {
       name: name,
@@ -108,7 +134,7 @@ exports.updateEvent = async (req, res) => {
       price: price,
       description: description,
       categories: categoryIds,
-      
+
     };
 
     const newEvent = await Event.findByIdAndUpdate(eventId, updateEvent, { new: true });
@@ -119,7 +145,7 @@ exports.updateEvent = async (req, res) => {
   }
 };
 
-exports.deleteEvent = async (req, res) => {
+exports.deleteByEventId = async (req, res) => {
   try {
     const eventId = req.params.id;
     await Event.findByIdAndDelete(eventId);
@@ -132,10 +158,23 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
+exports.deleteEventByNameAndAuthor = async (req, res) => {
+  try {
+    const { name, author } = req.body;
+    const evento = await Event.findOneAndDelete({ name, author });
+    if (!evento) {
+      return res.status(404).send({ message: "Evento no encontrado" });
+    }
+    res.send({ message: "Evento eliminado exitosamente" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
 exports.getEventCategory = async (req, res) => {
   const { category } = req.params;
 
- 
+
   try {
     const foundCategory = await Category.findOne({ type: category });
 
@@ -153,11 +192,11 @@ exports.getEventCategory = async (req, res) => {
   }
 };
 
-exports.getEventAuthor = async (req, res) => {
-  const { author } = req.params.id;
-
+exports.findEventsByAuthorId = async (req, res) => {
+  // const { author } = req.params.id;
+  const { id } = req.params;
   try {
-    const foundAuthor = await User.findOne({ id: author });
+    const foundAuthor = await User.findOne({ _id: id });
 
     if (!foundAuthor) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -170,6 +209,8 @@ exports.getEventAuthor = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
 
 exports.getEventDate = async (req, res) => {
   const { date } = req.body;
@@ -225,7 +266,7 @@ exports.getEventPrice = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-  
+
 
 
 };

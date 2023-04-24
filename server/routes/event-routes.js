@@ -17,10 +17,10 @@ module.exports = function(app) {
 
   app.post(
     "/createEvent",
-    // [
-    //   verifyEvent.checkIfEventExists,
+    [
+      verifyEvent.checkIfEventExists,
       
-    // ],
+    ],
     controller.createEvent
   );
   
@@ -37,7 +37,9 @@ module.exports = function(app) {
 
    // ruta DELETE para eliminar un event
 
- app.delete("/deleteEvent/:id", controller.deleteEvent);
+ app.delete("/deleteByEventId/:id", controller.deleteByEventId);
+
+ app.delete("/deleteEventByNameAndAuthor", controller.deleteEventByNameAndAuthor);
 
 
   // ruta GET para obtener evento por category
@@ -53,7 +55,7 @@ module.exports = function(app) {
     app.get("/getEventPlace",controller.getEventPlace);
 
    //ruta GET para obtener eventos por autor
-   app.get("/getEventAuthor/:id",controller.getEventAuthor);
+   app.get("/findEventsByAuthorId/:id",controller.findEventsByAuthorId);
 
       //ruta GET para obtener eventos según palabras buscadas en nombre o descripcion
     app.get("/getEventWords",controller.getEventWords);

@@ -1,0 +1,108 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/presentation"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/login']">Iniciar Sesión</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="regis-section">
+    <div class="heading ion-padding">
+      <h1>¡Empieza a descubrir!</h1>
+    </div>
+
+    <div class="regis-form">
+
+      <form id="form" [formGroup]="form">
+        <!-- ITEM USER NAME-->
+        <ion-item>
+          <ion-label position="floating">Usuario</ion-label>
+          <ion-input formControlName="user" maxlength="20" type="text"></ion-input>
+        </ion-item>
+
+        <!-- CONTROL DE ERRORES  -->
+ 
+        <app-error-message class="validator" [field]="form.controls.user" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.user" [valid]="true" message="Formato errorneo"></app-error-message>
+       
+        <!-- ITEM Nombre -->
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input formControlName="name" maxlength="30" type="text"></ion-input>
+        </ion-item>
+
+        <!-- CONTROL DE ERRORES -->
+       
+          <app-error-message class="validator" [field]="form.controls.name" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+          <app-error-message class="validator" [field]="form.controls.name" [valid]="true"
+            message="Formato errorneo"></app-error-message>
+   
+        <!-- ITEM EMAIL -->
+        <ion-item>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input formControlName="email" type="email"></ion-input>
+        </ion-item>
+        <!-- CONTROL DE ERRORES -->
+   
+          <app-error-message class="validator" [field]="form.controls.email" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+          <app-error-message class="validator" [field]="form.controls.email" [valid] message="Formato errorneo"></app-error-message>
+      
+
+        <!-- ITEM CONTRASEÑA -->
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input formControlName="password" [type]="passwordType">
+          </ion-input>
+
+          <ion-button slot="end" (click)="passwordOn()">
+            <ion-icon id="eye-icon" [name]="passwordIcon"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <!-- CONTROL DE ERRORES  -->
+       
+        <app-error-message class="validator" [field]="form.controls.password" [empty]="true"
+          message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.password" [valid]="true"
+          message="Debe tener min 8 caracteres, 1 caracter especial y 1 mayúscula"></app-error-message>
+        
+
+         <!-- ITEM REPETIR CONTRASEÑA  -->
+         <ion-item>
+
+          <ion-label position="floating">Repetir Contraseña</ion-label>
+          <ion-input formControlName="rpassword" [type]="passwordType">
+          </ion-input>
+
+          <ion-button slot="end" (click)="passwordOn()">
+            <ion-icon id="eye-icon" [name]="passwordIcon"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <!-- CONTROL DE ERRORES  -->
+        <app-error-message class="validator" [field]="form.controls.password" [empty]="true"
+          message="Campo Obligario"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.password" [fieldExtra]="form.controls.rpassword" [samepass]="true"
+          message="No coinciden"></app-error-message>
+          
+  
+          <ion-button class="submit ion-padding" [disabled]="!this.form.valid" expand="block" (click)="onRegister()">Registrar</ion-button>
+
+          <!-- <ion-list lines="none">
+            <ion-item>
+             <span>Recordarme siempre</span>
+             <ion-toggle slot="end" color="" [checked]="true"></ion-toggle>
+           </ion-item>
+           </ion-list> -->
+
+      </form>
+    </div>
+  </div>
+</ion-content>

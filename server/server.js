@@ -84,11 +84,9 @@ app.listen(PORT, () => {
         if (count === 0) {
           await Promise.all([
            
-            new Category({ type: "artes" }).save(),
+            new Category({ type: "cultura" }).save(),
             new Category({ type: "deportes" }).save(),
             new Category({ type: "gastronomia" }).save(),
-            new Category({ type: "educacion" }).save(),
-            new Category({ type: "aire_libre" }).save(),
             new Category({ type: "animales" }).save(),
             new Category({ type: "solidario" }).save(),
           ]);
