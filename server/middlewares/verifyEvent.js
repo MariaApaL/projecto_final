@@ -1,38 +1,37 @@
-// //comprueba si el evento existe.
-// const db = require("../models");
-// const User = db.user;
-// const Event = db.event;
+//comprueba si el evento existe.
+const db = require("../models");
+
+const Event = db.event;
+const User = db.user;
 
 
 
-// const checkIfEventExists = (req, res, next) => {
-//     const eventId = req.body._id;
+checkIfEventExists = (req, res, next) => {
+    Event.findOne({
+      name: req.body.name
+    }).exec()
+      .then(name => {
+        if (name) {
+          res.status(400).send({ message: `Error, el Evento con ese nombre ya existe` });
+          return;
+        }
+
+            next();
+      })
+      .catch(err => {
+        res.status(500).send({ message: err });
+        return;
+      });
+  };
   
-//     Event.findOne({
-//       id:req.body.id
-//     }).exec()
-//       .then(id => {
-//         if (id) {
-//           res.status(400).send({ message: `Error, el evento ya existe` });
-//           return;
-//         }
   
-//         next();
-//       })
-//       .catch(err => {
-//         res.status(500).send({ message: err });
-//         return;
-//       });
-     
-//   };
+  module.exports = checkIfEventExists;
+
+
+
+const verifyEvent = {
+    checkIfEventExists,
   
-//   module.exports = checkIfEventExists;
+};
 
-
-
-// const verifyEvent = {
-//     checkIfEventExists,
-  
-// };
-
-// module.exports = verifyEvent;
+module.exports = verifyEvent;

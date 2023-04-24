@@ -95,17 +95,11 @@ export class LoginPage implements OnInit {
         localStorage.setItem('userId', res.id);
         
         //Guardamos el rol del usuario en el localStorage
-       const rol =  localStorage.setItem('userRole', res.roles);
+       localStorage.setItem('userRole', res.roles);
 
-        console.log(res);
-        // Guardamos el rol del usuario en el localStorage
-        this.auth.getUser().subscribe(user => {
-          this.roles = user.roles;
-        });
-
-        console.log(this.roles)
-
-        if (this.roles.includes("ROLE_ADMIN")) {
+       const rol = localStorage.getItem('userRole');
+     
+        if (rol.includes("ROLE_ADMIN")) {
 
           this.router.navigate(['/home-admin'], { replaceUrl: true });
         } else {

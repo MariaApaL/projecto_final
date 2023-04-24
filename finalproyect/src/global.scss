@@ -55,6 +55,20 @@
   font-family: 'MyFont', sans-serif !important;
 }
 
+ion-datetime {
+  --background: linear-gradient(90deg,
+  rgba(254,232,230,1) 0%,
+  rgba(246,230,254,1) 100%);
+ color:var(--ion-color-tertiary);
+ --ion-text-color:var(--ion-color-tertiary);
+}
+
+
+
+
+ion-select-option{
+    font-size:20px;
+}
 
 
 

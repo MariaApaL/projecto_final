@@ -1,0 +1,52 @@
+<!-- 
+<ion-header class="ion-no-border">
+  <ion-toolbar >
+    <ion-title class="profile-title">Editar Evento</ion-title>
+    <ion-buttons class="close-button" (click)="navigateback()" slot="start">
+      <ion-icon  class="close-icon" name="close-outline" ></ion-icon>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input [(ngModel)]="name" (ionChange)="onNameChange($event)" maxLenght="40"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-input [(ngModel)]="description" (ionChange)="onBioChange($event)" maxLenght="300"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Número de Plazas</ion-label>
+      <ion-input [(ngModel)]="numPlazas" (ionChange)="onBioChange($event)"maxLenght="3" ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Precio</ion-label>
+      <ion-input [(ngModel)]="price" (ionChange)="onBioChange($event)" maxLenght="3"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select  placeholder="Elige una Categoría" [(ngModel)]="category" (ionChange)="onCategoryChange()">
+        <ion-select-option *ngFor="let category of categories" value={{category.value}}>{{category.label}}</ion-select-option>
+  
+      </ion-select>
+    </ion-item>
+    <ion-item class="date-item">
+      <ion-label >Fecha</ion-label>
+      <ion-datetime-button datetime="datetime"></ion-datetime-button>
+
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime locale="es-ES" 
+         [(ngModel)]="date" id="datetime"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+      </ion-item>  
+    <ion-item>
+      <ion-label position="floating">Ubicación</ion-label>
+      <ion-input [(ngModel)]="location" (ionChange)="onBioChange($event)"></ion-input>
+    </ion-item>
+  </ion-list>
+<ion-button expand="block" (click)="saveChanges()" class="ion-padding"> Confirmar </ion-button>
+</ion-content> -->

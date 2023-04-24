@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -17,38 +18,25 @@ export class PresentationPage implements OnInit {
   content?: string;
   bannerConfig!: SwiperOptions;
   featureConfig!: SwiperOptions;
+  rol = localStorage.getItem('userRole');
  
-  roles: string[] = [];
+
 
   constructor(
+    private router: Router,
     private navCtrl: NavController,  
     private auth: AuthService) { 
       //Si el usuario esta ya loggeado, se redirige a la pagina principal
     
-    const usuario = localStorage.getItem('userId');
+      this.checkRole(this.rol);
+  
+    } 
     
-    if (usuario) {
-      this.auth.getUser().subscribe({
-        next: user => {
-          this.roles = user.roles;
-          if (this.roles.includes('ROLE_ADMIN')) {
-            this.navCtrl.navigateForward(['/home-admin']);
-          } else {
-            this.navCtrl.navigateForward(['/home/main']);
-          }
-          console.log(this.roles);
-        },
-        error: err => {
-          console.error(err);
-        }
-      });
-    }
      
-    }
     
   
   ngOnInit() {
-
+    
     
     
 
@@ -74,4 +62,23 @@ export class PresentationPage implements OnInit {
   goToLogin(){
     this.navCtrl.navigateForward("/login");
   }
+
+
+  checkRole(rol: string) {
+   
+
+    if(rol != null){
+     
+    if (rol.includes("ROLE_ADMIN")) {
+
+      this.router.navigate(['/home-admin'], { replaceUrl: true });
+    } else {
+
+      this.router.navigate(['/home/main'], { replaceUrl: true }); //Replace url borra el historial para evitar errores de navegacion
+    }
+  }else{
+    this.router.navigate(['/login'], { replaceUrl: true });
+  }
+  }
 }
+

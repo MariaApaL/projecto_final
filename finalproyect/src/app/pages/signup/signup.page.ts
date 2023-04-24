@@ -74,10 +74,10 @@ export class SignupPage implements OnInit {
     const rpassword = this.form.controls.rpassword.value.trim();
     const name = this.form.controls.name.value.trim();
     const email = this.form.controls.email.value.trim().toLowerCase();
-     
     this.auth.register(user, name, password, email).subscribe({
       next: res => {
-        console.log(res);
+        console.log(res); 
+        this.loginUser(name, password);
         this.auth.logOut();
         this.router.navigate(['/home/main'], {replaceUrl:true});
       },
@@ -101,7 +101,27 @@ export class SignupPage implements OnInit {
     });
     await alert.present();
     const{ role }= await alert.onDidDismiss();
-    console.log('onDismiss resolved with role', role);
+   
+  }
+
+  loginUser(user:string,password:string){
+    
+        this.auth.login(user, password).subscribe({
+          next: res => {
+
+         // Guardamos el token en el localStorage
+         localStorage.setItem('token', res.accessToken);
+         // Guardamos el rol del usuario en el localStorage
+          localStorage.setItem('userRole', res.role);
+        
+         // Guardamos el id del usuario en el localStorage
+         localStorage.setItem('userId', res.id);
+          },
+          error: err => {
+              
+            console.error(err);
+          }
+        })
   }
 
   loginDisabled(){

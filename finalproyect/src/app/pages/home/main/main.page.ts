@@ -20,10 +20,11 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.categories = [      
-      { id: 1, name: 'Camp' },
-      { id: 2, name: 'Mountains' },
-      { id: 3, name: 'Treking' },
-      { id: 4, name: 'Lake' },
+      { id: 1, name: 'Cultura' },
+      { id: 2, name: 'Deportes' },
+      { id: 3, name: 'Gastronomía' },
+      { id: 4, name: 'Animales' },
+      { id: 4, name: 'Solidario' }
     ];
   }
 

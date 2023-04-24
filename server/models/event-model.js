@@ -15,15 +15,17 @@ const eventSchema = new mongoose.Schema({
     ],
     date: {
         type: Date,
-        required: [true, 'Por favor, introduzca la fecha del evento en formato dd-mm-yyyy'],
-        validate: {
-            validator: function (v) {
-                const now = new Date();
-                const max = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
-                return v >= now && v <= max;
-            },
-            message: props => `${props.value} no está dentro del rango de fechas permitido`
-        }
+        required: [true, 'Por favor, introduzca la fecha del evento'],
+        // validate: {
+        //     validator: function (v) {
+        //         const now = new Date();
+        //         const max = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+        //         return v >= now && v <= max;
+        //     },
+          
+        // }
+        
+      
     },
     location: {
         type: String,

@@ -4,9 +4,10 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { SwiperComponent, SwiperModule } from 'swiper/angular';
 import { BottomSheetModalComponent } from './bottom-sheet-modal/bottom-sheet-modal.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
+import { CreateEventModalComponent } from './create-event-modal/create-event-modal.component';
 
 
 
@@ -20,6 +21,8 @@ import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
     PrivacyModalComponent,
     BottomSheetModalComponent,
     ErrorMessageComponent,
+    CreateEventModalComponent
+
 
    
     
@@ -31,6 +34,7 @@ import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
     IonicModule,
     FormsModule,
     SwiperModule,
+    ReactiveFormsModule
    
     
   ],
@@ -39,6 +43,8 @@ import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
     BottomSheetModalComponent,
     ErrorMessageComponent,
     PrivacyModalComponent,
+    CreateEventModalComponent
+    
    
    
     

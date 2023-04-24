@@ -1,4 +1,4 @@
-const palabrasProhibidas = [
+module.exports = [
     'puta',
     'puto',
     'coño',

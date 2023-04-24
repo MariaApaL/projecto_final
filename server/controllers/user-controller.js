@@ -1,5 +1,5 @@
 const config = require("../config/auth-config");
-const palabrasProhibidas = require("../config/badword")
+const badWords = require("../config/badword")
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
@@ -7,11 +7,11 @@ const Role = db.role;
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
 
-function checkWords(...args) {
-  for (let i = 0; i < palabrasProhibidas.length; i++) {
-    if (args[i].toUpperCase().includes(palabrasProhibidas[i].toLocaleUpperCase()))
-      return res.status(400).send({ message: "Error, palabras prohibidas" });
+function checkBadWord(texto, badWords) {
+  if (!texto) {
+    return false;
   }
+  return badWords.some(palabra => texto.includes(palabra));
 }
 
 
@@ -20,8 +20,10 @@ exports.signup = async (req, res) => {
 
     const { user, name, email, password, bio, picture } = req.body;
     //Busca si el nombre de usuario o el email contienen palabras incorrectas  
-    checkWords(user, name, email, bio);
-
+    if (checkBadWord(user, badWords) || checkBadWord(email, badWords)|| 
+    checkBadWord(name, badWords) || checkBadWord(bio, badWords)) {
+      return res.status(400).send({ message: "Error, elija otro vocabulario" });
+    }
 
     const hashPassword = await bcrypt.hash(password, 8);
     //controlamos que el nick y el email se creen como minuscula en la base de datos
@@ -37,9 +39,6 @@ exports.signup = async (req, res) => {
       picture: picture,
     });
 
-
-
-
     //Asigna el rol pero si no, se asigna user por defecto
     const role = req.body.roles ? await Role.find({ name: { $in: req.body.roles } }) : await Role.findOne({ name: 'user' });
 
@@ -47,8 +46,10 @@ exports.signup = async (req, res) => {
     await newUser.save();
 
 
-
-    res.send({ message: "¡Usuario registrado exitosamente!" });
+    res.send({ 
+      message: "¡Usuario registrado exitosamente!",
+      user: newUser 
+    });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -133,20 +134,26 @@ exports.updateUser = async (req, res) => {
 
     //console.log(fieldsToUpdate);
     const upUser = fieldsToUpdate.hasOwnProperty("user") ? fieldsToUpdate.user.toLowerCase() : null;
+    
     const upEmail = fieldsToUpdate.hasOwnProperty("email") ? fieldsToUpdate.email.toLowerCase() : null;
     const upName = fieldsToUpdate.hasOwnProperty("name") ? fieldsToUpdate.name.toLowerCase() : null;
+   console.log(upName);
     const upBio = fieldsToUpdate.hasOwnProperty("bio") ? fieldsToUpdate.bio.toLowerCase() : null;
 
     //comprobamos que el nuevo nombre de usuario o el nuevo email no esten en uso
     if (upUser || upEmail) {
       const userExists = await User.findOne({ $or: [{ user: fieldsToUpdate.user }, { email: fieldsToUpdate.email }], _id: { $ne: userId } });
       if (userExists) {
-        return res.status(409).send({ message: "Usuario ya está en uso, intentelo de nuevo" });
+        return res.status(409).send({ message: "ya está en uso, intentelo de nuevo" });
       }
     }
     
-    //comprobamos que el nuevo nombre de usuario o el nuevo email no contengan palabras prohibidas
-    checkWords(upUser, upName, upEmail, upBio);
+    // comprobamos que el nuevo nombre de usuario o el nuevo email no contengan palabras prohibidas
+
+    // if (checkBadWord(upUser, badWords) || checkBadWord(upName, badWords)|| 
+    // checkBadWord(upEmail, badWords) || checkBadWord(upBio, badWords)) {
+    //   return res.status(400).send({ message: "Error, palabras prohibidas" });
+    // }
 
     const updatedUser = await User.findByIdAndUpdate(userId, fieldsToUpdate, { new: true });
     res.send({ message: "Usuario actualizado con éxito", updatedUser });
@@ -208,19 +215,6 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-//Pone la propiedad de "deleted" en true para que no se pueda loguear el usuario
-exports.fakeDelete = async (req, res) => {
-  try {
-    const { user } = req.body;
-    const deletedUser = await User.findOneAndDelete({ user: user.toLowerCase() });
-    if (!deletedUser) {
-      return res.status(404).send({ message: "Usuario no encontrado" });
-    }
-    res.send({ message: "Usuario eliminado correctamente" });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-};
 
 exports.getUser = async (req, res) => {
   const token = req.headers["x-access-token"];

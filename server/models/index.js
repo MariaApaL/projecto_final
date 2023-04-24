@@ -14,6 +14,6 @@ db.category = require("./category-model");
 db.event = require("./event-model");
 
 db.ROLES = ["user", "admin"];
-db.CATEGORIES = [ "artes" , "deportes", "gastronomia", "educacion", "airel_libre" , "animales" , "solidario"]
+db.CATEGORIES = [ "artes" , "deportes", "gastronomia", "animales" , "solidario"]
 
 module.exports = db;

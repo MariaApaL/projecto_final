@@ -11,38 +11,46 @@ declare let google: any;
   styleUrls: ['./search.page.scss'],
 })
 export class SearchPage implements OnInit {
-
-
   address: string;
   lat: string;
-  long: string;  
+  long: string;
   autocomplete: { input: string; };
   autocompleteItems: any[];
   location: any;
   placeid: any;
   GoogleAutocomplete: any;
 
-  constructor(private formBuilder: FormBuilder, public zone: NgZone) {
+  constructor(
+    private formBuilder: FormBuilder,
+    public zone: NgZone
+  ) {
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.autocomplete = { input: '' };
     this.autocompleteItems = [];
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   UpdateSearchResults() {
     if (this.autocomplete.input == '') {
       this.autocompleteItems = [];
       return;
     }
-    this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input }, (predictions, status) => {
-      this.autocompleteItems = [];
-      this.zone.run(() => {
-        predictions.forEach((prediction) => {
-          this.autocompleteItems.push(prediction);
+    this.GoogleAutocomplete.getPlacePredictions(
+      {
+        input: this.autocomplete.input,
+        componentRestrictions: {
+          country: 'es'
+        }
+      },
+      (predictions, status) => {
+        this.autocompleteItems = [];
+        this.zone.run(() => {
+          predictions.forEach((prediction) => {
+            this.autocompleteItems.push(prediction);
+          });
         });
       });
-    });
   }
 
   ClearAutocomplete() {
@@ -50,20 +58,11 @@ export class SearchPage implements OnInit {
     this.autocomplete.input = ''
   }
 
-  SelectSearchResult(item) {
-    this.placeid = item.place_id;
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-    service.getDetails({ placeId: this.placeid }, (result) => {
-      this.zone.run(() => {
-        this.location = result;
-        this.address = this.location.formatted_address;
-        this.lat = this.location.geometry.location.lat();
-        this.long = this.location.geometry.location.lng();
-        console.log(this.address, this.lat, this.long);
-      });
-    });
+  SelectSearchResult(item: any) {
+    this.autocomplete.input = item.description;
+    console.log(item.description)
     this.autocompleteItems = [];
-    this.autocomplete.input = '';
+
   }
 
 }

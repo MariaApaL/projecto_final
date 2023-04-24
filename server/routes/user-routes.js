@@ -36,8 +36,6 @@ module.exports = function(app) {
 
   // ruta DELETE para eliminar un usuario
 
-  app.delete("/fakeDelete", controller.fakeDelete);
-
   app.delete("/deleteUser", controller.deleteUser);
 
   // ruta GET para obtener todos los usuarios

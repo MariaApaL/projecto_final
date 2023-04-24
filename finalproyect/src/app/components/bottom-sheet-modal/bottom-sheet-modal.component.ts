@@ -39,7 +39,8 @@ export class BottomSheetModalComponent implements OnInit {
       this.openPrivateModal(item)
     }else{
       this.modalCtrl.dismiss();
-      this.navCtrl.navigateForward('/edit-profile')
+      this.navCtrl.navigateRoot('/edit-profile');
+      // this.openEditModal(item)
      
     }
   }
@@ -92,6 +93,8 @@ export class BottomSheetModalComponent implements OnInit {
     });
     return await modal.present();
   }
+
+
 
 
 

@@ -1,82 +1,34 @@
-
-<ion-header>
-    <ion-toolbar>
-      <ion-title>
-        Nuevo Evento
-      </ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="white"  no-border>
+    <ion-title>
+      Nuevo Evento
+    </ion-title>
     </ion-toolbar>
-  </ion-header>
-  
-  <ion-content>
-    <!-- https://www.youtube.com/watch?v=-Lv647Sqq3I 
-    https://www.youtube.com/watch?v=-rrDc7jb4fw -->
-    <form id="form" [formGroup]="form">
-    <!-- SUBIR FOTOS -->
-      <ion-item>
-      <ion-label position="floating">Subir foto</ion-label>
-      <ion-input type="file"></ion-input>
-    </ion-item>
-    <!-- NOMBRE DEL EVENTO -->
-    <ion-item>
-      <ion-label position="floating">Nombre del evento</ion-label>
-      <ion-input formControlName="eventname" maxLength="40" type="text"></ion-input>
-    </ion-item>
-    <!-- FECHA DEL EVENTO  -->
-    <ion-item>
-      <ion-label>Fecha</ion-label>
-      <ion-datetime-button datetime="datetime"></ion-datetime-button>
+</ion-header>
 
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime formControlName="date" [(ngModel)]="date" id="datetime"></ion-datetime>
-        </ng-template>
-      </ion-modal>
-      </ion-item>
+<ion-content [fullscreen]="true">
+  <div class="banner">
+    <img src="../../../../assets/pictures/background2.png" />
 
-      <!-- NÚMERO DE PLAZAS -->
-      <ion-item>
-        <ion-label position="floating">Número de plazas</ion-label>
-        <ion-input formControlName="plazas" type="number"></ion-input>
-      </ion-item>
-      <!-- PRECIO DEL EVENTO -->
-      <ion-item>
-        <ion-label position="floating">Precio</ion-label>
-        <ion-input formControlName="price" type="number"></ion-input>
-      </ion-item>
-
- 
-     
-      <!-- DESCRIPCIÓN DEL EVENTO -->
-      <ion-item>
-        <ion-label position="floating">Descripción</ion-label>
-        <ion-textarea maxLenght="300" formControlName="description"></ion-textarea>
-      </ion-item>
-
-      <!-- CATEGORIAS DEL EVENTO -->
-      <!-- <ion-item *ngFor="let checkboxes of checkbox">
-        <ion-checkbox formControlName="category" label-placement="fixed" 
-        [(ngModel)]="checkbox.checked" 
-        [value]="checkbox.value">{{ checkbox.label }}
-      </ion-checkbox>
-    </ion-item>
-     -->
- 
-        <!-- LUGAR DEL EVENTO -->
-        <ion-item>
-          <ion-label position="floating">Localización</ion-label>
-          <ion-input type="text" placeholder="Search" formControlName="location" (ionChange)="search()"></ion-input>
-          </ion-item>
-          
-          <ion-list>
-              <ion-item *ngFor="let prediction of predictions">
-                  {{ prediction.description }}
-              </ion-item>
-          </ion-list> 
    
-     
-    </form> 
+    <div class="caption ion-padding">
+      Empieza a crear nuevos eventos <br>
+      y actividades para la comunidad
+      
+    </div>
+    
+    <div class="create-event">
+      <img src="../../../../assets/persons/person_idea.svg" alt="persona_bombilla">
+      
+      <ion-button expand="block" (click)="openEventModal()">Crear Evento</ion-button>
+  </div>
+      
+    
+  </div>
 
-    <ion-button  class="submit ion-margin-top" size="expand">Iniciar</ion-button>
-  </ion-content>
 
+ 
+</ion-content>
+  
+  
  
