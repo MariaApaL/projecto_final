@@ -18,15 +18,18 @@ ion-content {
             height: 70vh;
 
 
-            swiper {
-
-                div {
-                    text-align: center;
-                }
+            img{
+                width:100%
             }
-        }
+            p{
+                font-size:28px;
+                color:var(--ion-color-lettering)
+            }
+        
 
     }
+}
+}
 
 
     ion-button {
@@ -57,5 +60,3 @@ ion-content {
     //     z-index: 0;
     //     border: 2px solid transparent;
     // }
-
-}

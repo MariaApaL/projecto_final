@@ -1,36 +1,36 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="white" no-border>
     <ion-title>
-      Events
+      Eventos
     </ion-title>
-    </ion-toolbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="banner">
     <img src="../../../../assets/pictures/banner.png" />
 
-   
+
     <div class="caption ion-padding">
       Encuentra y únete<br>
       a los mejores eventos
-      
+
     </div>
-    <ion-item class="search" lines="none" class="ion-no-padding">  
+    <ion-item class="search" lines="none" class="ion-no-padding">
       <ion-searchbar class="bar"></ion-searchbar>
-      <ion-button slot='end'>   
+      <ion-button slot='end'>
         <ion-icon name="options-outline"></ion-icon>
       </ion-button>
     </ion-item>
-  
-      
-    
+
+
+
   </div>
-   <!-- ionic dialog modal -->
+  <!-- ionic dialog modal -->
   <div class="categories">
     <ion-row class="ion-margin-top">
       <ion-label class="ion-margin-start heading">Categories</ion-label>
-      <swiper [config]="config" effect="fade">
+      <swiper [config]="categoryConfig" effect="fade">
         <ng-template swiperSlide *ngFor="let category of categories">
           <ion-card>
             <ion-item lines="none">
@@ -46,77 +46,36 @@
   </div>
 
   <div class="title">
-    <h2>Popular Events</h2>
+    <h2>Eventos Recientes</h2>
 
     <p (click)="searchAll()">See all</p>
   </div>
 
   <div class="event-slider">
-    <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }" class="default-left-padding">
-      <ion-slide>
+    <swiper [config]="eventConfig" effect="fade" >
+      <ng-template swiperSlide class="ion-margin" *ngFor="let event of myEvents">
         <ion-col class="ion-text-left">
-          <ion-card>
+          <ion-card >
             <ion-card-header class="ion-no-padding">
               <img src="../../../../assets/events/event1.svg" />
             </ion-card-header>
 
             <ion-card-content>
-              <p class="date">17th July, 2021</p>
-              <h2 class="eventname">International Jazz Festival</h2>
-              <p class="location"><ion-icon name="location"></ion-icon>Caracas, Venezuela</p>
+              <p class="date">{{ event.date | date:'dd MMM, yyyy HH:mm' }}</p>
+              <h2 class="eventname">{{ event.name }}</h2>
+              <p class="location"><ion-icon name="location"></ion-icon>{{ event.location }}</p>
 
               <div class="additional-info">
-                <div class="attendees">
-                  <img src="../../../../assets/persons/person1.svg" />
-                  <img src="../../../..//assets/persons/person2.svg" />
-                  <img src="../../../../assets/persons/person3.svg" />
-                  <img src="../../../../assets/persons/person4.svg" />
-                  <div class="count">
-                    <img src="../../../../assets/persons/person-placeholder.svg" />
-
-                    <p>+7</p>
-                  </div>
-                </div>
-
-                <p class="time">10:00pm</p>
+                <p class="plazas">{{event.numPlazas}} Plazas</p>
               </div>
             </ion-card-content>
           </ion-card>
         </ion-col>
-      </ion-slide>
-      <ion-slide>
-        <ion-col class="ion-text-left">
-          <ion-card>
-            <ion-card-header class="ion-no-padding">
-              <img src="../../../../assets/events/event2.svg" />
-            </ion-card-header>
-
-            <ion-card-content>
-              <p class="date">23th July, 2021</p>
-              <h2 class="eventname">Contemporary Dance</h2>
-              <p class="location"><ion-icon name="location"></ion-icon>Caracas, Venezuela</p>
-
-              <div class="additional-info">
-                <div class="attendees">
-                  <img src="../../../../assets/persons/person1.svg" />
-                  <img src="../../../../assets/persons/person2.svg" />
-                  <img src="../../../../assets/persons/person3.svg" />
-                  <img src="../../../../assets/persons/person4.svg" />
-                  <div class="count">
-                    <img src="../../../../assets/persons/person-placeholder.svg" />
-
-                    <p>+3</p>
-                  </div>
-                </div>
-
-                <p class="time">10:00pm</p>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-slide>
-    </ion-slides>
-  </div>
-
+      </ng-template>
+    </swiper> 
+    </div>
  
+  
+
+
 </ion-content>

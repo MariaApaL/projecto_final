@@ -1,9 +1,9 @@
 
 
 ion-header{
-    --background: #fef1ee;
+    --background: #fefefe;
     ion-toolbar{
-        --background: #fef1ee;
+        --background: #fefefe;
     }
 
 }
@@ -14,7 +14,7 @@ ion-header{
     color:var(--ion-color-tertiary)
 }
 ion-content{
- --background: #fef1ee;
+ 
  .profile-pic{
         
     width: 150px;
@@ -34,11 +34,19 @@ ion-content{
         }
     }
     
+    .profile{
+      background: #fef1fe;
     
+    padding:10px;
+      margin:20px;
+      
     .profile-stars  li {
         font-size: 16px;
         font-weight: 400;
-        margin-right: 40px;
+        margin-left:-20px;
+        padding-right: 50px;
+        
+
       }
       .profile-stars li span {
         font-weight: 600;
@@ -57,19 +65,18 @@ ion-content{
         font-size: 20px;
         text-align: center;
       }
-    
+    }
 }  
- 
+
  .event-section{
     
-        height: auto;
+        height: 90vh;
         width: 100%;
         max-width: 500px;
-        background: #fefefe;
+        --background: #fefefe !important;
         left: 0;
         right: 0;
         bottom: 0;
-  
         margin: auto;
         border-top-right-radius: 46px;
         border-top-left-radius: 46px;

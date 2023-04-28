@@ -56,8 +56,8 @@ export class CreateEventModalComponent implements OnInit {
       eventname: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
       date: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.maxLength(300)]),
-      plazas: new FormControl('', [Validators.required]),
-      price: new FormControl('', [Validators.required, Validators.min(0)]),
+      plazas: new FormControl('', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$'),Validators.maxLength(3)]),
+      price: new FormControl(0, [ Validators.pattern('^[0-9]+(\.[0-9]{1,2})?$'),Validators.maxLength(3)]),
     })
   
   }
@@ -103,14 +103,18 @@ export class CreateEventModalComponent implements OnInit {
           localStorage.setItem('eventName', data.name);
 
           this.presentAlert("Evento creado", "El evento se ha creado correctamente")
-         this.navCtrl.navigateBack('/home/add-new')
+         this.closeModal();
       },
       error: err => {
-        this.presentAlert("Error al crear el evento", err.error.message)
+        if((location == '' || location == undefined || location == null)
+        && (category=='' || category == undefined || category == null)
+        && (date=='' || date == undefined || date == null)){
+        this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos")
         console.error(err);
       }
+    }
 
-
+      
   });
 
 }

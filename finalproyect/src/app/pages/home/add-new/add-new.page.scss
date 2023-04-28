@@ -36,13 +36,28 @@ ion-header {
     ion-button{
         --background:var(--ion-color-tertiary);
         --border-radius:66px;
+        margin:20px;
     }        
       
-    
   
-  
-  
-   
-    
-  
+  }
+
+  .content{
+    --background: #fef1ee;
+    height: 64vh;
+    width: 100%;
+    max-width: 500px;
+    background: #fefefe;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    margin: auto;
+    border-top-right-radius: 46px;
+    border-top-left-radius: 46px;
+
+    img{
+      margin-top:30px;
+      margin-bottom:10px;
+    }
   }

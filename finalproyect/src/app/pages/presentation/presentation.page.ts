@@ -17,7 +17,7 @@ export class PresentationPage implements OnInit {
   slides: any[] = [];
   content?: string;
   bannerConfig!: SwiperOptions;
-  featureConfig!: SwiperOptions;
+  
   rol = localStorage.getItem('userRole');
  
 
@@ -41,9 +41,9 @@ export class PresentationPage implements OnInit {
     
 
     this.slides= [
-      { id: 1, img_no: '../../../../assets/events/event1.svg'},
-      { id: 2, img_no: '../../../../assets/events/event1.svg'},
-      { id: 3, img_no: '../../../../assets/events/event1.svg'}
+      { id: 1, img_no: '../../../../assets/events/bbq.svg', title:"Descubre  eventos"},
+      { id: 2, img_no: '../../../../assets/events/woman.svg', title:"Crea tus propios eventos"},
+      { id: 3, img_no: '../../../../assets/events/friends.svg', title:"Prueba nuevas experiencias"},
     ];
     
    
@@ -54,9 +54,7 @@ export class PresentationPage implements OnInit {
       slidesPerView: 1,
       pagination: { clickable: true }
     };
-    this.featureConfig = {
-      slidesPerView: 3.5,
-    };
+   
   }
 
   goToLogin(){
@@ -76,8 +74,6 @@ export class PresentationPage implements OnInit {
 
       this.router.navigate(['/home/main'], { replaceUrl: true }); //Replace url borra el historial para evitar errores de navegacion
     }
-  }else{
-    this.router.navigate(['/login'], { replaceUrl: true });
   }
   }
 }

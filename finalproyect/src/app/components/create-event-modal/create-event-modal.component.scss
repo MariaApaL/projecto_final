@@ -1,3 +1,15 @@
+ion-title{
+    color: var(--ion-color-lettering);
+}
+
+
+.validator{
+  
+    margin:0px;
+    color:red;
+   
+   }
+
 
 .close-icon{
     font-size:20px;
@@ -5,4 +17,18 @@
 
 .check-icon{
     font-size:30px;
+}
+
+ion-content{
+    --background-color: #fefefe;
+    ion-item ion-label {
+        color: var(--ion-color-secondary) !important;
+      
+      }
+    
+}
+
+ion-select{
+    --placeholder-color: var(--ion-color-secondary);
+    --placeholder-opacity:1;
 }

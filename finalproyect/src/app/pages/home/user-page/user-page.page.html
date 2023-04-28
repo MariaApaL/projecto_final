@@ -23,6 +23,7 @@ https://www.behance.net/search/projects/?search=event+app-->
     <img src="../../../../assets/persons/person4.svg" alt="">
 
   </div>
+  <div class="profile">
   <div class="profile-stars">
       <ul>
         <li><span>0/5</span> Calificación</li>
@@ -34,10 +35,11 @@ https://www.behance.net/search/projects/?search=event+app-->
     <h1>{{currentUser.name}}</h1>
     <p>{{currentUser.bio}}</p>
     </div>
-
+  </div>
     
    <!-- SEGMENTO DE MEGUSTA Y MIS EVENTOS --> 
-    <div class="event-section">  
+    <div class="event-section">
+   
     <ion-segment value="events" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="my-favs">
         
@@ -52,10 +54,10 @@ https://www.behance.net/search/projects/?search=event+app-->
 <!-- FIN DEL SEGMENTO DE MEGUSTA Y MIS EVENTOS -->
 
 <!--EVENTOS -->
-    <ion-row class="ion-text-left" *ngIf="!isFav">
+    <ion-row class="ion-text-left default-left-padding" *ngIf="!isFav" >
       <ng-container *ngFor="let event of myEvents">
         <ion-col size="6">
-      <ion-card>
+      <ion-card >
         <ion-card-header class="ion-no-padding">
           <img src="../../../../assets/events/event1.svg" />
         </ion-card-header>

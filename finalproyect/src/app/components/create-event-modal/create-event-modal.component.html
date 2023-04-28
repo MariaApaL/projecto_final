@@ -1,6 +1,6 @@
 
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ion-no-border" >
+  <ion-toolbar >
     <ion-title>
       Nuevo Evento
     </ion-title>
@@ -29,22 +29,49 @@
     <ion-input formControlName="eventname" maxLength="40" type="text"></ion-input>
   </ion-item>
 
+  <!-- CONTROL DE ERRORES -->
+  <app-error-message class="validator" [field]="form.controls.eventname" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.eventname" [valid]="true" message="Formato errorneo"></app-error-message>
+       
+
    <!-- DESCRIPCIÓN DEL EVENTO -->
    <ion-item>
     <ion-label position="floating">Descripción</ion-label>
     <ion-textarea maxLenght="300" formControlName="description"></ion-textarea>
   </ion-item>
 
+  <!-- CONTROL DE ERRORES -->
+  <app-error-message class="validator" [field]="form.controls.description" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.description" [valid]="true" message="Formato errorneo"></app-error-message>
+       
+
     <!-- NÚMERO DE PLAZAS -->
     <ion-item>
       <ion-label position="floating">Número de plazas</ion-label>
       <ion-input formControlName="plazas" value="0" type="number" maxLenght="3"></ion-input>
     </ion-item>
+
+<!-- CONTROL DE ERRORES -->
+<app-error-message class="validator" [field]="form.controls.plazas" [empty]="true"
+message="Campo Obligatorio"></app-error-message>
+<app-error-message class="validator" [field]="form.controls.plazas" [valid]="true"
+message="Escriba un número correcto"></app-error-message>
+
+
+
     <!-- PRECIO DEL EVENTO -->
     <ion-item>
       <ion-label position="floating">Precio</ion-label>
-      <ion-input formControlName="price" value="0" type="number"maxLenght="3" ></ion-input>
+      <ion-input formControlName="price" value="0" type="number" maxLenght="3" ></ion-input>
     </ion-item>
+
+    <!-- CONTROL DE ERRORES -->
+
+<app-error-message class="validator" [field]="form.controls.price" [valid]="true"
+message="Escriba un precio correcto"></app-error-message>
+
 
   <!-- FECHA DEL EVENTO  -->
   <ion-item class="date-item">
@@ -59,6 +86,10 @@
     </ion-modal>
     </ion-item>  
 
+    <!-- CONTROL DE ERRORES -->
+    <app-error-message class="validator" [field]="form.controls.date" [empty]="true"
+message="Campo Obligatorio"></app-error-message>
+
   </form> 
 <!-- CATEGORIA DE EVENTO -->
   <ion-item>
@@ -67,11 +98,14 @@
 
     </ion-select>
   </ion-item>
+
       <!-- LUGAR DEL EVENTO -->
       <ion-item>
         <ion-label position="floating">Ubicación</ion-label>
         <ion-input [clearInput]="true" [(ngModel)]="autocomplete.input" (ionInput)="UpdateSearchResults()" (ionClear)="ClearAutocomplete()"></ion-input>
     </ion-item>
+
+
 
     <ion-list [hidden]="autocompleteItems.length == 0">
         <ion-item *ngFor="let item of autocompleteItems" tappable (click)="SelectSearchResult(item)">
