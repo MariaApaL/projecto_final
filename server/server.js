@@ -2,9 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const db = require("./models");
-const { CATEGORIES } = require("./models");
 const Category = require("./models/category-model");
 const Role = db.role;
+const path = require('path');
 require('dotenv').config();
 // const db_user = process.env.db_user;
 // const db_pass = process.env.db_pass;
@@ -34,9 +34,13 @@ app.get("/user", (req, res) => {
 });
 
 
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 require('./routes/user-routes')(app);
 require('./routes/event-routes')(app);
 require('./routes/category-routes')(app);
+// require('./routes/img-routes')(app);
 
 
 

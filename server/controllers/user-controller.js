@@ -241,3 +241,36 @@ exports.getUser = async (req, res) => {
 //     res.status(500).json({ message: err.message });
 //   }
 // };
+
+// exports.updateUserImg = async (req, res) => {
+//     try{
+
+//       const userId = req.params.id;
+
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).send({ message: "Usuario no encontrado" });
+    
+//     }
+//      const picture = req.body.picture;
+//       const updatedUser = {
+//       picture: picture
+//     };
+
+
+//     const newUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+//     if (!newUser) {
+//       return res.status(404).send({ message: "Usuario no encontrado" });
+//     }
+
+//     res.send({ message: "Usuario actualizado con éxito", user });
+
+
+
+//     }catch(err){
+//         res.status(500).json({ message: err.message });
+//     }
+// };
+
+
+

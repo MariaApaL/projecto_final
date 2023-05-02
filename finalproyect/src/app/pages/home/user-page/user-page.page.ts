@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal/bottom-sheet-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
@@ -26,7 +26,8 @@ export class UserPagePage implements OnInit {
   constructor(private modalCtrl: ModalController,
     private auth: AuthService, 
     private eventService: EventService,
-    private alertCtrl: AlertController) {
+    private alertCtrl: AlertController,
+    private navCtrl:NavController) {
 
       this.auth.getUser().subscribe({
         next: (data) => {
@@ -110,6 +111,7 @@ export class UserPagePage implements OnInit {
  this.eventService.findEventsByAuthorId(this.userId).subscribe({
   next: (data) => {
     this.myEvents =  Object.values(data);
+    
     this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
     console.log("refresco eventos")
     this.eventCount = this.myEvents.length;
@@ -182,8 +184,11 @@ export class UserPagePage implements OnInit {
   }
   //Para poder editar un evento
   editEvent(id: any) {
-    console.log(id);
+    if(!this.isFav){
+     
+      this.navCtrl.navigateForward([`/edit-event/${id}`]);
+      
+    }
   }
-
 }
 

@@ -8,6 +8,9 @@ const Category = db.category;
 
 
 function checkBadWord(texto, badWords) {
+  if (!texto) {
+    return false;
+  }
   return badWords.some(palabra => texto.includes(palabra));
 }
 
@@ -121,7 +124,9 @@ exports.updateEvent = async (req, res) => {
 
     const newDate = moment(date, "DD-MM-YYYY").toDate();
     // Comprobar si contiene palabras prohibidas
-    checkWords(name, description);
+    if(checkBadWord(name, badWords) || checkBadWord(description, badWords)){
+      return res.status(400).send({ message: "Error , utilice otro vocabulario" });
+    }
     //comprueba que no sea negativo
     checkNegative(price, numPlazas);
 

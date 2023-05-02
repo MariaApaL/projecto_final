@@ -1,4 +1,4 @@
-<!-- 
+
 <ion-header class="ion-no-border">
   <ion-toolbar >
     <ion-title class="profile-title">Editar Evento</ion-title>
@@ -16,25 +16,42 @@
     </ion-item>
     <ion-item>
       <ion-label position="floating">Descripción</ion-label>
-      <ion-input [(ngModel)]="description" (ionChange)="onBioChange($event)" maxLenght="300"></ion-input>
+      <ion-input [(ngModel)]="description" (ionChange)="onDescriptionChange($event)" maxLenght="300"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Número de Plazas</ion-label>
-      <ion-input [(ngModel)]="numPlazas" (ionChange)="onBioChange($event)"maxLenght="3" ></ion-input>
+      <ion-input [(ngModel)]="numPlazas" (ionChange)="onNumPlazasChange($event)"maxLenght="3" ></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Precio</ion-label>
-      <ion-input [(ngModel)]="price" (ionChange)="onBioChange($event)" maxLenght="3"></ion-input>
+      <ion-input [(ngModel)]="price" (ionChange)="onPriceChange($event)" maxLenght="3"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-select  placeholder="Elige una Categoría" [(ngModel)]="category" (ionChange)="onCategoryChange()">
-        <ion-select-option *ngFor="let category of categories" value={{category.value}}>{{category.label}}</ion-select-option>
-  
+      <ion-select placeholder="Elige una Categoría" [(ngModel)]="category" (ionChange)="onCategoryChange($event)">
+        <ion-select-option *ngFor="let category of categories" [value]="category.value">{{category.label}}</ion-select-option>
       </ion-select>
     </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Ubicación</ion-label>
+      <ion-input [clearInput]="true" 
+      (ionChange)="onLocationChange($event)"
+      [(ngModel)]="autocomplete.input" 
+      (ionInput)="UpdateSearchResults()" 
+      (ionClear)="ClearAutocomplete()"></ion-input>
+  </ion-item>
+
+
+
+  <ion-list [hidden]="autocompleteItems.length == 0">
+      <ion-item *ngFor="let item of autocompleteItems" tappable (click)="SelectSearchResult(item)">
+          {{ item.description }}
+      </ion-item>
+  </ion-list>
+    
     <ion-item class="date-item">
       <ion-label >Fecha</ion-label>
-      <ion-datetime-button datetime="datetime"></ion-datetime-button>
+      <ion-datetime-button datetime="datetime" ></ion-datetime-button>
 
       <ion-modal [keepContentsMounted]="true">
         <ng-template>
@@ -43,10 +60,9 @@
         </ng-template>
       </ion-modal>
       </ion-item>  
-    <ion-item>
-      <ion-label position="floating">Ubicación</ion-label>
-      <ion-input [(ngModel)]="location" (ionChange)="onBioChange($event)"></ion-input>
-    </ion-item>
+  
+   
+
   </ion-list>
-<ion-button expand="block" (click)="saveChanges()" class="ion-padding"> Confirmar </ion-button>
-</ion-content> -->
+<ion-button expand="block" [disabled]="disableButton" (click)="saveChanges()" class="ion-padding"> Confirmar </ion-button>
+</ion-content>

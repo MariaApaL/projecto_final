@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "471657096292",
+    "project_id": "proyecto-final-f2bf8",
+    "storage_bucket": "proyecto-final-f2bf8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471657096292:android:fdd04345310f1876906b71",
+        "android_client_info": {
+          "package_name": "com.maria.apa.cat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471657096292-e416ftr78684b22vue6i542b137grf71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-rEQU7GRKzHO6sJDnrzC4QAjerz-Zg_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471657096292-e416ftr78684b22vue6i542b137grf71.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
