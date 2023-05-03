@@ -1,0 +1,54 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar >
+    <ion-title class="profile-title">Editar Evento</ion-title>
+    <ion-buttons class="close-button"  slot="start">
+      <ion-icon  class="close-icon" name="close-outline" ></ion-icon>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input maxLenght="40"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-input maxLenght="300"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Número de Plazas</ion-label>
+      <ion-input  maxLenght="3" ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Precio</ion-label>
+      <ion-input  maxLenght="3"></ion-input>
+    </ion-item>
+    <!-- <ion-item>
+      <ion-select placeholder="Elige una Categoría" [(ngModel)]="category" (ionChange)="onCategoryChange($event)">
+        <ion-select-option *ngFor="let category of categories" [value]="category.value">{{category.label}}</ion-select-option>
+      </ion-select>
+    </ion-item> -->
+
+
+
+    
+    <ion-item class="date-item">
+      <ion-label >Fecha</ion-label>
+      <ion-datetime-button datetime="datetime" ></ion-datetime-button>
+
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime locale="es-ES" 
+         [(ngModel)]="date" id="datetime"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+      </ion-item>  
+  
+   
+
+  </ion-list>
+
+</ion-content>

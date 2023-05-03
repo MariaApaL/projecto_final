@@ -30,7 +30,7 @@
   <div class="categories">
     <ion-row class="ion-margin-top">
       <ion-label class="ion-margin-start heading">Categories</ion-label>
-      <swiper [config]="categoryConfig" effect="fade">
+      <swiper [config]="categoryConfig" >
         <ng-template swiperSlide *ngFor="let category of categories">
           <ion-card>
             <ion-item lines="none">
@@ -52,10 +52,10 @@
   </div>
 
   <div class="event-slider">
-    <swiper [config]="eventConfig" effect="fade" >
+    <swiper [config]="eventConfig" >
       <ng-template swiperSlide class="ion-margin" *ngFor="let event of myEvents">
         <ion-col class="ion-text-left">
-          <ion-card >
+          <ion-card (click)="selectEvent(event._id)">
             <ion-card-header class="ion-no-padding">
               <img src="../../../../assets/events/event1.svg" />
             </ion-card-header>

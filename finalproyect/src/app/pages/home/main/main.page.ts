@@ -53,7 +53,10 @@ export class MainPage implements OnInit {
     
     };
     this.eventConfig = {
-      slidesPerView: 2.1,
+      slidesPerView: 2.3,
+      // centeredSlides: false,
+      // effect:"cards" 
+  
 
     };
   }
@@ -111,6 +114,10 @@ export class MainPage implements OnInit {
       });
   
       await alert.present();
+    }
+
+    selectEvent(id:string){
+      this.navCtrl.navigateForward(`/event-info/${id}`);
     }
 
 }

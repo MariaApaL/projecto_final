@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
 import { CreateEventModalComponent } from './create-event-modal/create-event-modal.component';
+import { EventCardComponent } from './event-card/event-card.component';
 
 
 
@@ -21,7 +22,8 @@ import { CreateEventModalComponent } from './create-event-modal/create-event-mod
     PrivacyModalComponent,
     BottomSheetModalComponent,
     ErrorMessageComponent,
-    CreateEventModalComponent
+    CreateEventModalComponent,
+    EventCardComponent
 
 
    
@@ -43,7 +45,8 @@ import { CreateEventModalComponent } from './create-event-modal/create-event-mod
     BottomSheetModalComponent,
     ErrorMessageComponent,
     PrivacyModalComponent,
-    CreateEventModalComponent
+    CreateEventModalComponent,
+    EventCardComponent
     
    
    
