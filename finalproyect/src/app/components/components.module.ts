@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { SwiperComponent, SwiperModule } from 'swiper/angular';
+
 import { BottomSheetModalComponent } from './bottom-sheet-modal/bottom-sheet-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessageComponent } from './error-message/error-message.component';
@@ -35,7 +35,7 @@ import { EventCardComponent } from './event-card/event-card.component';
     CommonModule,
     IonicModule,
     FormsModule,
-    SwiperModule,
+ 
     ReactiveFormsModule
    
     

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { NavigationEnd, Router } from '@angular/router';
 
 
 
@@ -9,9 +11,22 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
  
-  constructor() { }
+  constructor(private gtmService:GoogleTagManagerService,
+    private router : Router) {
 
-  ngOnInit(): void {
+      gtmService.addGtmToDom();
+     }
+
+  ngOnInit(){
+  this.router.events.forEach(item=>{
+    if(item instanceof NavigationEnd){
+      const gtmTag = {
+        'event':'page',
+        'pageName':item.url
+      };
+      this.gtmService.pushTag(gtmTag)
+    }
+  });
     
   }
 }

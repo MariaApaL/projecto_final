@@ -20,7 +20,10 @@ export class UserPagePage implements OnInit {
   isFav:boolean = true;
   eventCount: number = 0;
   myEvents:any[] = []
+  myFavs:any[] = []
   userId = localStorage.getItem('userId');
+ 
+  favorites: any[]=[];
  
 
   constructor(private modalCtrl: ModalController,
@@ -29,98 +32,76 @@ export class UserPagePage implements OnInit {
     private alertCtrl: AlertController,
     private navCtrl:NavController) {
 
-      this.auth.getUser().subscribe({
-        next: (data) => {
-          
-          this.currentUser = data;
-          console.log(this.currentUser);
-          // this.ionViewDidEnter();
-          
-         
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      });
+      //Para poder recoger los datos del usuario y mostrarlos en la página
+      this.getUser();
 
   }
   ngOnInit() {
-    //Para poder recoger los datos del usuario y mostrarlos en la página
+    
 
     //Para poder recoger los eventos del usuario y mostrarlos en la página
-    this.eventService.findEventsByAuthorId(this.userId).subscribe({
+    this.findEventsByAuthorId(this.userId);
+    //recoger favoritos
+    this.getFavorites(this.userId);
+    // this.getFavoritesFromLocalStorage();
+  } 
+ 
+
+  ionViewDidEnter() {
+   
+    //refrescamos la página 
+  this.getUser();
+  this.findEventsByAuthorId(this.userId);
+  this.getFavorites(this.userId);
+  // this.getFavoritesFromLocalStorage();
+
+  }
+  
+  // muestra eventos por autor
+  findEventsByAuthorId(authorId: any) {
+    this.eventService.findEventsByAuthorId(authorId).subscribe({
       next: (data) => {
         this.myEvents =  Object.values(data);
+        this.myEvents.forEach((event) => {
+          event.favorite = this.favorites.includes(event._id);
+        });
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-        console.log(this.myEvents);
-        console.log(data);
+        console.log("refresco eventos")
         this.eventCount = this.myEvents.length;
         return this.myEvents;
       }
     });
- 
-  
-    
-  } 
-  
-  //Para poder recoger los datos del usuario y mostrarlos en la página
-  // getUserInfo(){
-  //   this.auth.getUser().subscribe({
-  //     next: (data) => {
-  //       this.currentUser = data;
-  //       console.log(data);
-       
-  //     },
-  //     error: (err) => {
-  //       console.log(err);
-  //     }
-  //   });
+  }
 
-  // }
-
-  //Para poder recoger los eventos del usuario y mostrarlos en la página
-  // getUserEvents(userId:String){
-  //   this.eventService.findEventsByAuthorId(userId).subscribe({
-  //     next: (data) => {
-  //       this.myEvents =  Object.values(data);
-  //       this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-  //       console.log(this.myEvents);
-  //       console.log(data);
-  //       this.eventCount = this.myEvents.length;
-  //       return this.myEvents;
-  //     }
-  //   });
-    
-  // }
-
-
-  ionViewDidEnter() {
-   
-    //refrescamos la página para que se muestren los datos del usuario
+  //Para mostrar los datos del usuario
+  getUser() {
     this.auth.getUser().subscribe({
-     next: (data) => {
-       this.currentUser = data;
-       console.log("refresco getuser");
-     },
-     error: (err) => {
-       console.log(err);
-     }
-   });
- 
- //Refrescamos la página para que se muestren los eventos 
- this.eventService.findEventsByAuthorId(this.userId).subscribe({
-  next: (data) => {
-    this.myEvents =  Object.values(data);
-    
-    this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-    console.log("refresco eventos")
-    this.eventCount = this.myEvents.length;
-    return this.myEvents;
+      next: (data) => {
+        
+        this.currentUser = data;
+        console.log(this.currentUser);
+        // this.ionViewDidEnter();
+        
+       
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
-});
 
+  // Para mostrar favoritos
+  getFavorites(userId:any) {
+    this.auth.getFavorites(userId).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.myFavs = Object.values(data);
+        this.favorites = data.map((fav) => fav.event_id);
+        this.myFavs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return this.myFavs
+      }
+    });
   }
-  
 
   async openModal() {
     const modal = await this.modalCtrl.create({
@@ -148,6 +129,7 @@ export class UserPagePage implements OnInit {
         next: (data) => {
           console.log(data);
           this.presentAlert();
+          
         },
         error: (err) => {
           console.log(err);
@@ -190,5 +172,67 @@ export class UserPagePage implements OnInit {
       
     }
   }
+
+
+
+  //Llama al servicio para eleminar los favoritos
+  // deleteFavorites(eventId: any) {
+  //   this.auth.deleteFavorite(this.userId, eventId).subscribe({
+  //           next: (data) => {
+  //             console.log(data);
+  //             this.favorites = this.favorites.filter((id) => id !== eventId);
+  //             this.myFavs.find((event) => event._id === eventId).favorite = false;
+  //             localStorage.setItem('favorites', JSON.stringify(this.favorites));
+  //            this.ionViewDidEnter();
+  //           },
+  //           error: (err) => {
+  //             console.log(err);
+  //           }
+  //         });
+  // }
+
+  deleteFavorites(eventId: any) {
+    this.auth.deleteFavorite(this.userId, eventId).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.favorites = this.favorites.filter((id) => id !== eventId);
+        const index = this.myFavs.findIndex((event) => event._id === eventId);
+        if (index > -1) {
+          this.myFavs.splice(index, 1);
+        }
+  
+        // Recuperar los favoritos existentes del localStorage
+        let favorites = JSON.parse(localStorage.getItem('favorites'));
+  
+        // Eliminar el evento seleccionado de los favoritos
+        const indexToRemove = favorites.indexOf(eventId);
+        if (indexToRemove > -1) {
+          favorites.splice(indexToRemove, 1);
+        }
+  
+        // Guardar los favoritos actualizados en el localStorage
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  getFavoritesFromLocalStorage() {
+    const favorites = localStorage.getItem('favorites');
+    if (favorites) {
+    this.favorites = JSON.parse(favorites);
+    this.myEvents.forEach((event) => {
+    event.favorite = this.favorites.includes(event._id);
+    });
+    }
+  }
+
+    //Navega a la página de información del evento
+    selectEvent(id: string) {
+      this.navCtrl.navigateForward(`/event-info/${id}`);
+    }
+
 }
 

@@ -3,12 +3,13 @@
   <ion-toolbar >
     <ion-title class="profile-title">Editar Evento</ion-title>
     <ion-buttons class="close-button"  slot="start">
-      <ion-icon  class="close-icon" name="close-outline" ></ion-icon>
+      <ion-icon  class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
     </ion-buttons>
-  
+    <ion-button slot="end" (click)="addFav()"> <ion-icon name="heart"></ion-icon></ion-button>
   </ion-toolbar>
 </ion-header>
 <ion-content>
+ 
   <ion-list>
     <ion-item>
       <ion-label position="floating">Nombre</ion-label>
@@ -47,7 +48,7 @@
       </ion-modal>
       </ion-item>  
   
-   
+     
 
   </ion-list>
 

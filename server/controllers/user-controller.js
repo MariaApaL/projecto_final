@@ -231,16 +231,99 @@ exports.getUser = async (req, res) => {
   }
 };
 
-// exports.getUser = async (req, res) => {
+// exports.setFavorite = async (req, res) => {
 //   try {
-//     // Verificar el token de acceso antes de permitir el acceso al controlador
-//     await verifyToken(req, res);
-//     const user = await User.findById(req.body.id); // selecciona todos los campos excepto la contraseña
-//     res.status(200).json(user);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
+//     const { id } = req.params;
+//     const { eventId } = req.body;
+
+//     // Comprobamos que el usuario exista y agregamos el evento a sus favoritos si no existe
+//     const result = await User.findOneAndUpdate(
+//       { _id: id, favorites: { $ne: eventId } },
+//       { $addToSet: { favorites: eventId } }
+//     );
+
+//     if (!result) {
+//       return res.status(404).json({ message: 'Usuario no encontrado' });
+//     }
+
+//     res.status(200).json({ message: 'Evento añadido a favoritos correctamente' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Ha ocurrido un error al añadir el evento a favoritos' });
 //   }
 // };
+
+
+
+exports.setFavorite = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { eventId } = req.body;
+
+    // Buscamos el usuario por id y actualizamos sus favoritos
+    const user = await User.findByIdAndUpdate(id, { $addToSet: { favorites: eventId } }, { new: true });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Evento añadido a favoritos correctamente', user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al añadir el evento a favoritos' });
+  }
+}
+
+
+exports.deleteFavorite = async (req, res) => {
+  try {
+  const { id } = req.params;
+  const { eventId } = req.body;
+  
+  // Comprobamos que el usuario exista
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: 'Usuario no encontrado' });
+  }
+  
+  // Buscamos y eliminamos el evento de los favoritos del usuario
+  const index = user.favorites.indexOf(eventId);
+  if (index !== -1) {
+    user.favorites.splice(index, 1);
+    await user.save();
+  }
+  
+  res.status(200).json({ message: 'Evento eliminado de favoritos correctamente' });
+  } catch (error) {
+  console.error(error);
+  res.status(500).json({ message: 'Ha ocurrido un error al eliminar el evento de favoritos' });
+  }
+  }
+
+
+  exports.getFavorites = async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Comprobamos que el usuario exista
+      const user = await User.findById(id).populate('favorites');
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      res.status(200).json(user.favorites);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Ha ocurrido un error al obtener los favoritos del usuario' });
+    }
+  }
+
+
+
+
+
+
+
+
 
 // exports.updateUserImg = async (req, res) => {
 //     try{

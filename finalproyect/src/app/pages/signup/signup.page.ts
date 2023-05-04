@@ -77,8 +77,8 @@ export class SignupPage implements OnInit {
     this.auth.register(user, name, password, email).subscribe({
       next: res => {
         console.log(res); 
-        this.loginUser(name, password);
         this.auth.logOut();
+        this.loginUser(name, password);
         this.router.navigate(['/home/main'], {replaceUrl:true});
       },
       error: err => {
@@ -116,6 +116,7 @@ export class SignupPage implements OnInit {
         
          // Guardamos el id del usuario en el localStorage
          localStorage.setItem('userId', res.id);
+         console.log("Login correcto");
           },
           error: err => {
               

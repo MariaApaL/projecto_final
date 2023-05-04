@@ -3,9 +3,6 @@ import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 
-import SwiperCore, { SwiperOptions, Pagination } from 'swiper';
-// install Swiper modules
-SwiperCore.use([Pagination]);
 
 
 @Component({
@@ -16,8 +13,7 @@ SwiperCore.use([Pagination]);
 export class PresentationPage implements OnInit {
   slides: any[] = [];
   content?: string;
-  bannerConfig!: SwiperOptions;
-  
+
   rol = localStorage.getItem('userRole');
  
 
@@ -49,13 +45,7 @@ export class PresentationPage implements OnInit {
    
   }
 
-  ngAfterContentChecked() {
-    this.bannerConfig = {
-      slidesPerView: 1,
-      pagination: { clickable: true }
-    };
-   
-  }
+ 
 
   goToLogin(){
     this.navCtrl.navigateForward("/login");

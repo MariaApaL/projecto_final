@@ -35,7 +35,17 @@ export class EventInfoPage implements OnInit {
       }
 
   });
+  }
 
+  navigateBack(){
+    this.navCtrl.back();
+  }
+
+
+
+  addFav(){
+    
+  }
 }
 
-}
+

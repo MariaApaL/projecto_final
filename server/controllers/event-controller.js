@@ -76,8 +76,6 @@ exports.createEvent = async (req, res) => {
       price: price,
     });
 
-
-    newEvent.author = author;
     if (req.body.categories) { // Verificar si se especificó una categoría
       const category = req.body.categories;
       await Category.find({ type: { $in: category } });

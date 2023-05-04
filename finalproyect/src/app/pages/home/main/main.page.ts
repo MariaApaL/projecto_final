@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
-import SwiperCore, { SwiperOptions, Pagination } from 'swiper';
-// install Swiper modules
-SwiperCore.use([Pagination]);
+
 
 @Component({
   selector: 'app-main',
@@ -12,14 +11,20 @@ SwiperCore.use([Pagination]);
 })
 export class MainPage implements OnInit {
 
-  constructor(private navCtrl: NavController, private eventService: EventService, private alertCtrl: AlertController) { }
-  categoryConfig: SwiperOptions;
-  eventConfig: SwiperOptions;
+  constructor(private navCtrl: NavController,
+    private eventService: EventService,
+    private alertCtrl: AlertController,
+    private auth: AuthService) { 
+
+     
+      
+    }
+
+
   categories: any[] = [];
   myEvents: any[] = [];
-  isMine:boolean = true;
+  favorites: any[] = [];
   userId = localStorage.getItem('userId');
-
 
 
   ngOnInit() {
@@ -31,40 +36,27 @@ export class MainPage implements OnInit {
       { id: 4, name: 'Solidario' }
     ];
 
-    this.eventService.getEvents().subscribe({
-      next: (data) => {
-        this.myEvents = Object.values(data);
-        this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-        console.log(this.myEvents);
-        console.log(data);
-        return this.myEvents;
-      }
-
-    });
-
-  }
-  searchAll() {
-    this.navCtrl.navigateForward("/home/search");
-  }
-
-  ngAfterContentChecked() {
-    this.categoryConfig = {
-      slidesPerView: 2.1,
+    this.getEvents();
+    this.getFavoritesFromLocalStorage();
     
-    };
-    this.eventConfig = {
-      slidesPerView: 2.3,
-      // centeredSlides: false,
-      // effect:"cards" 
-  
-
-    };
   }
+
+  
 
   ionViewDidEnter() {
+    this.getEvents();
+    this.getFavoritesFromLocalStorage();
+    this.getFavorites();
+  }
+
+  //llama al servicio para obtener los eventos
+  getEvents() {
     this.eventService.getEvents().subscribe({
       next: (data) => {
         this.myEvents = Object.values(data);
+        this.myEvents.forEach((event) => {
+          event.favorite = this.favorites.includes(event._id);
+        });
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log(this.myEvents);
         console.log(data);
@@ -72,52 +64,74 @@ export class MainPage implements OnInit {
       }
 
     });
+
   }
 
-    //Para poder eliminar un evento
-    deleteEvent(name:string,author:string) {  
-      if(!this.isMine){
-        this.eventService.deleteEventByNameAndAuthor(name,author).subscribe({
-          next: (data) => {
-            console.log(data);
-            this.presentAlert();
-          },
-          error: (err) => {
-            console.log(err);
-          }
-      });
+  addFavorites(eventId: any) {
+    if (this.favorites.includes(eventId)) {
+     this.deleteFavorite(eventId);
+    } else {
+      this.setFavoriteEvent(eventId);
+    }
+  }
+  
+
+  //llama al servicio para añadir un evento a favoritos
+  setFavoriteEvent(eventId: any) {
+    this.auth.setFavorite(this.userId, eventId).subscribe({
+            next: (data) => {
+              console.log(data);
+              this.favorites.push(eventId);
+              this.myEvents.find((event) => event._id === eventId).favorite = true;
+              localStorage.setItem('favorites', JSON.stringify(this.favorites)); // guarda los favoritos en localStorage
+            },
+            error: (err) => {
+              console.log(err);
+            }
+          });
+  }
+
+  //Llama al servicio para eleminar los favoritos
+  deleteFavorite(eventId: any) {
+    this.auth.deleteFavorite(this.userId, eventId).subscribe({
+            next: (data) => {
+              console.log(data);
+              this.favorites = this.favorites.filter((id) => id !== eventId);
+              this.myEvents.find((event) => event._id === eventId).favorite = false;
+              localStorage.setItem('favorites', JSON.stringify(this.favorites)); // guarda los favoritos
+            },
+            error: (err) => {
+              console.log(err);
+            }
+          });
+  }
+
+
+  //Navega a la página de información del evento
+  selectEvent(id: string) {
+    this.navCtrl.navigateForward(`/event-info/${id}`);
+  }
+
+  //recogemos los favoritos del usuario
+  getFavorites() {
+    this.auth.getFavorites(this.userId).subscribe({
+      next: (data) => {
+        this.favorites = data.map((fav) => fav.event_id);
+      },
+      error: (err) => {
+        console.log(err);
       }
-     
-    }
-  
-    async presentAlert() {
-      const alert = await this.alertCtrl.create({
-        header: 'Borrar Evento',
-        message: '¿Estás seguro de que quieres borrar el evento?',
-        buttons: [
-          {
-            text: 'No',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: (blah) => {
-
-              console.log('Confirm Cancel');
-            }
-          }, {
-            text: 'Sí',
-            handler: () => {
-              this.ionViewDidEnter();
-              console.log('Confirm Okay');
-            }
-          }
-        ]
-      });
-  
-      await alert.present();
-    }
-
-    selectEvent(id:string){
-      this.navCtrl.navigateForward(`/event-info/${id}`);
-    }
+    });
+  }
+//recogemos los favoritos del usuario de localStorage
+getFavoritesFromLocalStorage() {
+  const favorites = localStorage.getItem('favorites');
+  if (favorites) {
+  this.favorites = JSON.parse(favorites);
+  this.myEvents.forEach((event) => {
+  event.favorite = this.favorites.includes(event._id);
+  });
+  }
+}
 
 }

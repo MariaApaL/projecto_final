@@ -2,8 +2,20 @@
 ion-content {
     --background: #fef1ee;
 
+    .swiper-pagination-bullet {
+        // background-color: var(--ion-color-medium) !important;
+        background: rgba(255, 255, 255, 0.33);
+        opacity: 1;
+    }
+    .swiper-pagination-bullet-active {
+        background-color: var(--ion-color-primary)!important;
+        width: 70px;
+        border-radius: 4px;
+    }
+    
+
     .slide-container {
-        height: 74vh;
+        height: 70vh;
         width: 100%;
         max-width: 500px;
         background: #fefefe;
@@ -19,10 +31,15 @@ ion-content {
 
 
             img{
-                width:100%
+               
+                width:100%;
+                height:85%;
+
+                
             }
             p{
                 font-size:28px;
+                text-align: center;
                 color:var(--ion-color-lettering)
             }
         

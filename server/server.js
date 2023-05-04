@@ -5,6 +5,7 @@ const db = require("./models");
 const Category = require("./models/category-model");
 const Role = db.role;
 const path = require('path');
+const router = express.Router();
 require('dotenv').config();
 // const db_user = process.env.db_user;
 // const db_pass = process.env.db_pass;
@@ -34,8 +35,14 @@ app.get("/user", (req, res) => {
 });
 
 
+//multer
+app.use(router);
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+router.get('/images/:filename', (req,res)=>{
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, '/images', filename);
+  res.sendFile(imagePath);
+})
 
 require('./routes/user-routes')(app);
 require('./routes/event-routes')(app);

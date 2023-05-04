@@ -86,6 +86,25 @@ export class AuthService {
     return this.http.get(url, { headers: headers });
   }
 
+  setFavorite(userId: any, eventId: any): Observable<any> {
+    const url = `${this.url}/setFavorite/${userId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const body = { eventId};
+    return this.http.post(url, body, { headers: headers });
+  }
 
+  getFavorites(userId: any): Observable<any> {
+    const url = `${this.url}/getFavorites/${userId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
+  }
+
+  deleteFavorite(userId: any, eventId: any): Observable<any> {
+    const body = { eventId };
+    const url = `${ this.url }/deleteFavorite/${ userId }`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const options = { headers: headers, body: body };
+    return this.http.delete(url, options);
+  }
 
 }

@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border">
+<ion-header no-border>
   <ion-toolbar color="white" no-border>
     <ion-title>
       Eventos
@@ -30,49 +30,64 @@
   <div class="categories">
     <ion-row class="ion-margin-top">
       <ion-label class="ion-margin-start heading">Categories</ion-label>
-      <swiper [config]="categoryConfig" >
-        <ng-template swiperSlide *ngFor="let category of categories">
+      <swiper-container class="ion-margin" [slidesPerView]="2" [spaceBetween]="15">
+        <swiper-slide *ngFor="let category of categories">
+    
           <ion-card>
             <ion-item lines="none">
-              <ion-thumbnail slot="start">
-                <img [src]="category?.image" />
-              </ion-thumbnail>
               <ion-label class="ion-text-wrap">{{category?.name}}</ion-label>
             </ion-item>
           </ion-card>
-        </ng-template>
-      </swiper>
+
+      </swiper-slide>
+      </swiper-container>
     </ion-row>
   </div>
 
   <div class="title">
     <h2>Eventos Recientes</h2>
 
-    <p (click)="searchAll()">See all</p>
+    <p >See all</p>
   </div>
 
   <div class="event-slider">
-    <swiper [config]="eventConfig" >
-      <ng-template swiperSlide class="ion-margin" *ngFor="let event of myEvents">
-        <ion-col class="ion-text-left">
-          <ion-card (click)="selectEvent(event._id)">
-            <ion-card-header class="ion-no-padding">
-              <img src="../../../../assets/events/event1.svg" />
-            </ion-card-header>
-
-            <ion-card-content>
-              <p class="date">{{ event.date | date:'dd MMM, yyyy HH:mm' }}</p>
-              <h2 class="eventname">{{ event.name }}</h2>
-              <p class="location"><ion-icon name="location"></ion-icon>{{ event.location }}</p>
-
-              <div class="additional-info">
-                <p class="plazas">{{event.numPlazas}} Plazas</p>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ng-template>
-    </swiper> 
+    <swiper-container class="ion-margin" [slidesPerView]="2" [spaceBetween]="15">
+      <swiper-slide *ngFor="let event of myEvents">
+        <!-- <ng-template swiperSlide class="ion-margin" > -->
+          <ion-col class="ion-text-left">
+            <ion-card>
+              <ion-card-header class="ion-no-padding">
+                <img src="../../../../assets/events/event1.svg" />
+              </ion-card-header>
+  
+              <ion-card-content>
+                <p class="date">{{ event.date | date:'dd MMM, yyyy HH:mm' }}</p>
+                <h2 class="eventname">{{ event.name }}</h2>
+                <p class="location"><ion-icon name="location"></ion-icon>{{ event.location }}</p>
+  
+                <div class="additional-info">
+                  <p class="plazas">{{event.numPlazas}} Plazas</p>
+                </div>
+               <div class="more-info">
+                <p  (click)="selectEvent(event._id)">Ver más</p>
+               </div>
+               <ion-buttons>
+                <ion-button (click)="addFavorites(event._id)"> 
+                  <ion-icon slot="icon-only" [name]="event.favorite ? 'heart' : 'heart-outline'" 
+                 ></ion-icon>
+                </ion-button>
+               </ion-buttons>
+              
+              </ion-card-content>
+             
+            </ion-card>
+          </ion-col>
+        <!-- </ng-template> -->
+      </swiper-slide>
+    </swiper-container>
+    <!-- <swiper [config]="eventConfig" > -->
+      
+    <!-- </swiper>  -->
     </div>
  
   

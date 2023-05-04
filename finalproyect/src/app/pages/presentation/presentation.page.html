@@ -3,8 +3,9 @@
 
   <div class="slide-container">
     <ion-row class="banners">
-      <swiper [config]="bannerConfig">
-        <ng-template swiperSlide *ngFor="let slide of slides">
+      <swiper-container class="ion-margin-top" [slidesPerView]="1" [clickable]="true">
+        <swiper-slide *ngFor="let slide of slides">
+        
           
             <ion-label>
              
@@ -12,9 +13,9 @@
               <p>{{slide?.title}}</p>
               
             </ion-label>
-        
-        </ng-template>
-      </swiper>
+      
+      </swiper-slide>
+      </swiper-container>
     </ion-row>
   </div>
 
