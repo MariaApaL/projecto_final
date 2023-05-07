@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal/bottom-sheet-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
-import {Event} from 'src/app/interfaces/event'
+
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 
 
@@ -96,7 +96,11 @@ export class UserPagePage implements OnInit {
       next: (data) => {
         console.log(data);
         this.myFavs = Object.values(data);
-        this.favorites = data.map((fav) => fav.event_id);
+        this.myFavs = data.map(event => ({
+          ...event,
+          favorite: localStorage.getItem(`favorite_${event._id}`) === 'true'
+        }));
+
         this.myFavs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         return this.myFavs
       }
@@ -173,66 +177,29 @@ export class UserPagePage implements OnInit {
     }
   }
 
-
-
-  //Llama al servicio para eleminar los favoritos
-  // deleteFavorites(eventId: any) {
-  //   this.auth.deleteFavorite(this.userId, eventId).subscribe({
-  //           next: (data) => {
-  //             console.log(data);
-  //             this.favorites = this.favorites.filter((id) => id !== eventId);
-  //             this.myFavs.find((event) => event._id === eventId).favorite = false;
-  //             localStorage.setItem('favorites', JSON.stringify(this.favorites));
-  //            this.ionViewDidEnter();
-  //           },
-  //           error: (err) => {
-  //             console.log(err);
-  //           }
-  //         });
-  // }
-
   deleteFavorites(eventId: any) {
+    const event = this.myEvents.find(e => e._id === eventId);
     this.auth.deleteFavorite(this.userId, eventId).subscribe({
       next: (data) => {
         console.log(data);
-        this.favorites = this.favorites.filter((id) => id !== eventId);
-        const index = this.myFavs.findIndex((event) => event._id === eventId);
-        if (index > -1) {
-          this.myFavs.splice(index, 1);
-        }
-  
-        // Recuperar los favoritos existentes del localStorage
-        let favorites = JSON.parse(localStorage.getItem('favorites'));
-  
-        // Eliminar el evento seleccionado de los favoritos
-        const indexToRemove = favorites.indexOf(eventId);
-        if (indexToRemove > -1) {
-          favorites.splice(indexToRemove, 1);
-        }
-  
-        // Guardar los favoritos actualizados en el localStorage
-        localStorage.setItem('favorites', JSON.stringify(favorites));
+        this.ionViewDidEnter();
+        localStorage.removeItem(`favorite_${eventId}`)
       },
       error: (err) => {
         console.log(err);
       }
     });
+    
+    
   }
 
-  getFavoritesFromLocalStorage() {
-    const favorites = localStorage.getItem('favorites');
-    if (favorites) {
-    this.favorites = JSON.parse(favorites);
-    this.myEvents.forEach((event) => {
-    event.favorite = this.favorites.includes(event._id);
-    });
-    }
-  }
+
 
     //Navega a la página de información del evento
     selectEvent(id: string) {
+      localStorage.removeItem('previousUrl');
       this.navCtrl.navigateForward(`/event-info/${id}`);
+      localStorage.setItem('previousUrl', location.href);
     }
-
 }
 

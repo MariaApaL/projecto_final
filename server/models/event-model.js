@@ -55,6 +55,11 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
+    isFavorite: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     description: {
         type: String,
         required: false

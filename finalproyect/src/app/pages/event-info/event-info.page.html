@@ -1,55 +1,74 @@
 
 <ion-header class="ion-no-border">
   <ion-toolbar >
-    <ion-title class="profile-title">Editar Evento</ion-title>
+    <ion-title class="profile-title"> Información del Evento</ion-title>
     <ion-buttons class="close-button"  slot="start">
       <ion-icon  class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
     </ion-buttons>
-    <ion-button slot="end" (click)="addFav()"> <ion-icon name="heart"></ion-icon></ion-button>
+    
+    <ion-buttons>
+      <ion-button (click)="addFavorite()"> 
+        <ion-icon slot="icon-only" [name]="isFavorite ? 'heart' : 'heart-outline'" 
+       ></ion-icon>
+      </ion-button>
+     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content>
- 
-  <ion-list>
-    <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input maxLenght="40"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Descripción</ion-label>
-      <ion-input maxLenght="300"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Número de Plazas</ion-label>
-      <ion-input  maxLenght="3" ></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Precio</ion-label>
-      <ion-input  maxLenght="3"></ion-input>
-    </ion-item>
-    <!-- <ion-item>
-      <ion-select placeholder="Elige una Categoría" [(ngModel)]="category" (ionChange)="onCategoryChange($event)">
-        <ion-select-option *ngFor="let category of categories" [value]="category.value">{{category.label}}</ion-select-option>
-      </ion-select>
-    </ion-item> -->
 
 
 
+<ion-content *ngIf="event">
+ <div class="imagen">
+    <img src="../../../../assets/events/event1.svg" />
     
-    <ion-item class="date-item">
-      <ion-label >Fecha</ion-label>
-      <ion-datetime-button datetime="datetime" ></ion-datetime-button>
+ </div>
+  <div class="section">
 
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime locale="es-ES" 
-         [(ngModel)]="date" id="datetime"></ion-datetime>
-        </ng-template>
-      </ion-modal>
-      </ion-item>  
+  <div class="name">
+    <h1>{{event.name}}</h1>
+    <p>{{event.category}}</p>
+  </div>
+   
+  <div class="date-participants">
+ 
+    <p>{{event.date | date:'dd MMM, yyyy HH:mm' }}</p>
+    <p>{{participants}}/{{event.numPlazas}} Plazas</p>
+    <p (click)="getParticipants()">Miembros</p>
+
+  </div>
+
+  <div class="description">
+    <p>Descripción</p>
+    <p>{{event.description}}</p>
+
+  </div>
+  <div class="location">
+    <p>Ubicación</p>
+    <google-map
+  height="500px"
+  width="100%"
+  [zoom]="zoom"
+  [center]="center"
+  [options]="options"
+></google-map>
+  </div>
+
+  <div class="footer">
+    <div class="price">
+      <p>Precio</p>
+
+      <p>{{event.price}}<span class="euro">€</span><span class="person">/persona</span></p>
+
+    </div>
+    <div class="join">
+      <ion-button (click)="joinOrLeaveEvent(eventId)" class="join-button">
+        {{ isJoined ? 'Desapuntarse' : 'Apuntarse' }}
+      </ion-button>
+    </div>
+
+  </div>
+
+  </div>
   
-     
-
-  </ion-list>
 
 </ion-content>

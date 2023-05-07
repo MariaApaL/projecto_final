@@ -16,7 +16,7 @@ export class MainPage implements OnInit {
     private alertCtrl: AlertController,
     private auth: AuthService) { 
 
-     
+      this.getEvents();
       
     }
 
@@ -25,7 +25,7 @@ export class MainPage implements OnInit {
   myEvents: any[] = [];
   favorites: any[] = [];
   userId = localStorage.getItem('userId');
-
+  isFavorite: boolean = false;
 
   ngOnInit() {
     this.categories = [
@@ -36,17 +36,20 @@ export class MainPage implements OnInit {
       { id: 4, name: 'Solidario' }
     ];
 
+    
+    
     this.getEvents();
-    this.getFavoritesFromLocalStorage();
+    // this.ionViewWillEnter();
     
   }
 
+ 
   
 
   ionViewDidEnter() {
+    console.log('recarga')
     this.getEvents();
-    this.getFavoritesFromLocalStorage();
-    this.getFavorites();
+
   }
 
   //llama al servicio para obtener los eventos
@@ -54,12 +57,14 @@ export class MainPage implements OnInit {
     this.eventService.getEvents().subscribe({
       next: (data) => {
         this.myEvents = Object.values(data);
-        this.myEvents.forEach((event) => {
-          event.favorite = this.favorites.includes(event._id);
-        });
+       
+        this.myEvents = data.map(event => ({
+          ...event,
+          favorite: localStorage.getItem(`favorite_${event._id}`) === 'true'
+        }));
+
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-        console.log(this.myEvents);
-        console.log(data);
+        
         return this.myEvents;
       }
 
@@ -67,71 +72,57 @@ export class MainPage implements OnInit {
 
   }
 
+
   addFavorites(eventId: any) {
-    if (this.favorites.includes(eventId)) {
-     this.deleteFavorite(eventId);
+    const event = this.myEvents.find(e => e._id === eventId);
+    if (event.favorite) {
+      this.deleteFavorite(eventId);
     } else {
       this.setFavoriteEvent(eventId);
     }
+    event.favorite = !event.favorite; // cambiar el estado de favorito del evento seleccionado
+    localStorage.setItem(`favorite_${eventId}`, JSON.stringify(event.favorite)); // guardar el estado del evento favorito en el almacenamiento local
   }
   
 
   //llama al servicio para añadir un evento a favoritos
   setFavoriteEvent(eventId: any) {
     this.auth.setFavorite(this.userId, eventId).subscribe({
-            next: (data) => {
-              console.log(data);
-              this.favorites.push(eventId);
-              this.myEvents.find((event) => event._id === eventId).favorite = true;
-              localStorage.setItem('favorites', JSON.stringify(this.favorites)); // guarda los favoritos en localStorage
-            },
-            error: (err) => {
-              console.log(err);
-            }
-          });
-  }
-
-  //Llama al servicio para eleminar los favoritos
-  deleteFavorite(eventId: any) {
-    this.auth.deleteFavorite(this.userId, eventId).subscribe({
-            next: (data) => {
-              console.log(data);
-              this.favorites = this.favorites.filter((id) => id !== eventId);
-              this.myEvents.find((event) => event._id === eventId).favorite = false;
-              localStorage.setItem('favorites', JSON.stringify(this.favorites)); // guarda los favoritos
-            },
-            error: (err) => {
-              console.log(err);
-            }
-          });
-  }
-
-
-  //Navega a la página de información del evento
-  selectEvent(id: string) {
-    this.navCtrl.navigateForward(`/event-info/${id}`);
-  }
-
-  //recogemos los favoritos del usuario
-  getFavorites() {
-    this.auth.getFavorites(this.userId).subscribe({
       next: (data) => {
-        this.favorites = data.map((fav) => fav.event_id);
+        console.log(data);
+       
+    
       },
       error: (err) => {
         console.log(err);
       }
     });
   }
-//recogemos los favoritos del usuario de localStorage
-getFavoritesFromLocalStorage() {
-  const favorites = localStorage.getItem('favorites');
-  if (favorites) {
-  this.favorites = JSON.parse(favorites);
-  this.myEvents.forEach((event) => {
-  event.favorite = this.favorites.includes(event._id);
-  });
+
+  //Llama al servicio para eleminar los favoritos
+  deleteFavorite(eventId: any) {
+    this.auth.deleteFavorite(this.userId, eventId).subscribe({
+      next: (data) => {
+        console.log(data);
+       
+      
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
-}
+
+
+  //Navega a la página de información del evento
+  selectEvent(id: string) {
+    localStorage.removeItem('previousUrl');
+    this.navCtrl.navigateForward(`/event-info/${id}`);
+    localStorage.setItem('previousUrl', location.href);
+  }
+
+
+
+
 
 }

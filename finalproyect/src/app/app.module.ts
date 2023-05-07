@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { GoogleTagManagerModule } from 'angular-google-tag-manager';
+
 import { BottomSheetModalComponent } from './components/bottom-sheet-modal/bottom-sheet-modal.component';
 // import { authInterceptorProviders } from './_helpers/auth.interceptor';
 // import { TokenStorageService } from './services/token-storage.service';

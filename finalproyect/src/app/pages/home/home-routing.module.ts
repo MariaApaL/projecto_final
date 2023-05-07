@@ -16,7 +16,7 @@ const routes: Routes = [
     {
       path: '',
       component: HomePage,
-      canActivate: [AuthGuard],
+      
 
       children: [ //Definimo sla rutas hijas, donde irá las trés páginas principales del Inicio (Tabs)
       {
@@ -27,6 +27,7 @@ const routes: Routes = [
       {
         path:'main',
         loadChildren:()=> import('./main/main.module').then(m => m.MainPageModule),
+        data: { noCache: true } //Para que no se guarde en caché
         
         
       },

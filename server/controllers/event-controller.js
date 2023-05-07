@@ -114,7 +114,7 @@ exports.getEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const { name, date, location, picture, price, numPlazas, description } = req.body;
+    const { name, date, location, picture, price, numPlazas, description, isFavorite } = req.body;
     const category = req.body.categories;
 
     const foundCategories = await Category.find({ type: { $in: category } });
@@ -137,6 +137,7 @@ exports.updateEvent = async (req, res) => {
       price: price,
       description: description,
       categories: categoryIds,
+      isFavorite: isFavorite
 
     };
 
@@ -270,6 +271,64 @@ exports.getEventPrice = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 
-
-
 };
+
+exports.addParticipant = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;  
+
+    // Buscamos el evento por id y actualizamos sus participantes
+    const event = await Event.findByIdAndUpdate(id, { $addToSet: { plazas: userId } }, { new: true });
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+    res.status(200).json({ message: 'Usuario añadido correctamente', event });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Ha ocurrido un error al añadir al usuario' });
+      }
+    }
+
+    exports.deleteParticipant= async (req, res) => {
+      try {
+      const { id } = req.params;
+      const { userId } = req.body;
+      
+      // Comprobamos que el usuario exista
+      const event = await Event.findById(id);
+      if (!event) {
+        return res.status(404).json({ message: 'Evento no encontrado' });
+      }
+      
+      // Buscamos y eliminamos el evento de los favoritos del usuario
+      const index = event.plazas.indexOf(userId);
+      if (index !== -1) {
+        event.plazas.splice(index, 1);
+        await event.save();
+      }
+      
+      res.status(200).json({ message: 'Plaza eliminada' });
+      } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Ha ocurrido un error al eliminar la plaza' });
+      }
+      }
+    
+    
+      exports.getParticipants = async (req, res) => {
+        try {
+          const { id } = req.params;
+          
+          // Comprobamos que el usuario exista
+          const event = await Event.findById(id).populate('plazas');
+          if (!event) {
+            return res.status(404).json({ message: 'Evento no encontrado' });
+          }
+      
+          res.status(200).json(event.plazas);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Ha ocurrido un error al obtener los participantes' });
+        }
+      }

@@ -60,7 +60,26 @@ export class EventService {
   }
 
 
+  addParticipant(eventId: any, userId: any): Observable<any> {
+    const url = `${this.url}/addParticipant/${eventId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const body = { userId};
+    return this.http.post(url, body, { headers: headers });
+  }
 
+  getParticipants(eventId: any): Observable<any> {
+    const url = `${this.url}/getParticipants/${eventId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
+  }
+
+  deleteParticipant(eventId: any, userId: any): Observable<any> {
+    const body = { userId };
+    const url = `${ this.url }/deleteParticipant/${ eventId }`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const options = { headers: headers, body: body };
+    return this.http.delete(url, options);
+  }
 
 
 

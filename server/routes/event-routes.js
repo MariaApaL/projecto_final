@@ -64,4 +64,12 @@ module.exports = function(app) {
     
     app.get("/getEventPrice",controller.getEventPrice);
 
+    //PLAZAS
+
+    app.post('/addParticipant/:id', controller.addParticipant);
+
+    app.delete("/deleteParticipant/:id", controller.deleteParticipant);
+  
+    app.get("/getParticipants/:id", controller.getParticipants);
+
 };
