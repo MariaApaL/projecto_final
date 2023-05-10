@@ -15,14 +15,25 @@ import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
   styleUrls: ['./user-page.page.scss'],
 })
 export class UserPagePage implements OnInit {
-
+//Recojo la info del usuario
   currentUser: any = {};
-  isFav:boolean = true;
+
+  //para cambiar de segmento
+  selectedSegment = 'my-favs';
+//Recoger el numero de eventos creados
   eventCount: number = 0;
+
+//recoger los eventos del usuario
   myEvents:any[] = []
+  //Recoger los eventos en los que participa el usuario
+  joinedEvents:any[] = []
+  //Recoger los favoritos del usuario
   myFavs:any[] = []
+  //Recoger el id del usuario
   userId = localStorage.getItem('userId');
- 
+  //para el boton de favoritos
+  isFavorite: boolean;
+ //Donde guardo favoritos
   favorites: any[]=[];
  
 
@@ -44,6 +55,8 @@ export class UserPagePage implements OnInit {
     //recoger favoritos
     this.getFavorites(this.userId);
     // this.getFavoritesFromLocalStorage();
+
+    this.getEventsJoined(this.userId);
   } 
  
 
@@ -53,6 +66,7 @@ export class UserPagePage implements OnInit {
   this.getUser();
   this.findEventsByAuthorId(this.userId);
   this.getFavorites(this.userId);
+  this.getEventsJoined(this.userId);
   // this.getFavoritesFromLocalStorage();
 
   }
@@ -62,9 +76,6 @@ export class UserPagePage implements OnInit {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
       next: (data) => {
         this.myEvents =  Object.values(data);
-        this.myEvents.forEach((event) => {
-          event.favorite = this.favorites.includes(event._id);
-        });
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log("refresco eventos")
         this.eventCount = this.myEvents.length;
@@ -73,6 +84,17 @@ export class UserPagePage implements OnInit {
     });
   }
 
+  getEventsJoined(userId:any){
+    this.eventService.getEventsByParticipantId(userId).subscribe({
+      next: (data) => {
+        this.joinedEvents =  Object.values(data);
+;
+        this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+       console.log(this.joinedEvents)
+       return this.joinedEvents;
+      }
+    });
+  }
   //Para mostrar los datos del usuario
   getUser() {
     this.auth.getUser().subscribe({
@@ -120,15 +142,22 @@ export class UserPagePage implements OnInit {
   }
 
   //Cambia entre favoritos y mis eventos
-  segmentChanged(event:any){
-    const chose = event.detail.value;
 
-    this.isFav = chose === 'my-favs';
+  segmentChanged(event) {
+    this.selectedSegment = event.detail.value;
   }
+  // segmentChanged(event:any){
+  //   const chose = event.detail.value;
+
+  //   this.isFav = chose === 'my-favs';
+   
+    
+  // }
+
 
   //Para poder eliminar un evento
   deleteEvent(name:string,author:string) {  
-    if(!this.isFav){
+    if(this.selectedSegment=='my-events'){
       this.eventService.deleteEventByNameAndAuthor(name,author).subscribe({
         next: (data) => {
           console.log(data);
@@ -170,28 +199,28 @@ export class UserPagePage implements OnInit {
   }
   //Para poder editar un evento
   editEvent(id: any) {
-    if(!this.isFav){
+    if(this.selectedSegment=='my-events'){
      
       this.navCtrl.navigateForward([`/edit-event/${id}`]);
       
     }
   }
 
-  deleteFavorites(eventId: any) {
-    const event = this.myEvents.find(e => e._id === eventId);
-    this.auth.deleteFavorite(this.userId, eventId).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.ionViewDidEnter();
-        localStorage.removeItem(`favorite_${eventId}`)
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
+  // deleteFavorites(eventId: any) {
+  //   const event = this.myEvents.find(e => e._id === eventId);
+  //   this.auth.deleteFavorite(this.userId, eventId).subscribe({
+  //     next: (data) => {
+  //       console.log(data);
+  //       this.ionViewDidEnter();
+  //       localStorage.removeItem(`favorite_${eventId}`)
+  //     },
+  //     error: (err) => {
+  //       console.log(err);
+  //     }
+  //   });
     
     
-  }
+  // }
 
 
 
@@ -201,5 +230,21 @@ export class UserPagePage implements OnInit {
       this.navCtrl.navigateForward(`/event-info/${id}`);
       localStorage.setItem('previousUrl', location.href);
     }
+
+    //Llama al servicio para eleminar los favoritos
+    deleteFavorite(eventId: any) {
+      this.auth.deleteFavorite(this.userId, eventId).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.ionViewDidEnter();
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
+  
+   
+    
 }
 

@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const db = require("./models");
-const Category = require("./models/category-model");
+const Category = db.category;
 const Role = db.role;
+const Report = db.report;
 const path = require('path');
 const router = express.Router();
 require('dotenv').config();
@@ -47,6 +48,7 @@ router.get('/images/:filename', (req,res)=>{
 require('./routes/user-routes')(app);
 require('./routes/event-routes')(app);
 require('./routes/category-routes')(app);
+require('./routes/report-routes')(app);
 // require('./routes/img-routes')(app);
 
 
@@ -63,6 +65,7 @@ app.listen(PORT, () => {
     console.log("Successfully connect to MongoDB.");
     await initial();
     await initialCategories();
+    await initialReports();
   } catch (err) {
     console.error("Connection error", err);
     process.exit();
@@ -107,3 +110,24 @@ app.listen(PORT, () => {
         console.error("Error al agregar categorias", err);
       }
     }
+
+    async function initialReports() {
+      try {
+        const count = await Report.estimatedDocumentCount();
+        if (count === 0) {
+          await Promise.all([
+           
+            new Report({ type: "spam" }).save(),
+            new Report({ type: "odio" }).save(),
+            new Report({ type: "sexual" }).save(),
+            new Report({ type: "violencia" }).save(),
+            new Report({ type: "fraude" }).save(),
+          ]);
+          console.log("Reports agregados correctamente.");
+        }
+      } catch (err) {
+        console.error("Error al agregar repots", err);
+      }
+    }
+
+    

@@ -1,74 +1,96 @@
-
-<ion-header class="ion-no-border">
-  <ion-toolbar >
-    <ion-title class="profile-title"> Información del Evento</ion-title>
-    <ion-buttons class="close-button"  slot="start">
-      <ion-icon  class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-title class="profile-title">{{eventName}}</ion-title>
+    <ion-buttons class="close-button" slot="start">
+      <ion-icon class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
     </ion-buttons>
-    
-    <ion-buttons>
-      <ion-button (click)="addFavorite()"> 
-        <ion-icon slot="icon-only" [name]="isFavorite ? 'heart' : 'heart-outline'" 
-       ></ion-icon>
+    <ion-buttons slot="end">
+      <ion-button (click)="openReportModal()">
+        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
       </ion-button>
-     </ion-buttons>
+
+    </ion-buttons>
+
+
   </ion-toolbar>
 </ion-header>
 
 
 
-<ion-content *ngIf="event">
- <div class="imagen">
-    <img src="../../../../assets/events/event1.svg" />
-    
- </div>
+<ion-content *ngIf="event && userAuthor" class="content-with-margin">
+
   <div class="section">
 
-  <div class="name">
-    <h1>{{event.name}}</h1>
-    <p>{{event.category}}</p>
-  </div>
-   
-  <div class="date-participants">
- 
-    <p>{{event.date | date:'dd MMM, yyyy HH:mm' }}</p>
-    <p>{{participants}}/{{event.numPlazas}} Plazas</p>
-    <p (click)="getParticipants()">Miembros</p>
+    <div class="imagen">
 
-  </div>
-
-  <div class="description">
-    <p>Descripción</p>
-    <p>{{event.description}}</p>
-
-  </div>
-  <div class="location">
-    <p>Ubicación</p>
-    <google-map
-  height="500px"
-  width="100%"
-  [zoom]="zoom"
-  [center]="center"
-  [options]="options"
-></google-map>
-  </div>
-
-  <div class="footer">
-    <div class="price">
-      <p>Precio</p>
-
-      <p>{{event.price}}<span class="euro">€</span><span class="person">/persona</span></p>
+      <img src="../../../../assets/events/event1.svg" />
 
     </div>
+    <div class="icons">
+      <ion-buttons>
+        <ion-button (click)="addFavorite()">
+          <ion-icon slot="icon-only" [name]="isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons>
+        <ion-button id="cash" class="icon">
+          <ion-icon name="cash-outline"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="cash">
+          <ng-template>
+            <ion-content class="ion-padding">{{event.price}}€/persona</ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-buttons>
+      <ion-buttons>
+        <ion-button class="icon" (click)="openLocation()">
+          <ion-icon name="compass-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons>
+        <ion-button class="icon" (click)="openComments()">
+          <ion-icon name="chatbubble-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <p class="label-with-icon"><strong>{{event.date | date:'dd MMM, yyyy HH:mm' }}</strong></p>
+    </div>
+
+
+    <div class="members">
+
+      <ion-icon name="person"></ion-icon>
+      <p class="plazas"> <strong>{{participants}}/{{event.numPlazas}}</strong></p>
+      <p> personas se han unido.</p>
+      <span (click)="openParticipants()" class="see-all"><strong>Ver todos</strong></span> <ion-icon
+        name="chevron-forward-outline"></ion-icon>
+    </div>
+
+    <div class="description">
+      <p><span (click)="goToProfile()"><strong>{{userAuthor?.name}}</strong></span>
+        {{event.description}}</p>
+
+    </div>
+
+
+    <!-- <div class="join">
+      <ion-button [disabled]="isFull" 
+      expand="block" class="ion-margin" 
+      (click)="joinOrLeaveEvent(eventId)" class="join-button">
+        {{ isJoined ? 'Cancelar' : 'Unirse' }}
+      </ion-button>
+    </div> -->
+
     <div class="join">
-      <ion-button (click)="joinOrLeaveEvent(eventId)" class="join-button">
-        {{ isJoined ? 'Desapuntarse' : 'Apuntarse' }}
+      <ion-button *ngIf="!isJoined" [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
+        class="join-button">
+        Unirse
+      </ion-button>
+      <ion-button *ngIf="isJoined" [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
+        class="join-button">
+        Cancelar
       </ion-button>
     </div>
 
   </div>
-
-  </div>
-  
 
 </ion-content>

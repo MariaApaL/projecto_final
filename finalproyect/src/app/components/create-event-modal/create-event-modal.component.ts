@@ -12,7 +12,7 @@ declare let google: any;
 export class CreateEventModalComponent implements OnInit {
 
 
-  newCategory: string;
+  newCategory: string = "";
 
   public form: FormGroup;
   
@@ -58,6 +58,7 @@ export class CreateEventModalComponent implements OnInit {
       description: new FormControl('', [Validators.required, Validators.maxLength(300)]),
       plazas: new FormControl('', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$'),Validators.maxLength(3)]),
       price: new FormControl(0, [ Validators.pattern('^[0-9]+(\.[0-9]{1,2})?$'),Validators.maxLength(3)]),
+      category: new FormControl('', [Validators.required])
     })
   
   }
@@ -83,39 +84,46 @@ export class CreateEventModalComponent implements OnInit {
   
   
   createEvent(){
-   
+
+    if(this.form.valid){
+    
     const name = this.form.value.eventname.toLowerCase();
     const date = this.form.value.date;
   
     const description = this.form.value.description;
     const numPlazas = this.form.value.plazas;
     const price = this.form.value.price;
-    const category = this.newCategory
+    const categories = [this.form.value.category.toLowerCase()];
+    console.log(categories)
     const location = this.autocomplete.input;
     const author = localStorage.getItem('userId');
     
 
    
     this.eventService.createEvent(name,date,location,author,
-      numPlazas,description,price,category )
+      numPlazas,description,price,categories )
       .subscribe({
         next: (data) => {
           localStorage.setItem('eventName', data.name);
+          console.log(data)
 
           this.presentAlert("Evento creado", "El evento se ha creado correctamente")
          this.closeModal();
       },
       error: err => {
         if((location == '' || location == undefined || location == null)
-        && (category=='' || category == undefined || category == null)
+        
         && (date=='' || date == undefined || date == null)){
         this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos")
         console.error(err);
       }
     }
-
-      
   });
+  }else{
+    this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos")
+  }
+      
+ 
 
 }
 

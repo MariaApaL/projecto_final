@@ -1,0 +1,22 @@
+<!-- <ion-content>
+  <ion-item>
+    <ion-label>¿Por qué quieres denunciar esta publicación?</ion-label>
+  </ion-item>
+
+
+  
+</ion-content> -->
+<ion-content>
+  <ion-item>
+    <ion-label>¿Por qué quieres denunciar esta publicación?</ion-label>
+  </ion-item>
+
+  <ion-list>
+    <ion-item class="ion-margin-top" button="true" (click)="chooseOptions(item)" *ngFor="let item of options">
+      
+      <ion-label>{{ item?.label }}</ion-label>
+    </ion-item>
+  </ion-list>
+  
+</ion-content>
+

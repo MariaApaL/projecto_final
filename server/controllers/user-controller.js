@@ -3,15 +3,24 @@ const badWords = require("../config/badword")
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Report = db.report;
 
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
+
+// function checkBadWord(texto, badWords) {
+//   if (!texto) {
+//     return false;
+//   }
+//   return badWords.some(palabra => texto.includes(palabra));
+// }
 
 function checkBadWord(texto, badWords) {
   if (!texto) {
     return false;
   }
-  return badWords.some(palabra => texto.includes(palabra));
+  const regexp = new RegExp(`\\b(${badWords.join('|')})\\b`, 'i');
+  return regexp.test(texto);
 }
 
 
@@ -22,7 +31,7 @@ exports.signup = async (req, res) => {
     //Busca si el nombre de usuario o el email contienen palabras incorrectas  
     if (checkBadWord(user, badWords) || checkBadWord(email, badWords)|| 
     checkBadWord(name, badWords) || checkBadWord(bio, badWords)) {
-      return res.status(400).send({ message: "Error, elija otro vocabulario" });
+      return res.status(400).send({ message: "Error, no puede usar ese contenido" });
     }
 
     const hashPassword = await bcrypt.hash(password, 8);
@@ -107,6 +116,18 @@ exports.getUsers = async (req, res) => {
   try {
     const users = await User.find({}, '-password');
     res.send(users);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id, '-password');
+    if (!user) {
+      return res.status(404).send({ message: "Usuario no encontrado" });
+    }
+    res.send(user);
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -318,13 +339,82 @@ exports.deleteFavorite = async (req, res) => {
   }
 
 
+exports.addReportToUser = async (req, res) => {
+  try {
+    // Verificamos que exista el usuario y el report
+    const { id} = req.params;
+    const {reportId} = req.body;
+    const user = await User.findById(id);
+    const report = await Report.findOne({ type: reportId});
+    if (!user || !report) {
+      return res.status(404).json({ message: 'No se encontró el usuario o el reporte.' });
+    }
+    // Añadimos el reporte al usuario y guardamos los cambios
+    user.reports.push(report);
+    await user.save();
+    res.status(200).json({ message: 'Se ha añadido el reporte al usuario.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al añadir el reporte al usuario.' });
+  }
+};
 
+exports.getReportsByType = async (req, res) => {
+  try {
+    // Verificamos que exista el usuario y el tipo de reporte
+    const { id } = req.params;
+    const {reportType} = req.body;
+    const user = await User.findById(userId).populate('reports');
+    if (!user) {
+      return res.status(404).json({ message: 'No se encontró el usuario.' });
+    }
+    const reportsByType = user.reports.filter(report => report.type === reportType);
+    res.status(200).json({ reports: reportsByType });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al obtener los reportes por tipo.' });
+  }
+};
 
+// exports.addValuation = async (req, res) => {
+//   const id = req.params.id;
+//   const valuation = req.body.valuation;
+//   const userId = req.body.userId;
+//   const now = new Date();
 
+//   try {
+//     const event = await Event.findById(id);
 
+//     // Comprobar si la fecha actual es posterior a la creación del evento
+//     if (now < event.createdAt) {
+//       return res.status(400).json({ message: 'No se puede añadir una valoración antes de la fecha de creación del evento.' });
+//     }
 
+//     // Comprobamos que el usuario ha asistido al evento
+//     if (!event.plazas.includes(userId)) {
+//       return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
+//     }
+//     event.valuations.push(valuation);
+//     await event.save();
 
+//     res.status(200).json({ message: 'Valoración añadida correctamente.' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error al añadir valoracion' });
+//   }
+// }
 
+// exports.getValuationsByUser = async (req, res, next) => {
+//   try {
+//     const events = await Event.find({ author: req.params.id }).populate('valuations');
+//     const valuations = events.reduce((acc, event) => {
+//       acc.push(...event.valuations);
+//       return acc;
+//     }, []);
+//     res.status(200).json(valuations);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 // exports.updateUserImg = async (req, res) => {
 //     try{
 

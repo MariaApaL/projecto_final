@@ -47,11 +47,16 @@ module.exports = function(app) {
 
   app.get("/getUser", controller.getUser);
 
+  // ruta GET para obtener un usuario por su id
+  app.get("/getUserById/:id", controller.getUserById);
+
   //Agregar a favoritos.
   app.post('/setFavorite/:id', controller.setFavorite);
 
   app.get("/getFavorites/:id", controller.getFavorites);
 
   app.delete("/deleteFavorite/:id", controller.deleteFavorite);
+
+
 
 };

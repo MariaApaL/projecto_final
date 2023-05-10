@@ -22,10 +22,10 @@ const eventSchema = new mongoose.Schema({
         //         const max = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
         //         return v >= now && v <= max;
         //     },
-          
+
         // }
-        
-      
+
+
     },
     location: {
         type: String,
@@ -55,15 +55,12 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
-    isFavorite: {
-        type: Boolean,
-        required: false,
-        default: false
-    },
     description: {
         type: String,
         required: false
     },
+   
+
     comments: [
         {
             author: {

@@ -78,6 +78,13 @@ export class AuthService {
   getId(){
     return localStorage.getItem('userId');
   }
+
+  getUserById(id: any): Observable<any> {
+    const url = `${this.url}/getUserById/${id}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
+  }
+  
   // Obtener el usuario mediante el token 
   getUser(): Observable<any> {
     const url = `${this.url}/getUser`;

@@ -5,13 +5,14 @@ const db = require("../models");
 const User = db.user;
 const Event = db.event;
 const Category = db.category;
-
+const mongoose = require('mongoose');
 
 function checkBadWord(texto, badWords) {
   if (!texto) {
     return false;
   }
-  return badWords.some(palabra => texto.includes(palabra));
+  const regexp = new RegExp(`\\b(${badWords.join('|')})\\b`, 'i');
+  return regexp.test(texto);
 }
 
 function checkNegative(price, plaza) {
@@ -30,41 +31,39 @@ function validateDate(dateString) {
   //   return true;
   // }
   return date > today && date < oneYear;
-  
+
 }
 
 
 exports.createEvent = async (req, res) => {
   try {
-    const { name, date, location, author, picture, numPlazas, description, price } = req.body;
+    const { name, date, location, author, picture, numPlazas, description, price, } = req.body;
 
-   
+
     // Comprobar si contiene palabras prohibidas
-   
-    if(checkBadWord(name, badWords) || checkBadWord(description, badWords)){
+
+    if (checkBadWord(name, badWords) || checkBadWord(description, badWords)) {
       return res.status(400).send({ message: "Error , utilice otro vocabulario" });
     }
     //comprueba que no sea negativo
-    
+
     try {
       checkNegative(price, numPlazas);
     } catch (err) {
       return res.status(400).send({ message: err.message });
     }
-   
+
     const newDate = validateDate(date);
     if (!newDate) {
       return res.status(400).send({ message: "Error, la fecha no es válida" });
     }
-    
+
     const existingEvent = await Event.findOne({ author: author, date: date });
     if (existingEvent) {
       return res.status(400).send({ message: "Error, ya tienes un evento en esa fecha" });
 
     }
 
-   
-  
     const newEvent = new Event({
       name: name.toLowerCase(),
       date: date,
@@ -74,16 +73,16 @@ exports.createEvent = async (req, res) => {
       numPlazas: numPlazas,
       description: description.toLowerCase(),
       price: price,
+
     });
 
-    if (req.body.categories) { // Verificar si se especificó una categoría
-      const category = req.body.categories;
-      await Category.find({ type: { $in: category } });
+    const category = req.body.categories ? await Category.findOne({ type: req.body.categories }) : null;
+    if (category) {
       newEvent.categories = [category._id];
     }
-
-
     await newEvent.save();
+
+
     res.send({ message: "¡Evento creado exitosamente!", event: newEvent });
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -122,7 +121,7 @@ exports.updateEvent = async (req, res) => {
 
     const newDate = moment(date, "DD-MM-YYYY").toDate();
     // Comprobar si contiene palabras prohibidas
-    if(checkBadWord(name, badWords) || checkBadWord(description, badWords)){
+    if (checkBadWord(name, badWords) || checkBadWord(description, badWords)) {
       return res.status(400).send({ message: "Error , utilice otro vocabulario" });
     }
     //comprueba que no sea negativo
@@ -214,6 +213,17 @@ exports.findEventsByAuthorId = async (req, res) => {
   }
 };
 
+exports.getEventsByParticipantId = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const events = await Event.find({ plazas: userId }).populate('author', 'name');
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json({ message: 'Ha ocurrido un error al obtener los eventos', error: err });
+  }
+};
+
 
 
 exports.getEventDate = async (req, res) => {
@@ -276,59 +286,158 @@ exports.getEventPrice = async (req, res) => {
 exports.addParticipant = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId } = req.body;  
+    const { userId } = req.body;
 
     // Buscamos el evento por id y actualizamos sus participantes
     const event = await Event.findByIdAndUpdate(id, { $addToSet: { plazas: userId } }, { new: true });
     if (!event) {
       return res.status(404).json({ message: 'Evento no encontrado' });
     }
-    res.status(200).json({ message: 'Usuario añadido correctamente', event });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Ha ocurrido un error al añadir al usuario' });
-      }
+    if (event.plazas.length >= event.numPlazas) {
+      return res.status(400).json({ message: 'No hay plazas disponibles' });
     }
 
-    exports.deleteParticipant= async (req, res) => {
-      try {
-      const { id } = req.params;
-      const { userId } = req.body;
-      
-      // Comprobamos que el usuario exista
-      const event = await Event.findById(id);
-      if (!event) {
-        return res.status(404).json({ message: 'Evento no encontrado' });
-      }
-      
-      // Buscamos y eliminamos el evento de los favoritos del usuario
-      const index = event.plazas.indexOf(userId);
-      if (index !== -1) {
-        event.plazas.splice(index, 1);
-        await event.save();
-      }
-      
-      res.status(200).json({ message: 'Plaza eliminada' });
-      } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Ha ocurrido un error al eliminar la plaza' });
-      }
-      }
-    
-    
-      exports.getParticipants = async (req, res) => {
-        try {
-          const { id } = req.params;
-          
-          // Comprobamos que el usuario exista
-          const event = await Event.findById(id).populate('plazas');
-          if (!event) {
-            return res.status(404).json({ message: 'Evento no encontrado' });
-          }
-      
-          res.status(200).json(event.plazas);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: 'Ha ocurrido un error al obtener los participantes' });
-        }
-      }
+    res.status(200).json({ message: 'Usuario añadido correctamente', event });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al añadir al usuario' });
+  }
+}
+
+exports.deleteParticipant = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    // Comprobamos que el usuario exista
+    const event = await Event.findById(id);
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    // Buscamos y eliminamos el evento de los favoritos del usuario
+    const index = event.plazas.indexOf(userId);
+    if (index !== -1) {
+      event.plazas.splice(index, 1);
+      await event.save();
+    }
+
+    res.status(200).json({ message: 'Plaza eliminada' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al eliminar la plaza' });
+  }
+}
+
+
+exports.getParticipants = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Comprobamos que el usuario exista
+    const event = await Event.findById(id).populate('plazas');
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    res.status(200).json(event.plazas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al obtener los participantes' });
+  }
+}
+
+exports.addComments = async (req, res) => {
+  const { eventId, authorId, text } = req.body;
+
+  try {
+    // Comprobamos que el evento exista
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    // Comprobamos que la fecha es despues
+    if (event.date > Date.now()) {
+      return res.status(400).json({ message: 'No se pueden añadir comentarios antes de la fecha del evento' });
+    }
+    console.log("hola");
+    // Comprobamos que el usuario ha asistido al evento
+    if (!event.plazas.includes(authorId)) {
+      console.log(event.plazas.includes(authorId));
+      console.log(authorId);
+     
+      return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
+    }
+
+    // Comprobamos que el usuario no ha comentado malas palabras
+
+    if (checkBadWord(text, badWords)) {
+      return res.status(400).send({ message: "Error , contenido inapropiado" });
+    }
+
+    const comment = {
+      author: authorId,
+      text,
+      date: Date.now()
+    };
+
+    event.comments.push(comment);
+    await event.save();
+
+    res.status(201).json({ message: 'Comentario añadido correctamente' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error al añadir el comentario' });
+  }
+};
+
+exports.getComments = async (req, res) => {
+  const eventId = req.params.id;
+
+  try {
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    const comments = event.comments;
+    res.status(200).json(comments);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error al obtener los comentarios' });
+  }
+};
+
+exports.deleteComment = async (req, res) => {
+  const { eventId, commentId, authorId } = req.body;
+
+  console.log(authorId);
+  try {
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    const comment = event.comments.find(comment => comment._id.toString() === commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comentario no encontrado' });
+    }
+
+    const ObjectId = mongoose.Types.ObjectId;
+    if (!comment.author.equals(new ObjectId(authorId))) {
+      console.log(comment.author.equals(new ObjectId(authorId)));
+      return res.status(403).json({ message: 'Solo el autor del comentario puede borrarlo' });
+    }
+
+    event.comments = event.comments.filter(comment => comment._id.toString() !== commentId);
+    await event.save();
+
+    res.status(200).json({ message: 'Comentario borrado correctamente' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error al borrar el comentario' });
+  }
+};
+
+

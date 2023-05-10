@@ -36,23 +36,32 @@ const userSchema = new mongoose.Schema({
     },
     blocked: {
         type: Boolean,
-        default:false
+        default: false
     },
     deleted: {
         type: Boolean,
-        default:false
+        default: false
     },
     roles: [
         {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Role"
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Role"
         }
     ],
     favorites: [
         {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Event",
-          default: []
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Event",
+            default: []
+        }
+    ],
+    valuations: [
+        {
+            type: Number,
+            required: false,
+            default: [],
+            min: 1,
+            max: 5
         }
     ]
 }, {

@@ -48,7 +48,12 @@ const routes: Routes = [
   {
     path: 'event-info/:id',
     loadChildren: () => import('./pages/event-info/event-info.module').then( m => m.EventInfoPageModule)
+  },
+  {
+    path: 'otheruser-page/:id',
+    loadChildren: () => import('./pages/otheruser-page/otheruser-page.module').then( m => m.OtheruserPagePageModule)
   }
+
 
 
 ];

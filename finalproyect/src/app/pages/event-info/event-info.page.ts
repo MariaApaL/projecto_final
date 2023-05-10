@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { EventService } from 'src/app/services/event.service';
-import { Location } from '@angular/common';
+
 
 import { AuthService } from 'src/app/services/auth.service';
+import { EventMapComponent } from 'src/app/components/event-map/event-map.component';
+import { Observable } from 'rxjs';
+import { ParticipantsListComponent } from 'src/app/components/participants-list/participants-list.component';
+import { CommentsModalComponent } from 'src/app/components/comments-modal/comments-modal.component';
+import { ReportModalComponent } from 'src/app/components/report-modal/report-modal.component';
 declare let google: any;
 
 @Component({
@@ -20,24 +25,29 @@ export class EventInfoPage implements OnInit {
   isFavorite: boolean;
   participants: any;
   isJoined = false;
-
+  eventName: string;
+  eventAuthor: string;
+  userAuthor: any;
+  isFull: boolean;
   userId = localStorage.getItem('userId');
-  location:string;
+  location: string;
+ 
 
   fav: any;
 
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    
+
     private navCtrl: NavController,
-    private auth: AuthService,) {
+    private auth: AuthService,
+    private modalCtrl: ModalController) {
     this.route.paramMap.subscribe(params => {
       this.eventId = params.get('id');
       //Ya tenemo el id de la URL guardado en una variable 
     });
 
-   
+
 
 
 
@@ -47,14 +57,17 @@ export class EventInfoPage implements OnInit {
 
   ngOnInit() {
     this.getEvent();
-    // this.initMap();
-    
+
 
 
   }
 
+
   ionViewDidEnter() {
     this.getEvent();
+ 
+    // this.getUserEvent(this.eventAuthor);
+   
 
 
 
@@ -65,18 +78,43 @@ export class EventInfoPage implements OnInit {
       next: (data) => {
         this.event = data;
         console.log(this.event)
-        this.location=this.event.location;
-        this.isFavorite = localStorage.getItem(`favorite_${this.eventId}`) === 'true';
-      
+   
         this.participants = this.event.plazas.length;
+        console.log("get", this.event.plazas.length);
+        const plazas = this.event.plazas?.find((plaza: any) => plaza == this.userId);
+        if (plazas) {
+          this.isJoined = true;
+        }
+        
+        
+        this.getUserEvent(this.event.author).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.userAuthor = data;
+          }
+        }); 
+        
+        this.eventName = this.capitalizeWords(this.event.name);
+        this.isFavorite = localStorage.getItem(`favorite_${this.eventId}`) === 'true';
+        this.checkParticipants();
         return this.event;
       }
     });
   }
 
-  navigateBack() {
+  getUserEvent(eventAuthor: string): Observable<any> {
+    return this.auth.getUserById(eventAuthor);
+  }
   
-    this.navCtrl.navigateBack('/home/main');
+
+  capitalizeWords(eventName: string) {
+    return eventName.replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+
+  navigateBack() {
+
+    this.navCtrl.back();
   }
 
   addFavorite() {
@@ -86,7 +124,7 @@ export class EventInfoPage implements OnInit {
       this.setFavoriteEvent(this.eventId);
     }
     this.isFavorite = !this.isFavorite;
-    localStorage.setItem(`favorite_${this.eventId}`, JSON.stringify(this.isFavorite));
+    // localStorage.setItem(`favorite_${this.eventId}`, JSON.stringify(this.isFavorite));
   }
 
 
@@ -95,13 +133,14 @@ export class EventInfoPage implements OnInit {
     this.auth.setFavorite(this.userId, eventId).subscribe({
       next: (data) => {
         console.log(data);
+        
       },
       error: (err) => {
         console.log(err);
       }
     });
   }
-  
+
   //Llama al servicio para eleminar los favoritos
   deleteFavorite(eventId: any) {
     this.auth.deleteFavorite(this.userId, eventId).subscribe({
@@ -114,106 +153,126 @@ export class EventInfoPage implements OnInit {
     });
   }
 
+ async openParticipants() {
+    const modal = await this.modalCtrl.create({
+      component: ParticipantsListComponent,
+      componentProps: {
+        eventId: this.eventId
+      },
+    });
+    await modal.present();
+
+  }
+  
+  
+
   joinEvent() {
     this.eventService.addParticipant(this.eventId, this.userId).subscribe({
       next: (data) => {
         console.log(data);
-        this.event=data;
-        this.participants = this.event.plazas.length;
+        if (data.plazas) {
+          
+          this.participants = data.plazas.length;
+          console.log("join", data.plazas.length);
+          console.log("join", this.participants);
+          this.checkParticipants(); 
+         // Actualiza si el evento está lleno o no
+        }
       }
     });
-}
+  }
+  
+  leaveEvent() {
+    this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
+      next: (data) => {
+        console.log(data);
+        if (data.plazas) {
+          this.participants = data.plazas.length;
+          console.log("leave", data.plazas.length);
+        
+          this.checkParticipants();
+         // Actualiza si el evento está lleno o no
+        }
+      }
+    });
+  }
 
-deleteParticipant() {
-  this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
-    next: (data) => {
-      console.log(data);
-      this.event=data;
-      if(this.event.plazas.length!=0){
-      this.participants = this.event.plazas.length;
+  goToProfile() {
+    if(this.event.author == this.userId){
+    this.navCtrl.navigateForward(`/home/user-page`);
+    }else{
+      this.navCtrl.navigateForward(`/otheruser-page/${this.event.author}`);
     }
   }
-  });
-
-}
-
-getParticipants(eventId: any) {
-  // this.eventService.getParticipants(eventId).subscribe({
-  //   next: (data) => {
-  //     console.log(data);
-  //   }
-  // });
-
-}
 
 
-
-joinOrLeaveEvent() {
-  if (this.isJoined) {
-    this.deleteParticipant();
-    this.ionViewDidEnter();
-  } else {
-    this.joinEvent();
-    this.ionViewDidEnter();
+  joinOrLeaveEvent() {
+    if (this.isJoined) {
+      this.leaveEvent();
+      this.participants = this.event.plazas.length;
+      this.isJoined = false;
+      this.ionViewDidEnter();
+    } else {
+      this.joinEvent();
+      this.participants = this.event.plazas.length;
+      this.isJoined = true;
+      this.ionViewDidEnter();
+    }
+  
+    console.log("agregrar", this.event.plazas.length);
+    console.log("agregrar", this.participants);
+    
+    // Si el número de participantes ha llegado al máximo y no se ha unido aún, desactiva el botón de unirse
+    this.checkParticipants();
   }
-  this.isJoined = !this.isJoined;
+
+
+  checkParticipants() {
+    if (this.participants == this.event.numPlazas && !this.isJoined) {
+      this.isFull = true;
+    } else {
+      this.isFull = false;
+    }
+  }
+
+ async openReportModal(){
+  const modal = await this.modalCtrl.create({
+    component: ReportModalComponent,
+  
+    breakpoints: [0, 0.5, 1],
+    initialBreakpoint: 1,
+    handleBehavior: 'none'
+    
+  });
+  await modal.present();
+ }
+
+
+  async openLocation() {
+    const modal = await this.modalCtrl.create({
+      component: EventMapComponent,
+      componentProps: {
+        location: this.event.location
+      },
+    });
+    await modal.present();
+
+  }
+
+
+
+
+ async openComments(){
+  const modal = await this.modalCtrl.create({
+    component: CommentsModalComponent,
+    componentProps: {
+      eventId: this.eventId
+    },
+  });
+  await modal.present();
+
+  }
 }
-
-// initMap() {
-//   let map: google.maps.Map;
-//   let geocoder: google.maps.Geocoder = new google.maps.Geocoder();
-//   let address = this.location;
-//   async function initMap(): Promise<void> {
-//   const { Map } = await google.maps.importLibrary("maps");
-//     map = new Map(document.getElementById("map") as HTMLElement, {
-//       zoom: 8,
-//     });
-
-//     geocoder.geocode({ address: "NOMBRE_DE_LA_UBICACION" }, (results, status) => {
-//       if (status === "OK") {
-//         const location = results[0].geometry.location;
-//         map.setCenter(location);
-//         new google.maps.Marker({
-//           position: location,
-//           map: map,
-//         });
-//       } else {
-//         console.error("Geocode was not successful for the following reason: " + status);
-//       }
-//     });
-//   }
-// }
-
-
-// initMap() {
-//   let geocoder: google.maps.Geocoder = new google.maps.Geocoder();
-//   const map = new google.maps.Map(
-//     document.getElementById("map") as HTMLElement,
-//     {
-      
-//       zoom: 13,
-//       mapTypeId: "roadmap",
-//     }
-//   );
-//   geocoder.geocode({ address: this.location }, (results, status) => {
-//           if (status === "OK") {
-//             const location = results[0].geometry.location;
-//             map.setCenter(location);
-//             new google.maps.Marker({
-//               position: location,
-//               map: map,
-//             });
-//           } else {
-//             console.error("Geocode was not successful for the following reason: " + status);
-//           }
-//         });
-//   }
-
-
-
-}
-
-
 
 
 

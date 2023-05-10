@@ -12,9 +12,10 @@ db.user = require("./user-model");
 db.role = require("./role-model");
 db.category = require("./category-model");
 db.event = require("./event-model");
-
+db.report = require("./report-model")
 
 db.ROLES = ["user", "admin"];
-db.CATEGORIES = [ "artes" , "deportes", "gastronomia", "animales" , "solidario"]
+db.CATEGORIES = [ "cultura" , "deportes", "gastronomia", "animales" , "solidario"];
+db.REPORTS = ["spam", "odio", "sexual", "violencia", "fraude"];
 
 module.exports = db;

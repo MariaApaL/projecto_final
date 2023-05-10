@@ -1,0 +1,87 @@
+<ion-header *ngIf="profileUser" no-border>
+  <ion-toolbar>
+    <ion-title>
+      {{profileUser.user}}
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="openModal()">
+        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+      </ion-button>
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="profileUser">
+  
+  <!-- USER PROFILE -->
+  <div class="profile-pic">
+    <img src={{profileUser.picture}} alt="user_avatar">
+
+  </div>
+  <div class="profile">
+  <div class="profile-stars">
+      <ul>
+        <li><span>0/5</span> Calificación</li>
+        <li><span>{{eventCount}}</span> Eventos</li>
+      </ul>
+    </div>
+  
+  <div class="profile-bio">
+    <h1>{{profileUser.name}}</h1>
+    <p>{{profileUser.bio}}</p>
+    </div>
+  </div>
+    
+   <!-- SEGMENTO DE EVENTOS --> 
+    <div class="event-section">
+   
+    <ion-segment value="my-event" >
+      <ion-segment-button value="my-event">
+        
+          
+          <ion-icon name="albums-outline"></ion-icon>
+        
+      </ion-segment-button>
+</ion-segment>
+<!-- FIN DEL SEGMENTO DE MEGUSTA Y MIS EVENTOS -->
+
+<!--EVENTOS -->
+    <ion-row class="ion-text-left default-left-padding"  >
+      <ng-container *ngFor="let event of createdEvents">
+        <ion-col size="6">
+      <ion-card >
+        <ion-card-header class="ion-no-padding">
+          <img src="../../../../assets/events/event1.svg" />
+        </ion-card-header>
+
+        <ion-card-content>
+          <p class="date">{{ event.date | date:'dd MMM, yyyy HH:mm' }}</p>
+          <h2 class="eventname">{{ event.name }}</h2>
+          <p class="location"><ion-icon name="location"></ion-icon>{{ event.location }}</p>
+
+          <div class="additional-info">
+    
+            <p class="time">{{event.numPlazas}} Plazas</p>
+          </div>
+          <div class="more-info">
+            <p  (click)="selectEvent(event._id)">Ver más</p>
+           </div>
+          
+            <ion-buttons>
+              <ion-button (click)="addFavorite(event._id)">
+                <ion-icon slot="icon-only" [name]="isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          
+        </ion-card-content>
+      </ion-card>
+      </ion-col>
+      </ng-container>
+    </ion-row>
+    
+  </div>
+</ion-content>
