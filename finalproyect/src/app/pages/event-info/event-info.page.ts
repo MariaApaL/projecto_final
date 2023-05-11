@@ -11,6 +11,7 @@ import { ParticipantsListComponent } from 'src/app/components/participants-list/
 import { CommentsModalComponent } from 'src/app/components/comments-modal/comments-modal.component';
 import { ReportModalComponent } from 'src/app/components/report-modal/report-modal.component';
 import { EventsInterface } from 'src/app/interfaces/event';
+import { UsersInterface } from 'src/app/interfaces/user';
 declare let google: any;
 
 @Component({
@@ -26,12 +27,13 @@ export class EventInfoPage implements OnInit {
   participants: any;
   isJoined = false;
   eventName: string;
-  eventAuthor: string;
-  userAuthor: any;
+  eventAuthorId: string;
+  userAuthorId: string;
   isFull: boolean;
   userId = localStorage.getItem('userId');
   location: string;
- 
+  numFavorites: number;
+  currentUser: UsersInterface;
   favorites: any[] = [];  
 
   fav: any;
@@ -58,6 +60,8 @@ export class EventInfoPage implements OnInit {
 
   ngOnInit() {
     this.getEvent();
+    this.getUser();
+   
 
 
 
@@ -81,9 +85,7 @@ export class EventInfoPage implements OnInit {
         console.log(this.event)
    // actualiza el número de participantes
         this.participants = this.event.plazas.length;
-        // console.log("get", this.event.plazas.length);
-        // Comprueba si el usuario está en la lista de participantes
-        
+
         const plazas = this.event.plazas?.find((plaza: any) => plaza == this.userId);
         // Si el usuario está en la lista de participantes, cambia el estado del botón de unirse
         if (plazas) {
@@ -95,12 +97,12 @@ export class EventInfoPage implements OnInit {
         
         this.getUserEvent(this.event.author).subscribe({
           next: async (data) => {
-            this.userAuthor = await data;
+            this.userAuthorId = await data;
           }
         }); 
         
         this.eventName = this.capitalizeWords(this.event.name);
-        this.isFavorite = localStorage.getItem(`favorite_${this.eventId}`) === 'true';
+    
         this.checkParticipants();
 
         return this.event;
@@ -126,6 +128,7 @@ export class EventInfoPage implements OnInit {
   addFavorite() {
     if (this.isFavorite) {
       this.deleteFavorite(this.eventId);
+      
     } else {
       this.setFavoriteEvent(this.eventId);
     }
@@ -135,9 +138,9 @@ export class EventInfoPage implements OnInit {
 
 
   //llama al servicio para añadir un evento a favoritos
-  setFavoriteEvent(eventId: any) {
+  setFavoriteEvent(eventId: string) {
     this.auth.setFavorite(this.userId, eventId).subscribe({
-      next: async (data) => {
+      next: async (data:UsersInterface) => {
         console.log(data);
         
       },
@@ -148,9 +151,9 @@ export class EventInfoPage implements OnInit {
   }
 
   //Llama al servicio para eleminar los favoritos
-  deleteFavorite(eventId: any) {
+  deleteFavorite(eventId: string) {
     this.auth.deleteFavorite(this.userId, eventId).subscribe({
-      next: (data) => {
+      next: (data:UsersInterface) => {
         console.log(data);
       },
       error: (err) => {
@@ -158,6 +161,7 @@ export class EventInfoPage implements OnInit {
       }
     });
   }
+
 
   //Abre el modal de participantes
  async openParticipants() {
@@ -276,31 +280,24 @@ export class EventInfoPage implements OnInit {
 
   }
 
-
-//Llama al servicio para obtener los favoritos
-  getFavorites() {
-    this.auth.getFavorites(this.userId).subscribe({
-      next: async (data) => {
-        this.favorites = Object.values(data);
-        console.log(this.favorites);
-
-      },
-      error: async (err) => {
-        console.log(err);
-      }
-    });
-
+//recoge el usuario
+getUser() {
+  this.auth.getUser().subscribe({
+    next: async (data) => {
+      this.currentUser = await data;
+      console.log(this.currentUser);
+      const favorites = this.currentUser.favorites?.find((fav: any) => fav == this.eventId);
+      console.log("fav",favorites);
+        // Si el usuario está en la lista de participantes, cambia el estado del botón de unirse
+        if (favorites) {
+          this.isFavorite = true;
+          console.log("user",this.isFavorite);
+        }else{
+          this.isFavorite = false;
+          console.log("user",this.isFavorite);
+        }
+    }
+  });
 }
-
-
-
-
-
-
-
-
-
-
-
 
 }
