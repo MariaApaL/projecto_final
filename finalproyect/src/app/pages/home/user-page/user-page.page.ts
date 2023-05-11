@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
 
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { EventsInterface } from 'src/app/interfaces/event';
 
 
 
@@ -24,11 +25,11 @@ export class UserPagePage implements OnInit {
   eventCount: number = 0;
 
 //recoger los eventos del usuario
-  myEvents:any[] = []
+  myEvents:EventsInterface[] = []
   //Recoger los eventos en los que participa el usuario
-  joinedEvents:any[] = []
+  joinedEvents:EventsInterface[] = []
   //Recoger los favoritos del usuario
-  myFavs:any[] = []
+  myFavs:EventsInterface[] = []
   //Recoger el id del usuario
   userId = localStorage.getItem('userId');
   //para el boton de favoritos
@@ -74,7 +75,7 @@ export class UserPagePage implements OnInit {
   // muestra eventos por autor
   findEventsByAuthorId(authorId: any) {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
-      next: (data) => {
+      next: (data:EventsInterface) => {
         this.myEvents =  Object.values(data);
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log("refresco eventos")
@@ -86,7 +87,7 @@ export class UserPagePage implements OnInit {
 
   getEventsJoined(userId:any){
     this.eventService.getEventsByParticipantId(userId).subscribe({
-      next: (data) => {
+      next: (data:EventsInterface) => {
         this.joinedEvents =  Object.values(data);
 ;
         this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -234,8 +235,9 @@ export class UserPagePage implements OnInit {
     //Llama al servicio para eleminar los favoritos
     deleteFavorite(eventId: any) {
       this.auth.deleteFavorite(this.userId, eventId).subscribe({
-        next: (data) => {
-          console.log(data);
+        next:async (data) => {
+          const favorites:EventsInterface = await data.favorites;
+          
           this.ionViewDidEnter();
         },
         error: (err) => {

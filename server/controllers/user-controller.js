@@ -313,7 +313,7 @@ exports.deleteFavorite = async (req, res) => {
     await user.save();
   }
   
-  res.status(200).json({ message: 'Evento eliminado de favoritos correctamente' });
+  res.status(200).json({ message: 'Evento eliminado de favoritos correctamente', user });
   } catch (error) {
   console.error(error);
   res.status(500).json({ message: 'Ha ocurrido un error al eliminar el evento de favoritos' });
@@ -331,12 +331,13 @@ exports.deleteFavorite = async (req, res) => {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
   
-      res.status(200).json(user.favorites);
+      res.status(200).json( user.favorites );
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Ha ocurrido un error al obtener los favoritos del usuario' });
     }
   }
+
 
 
 exports.addReportToUser = async (req, res) => {

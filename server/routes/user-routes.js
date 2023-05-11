@@ -52,9 +52,9 @@ module.exports = function(app) {
 
   //Agregar a favoritos.
   app.post('/setFavorite/:id', controller.setFavorite);
-
+  //Obtener favoritos.
   app.get("/getFavorites/:id", controller.getFavorites);
-
+  //Eliminar de favoritos.
   app.delete("/deleteFavorite/:id", controller.deleteFavorite);
 
 

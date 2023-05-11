@@ -81,14 +81,15 @@
     </div> -->
 
     <div class="join">
-      <ion-button *ngIf="!isJoined" [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
+      <ion-button  [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
         class="join-button">
-        Unirse
+        {{isJoined ? "Cancelar" : "Unirse"}}
       </ion-button>
-      <ion-button *ngIf="isJoined" [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
+
+      <!-- <ion-button *ngIf="isJoined" [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
         class="join-button">
         Cancelar
-      </ion-button>
+      </ion-button> -->
     </div>
 
   </div>

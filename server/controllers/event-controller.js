@@ -288,14 +288,17 @@ exports.addParticipant = async (req, res) => {
     const { id } = req.params;
     const { userId } = req.body;
 
+    const isFull = await Event.findOne({ _id: id });
+    if (isFull.plazas.length >= isFull.numPlazas) {
+      return res.status(400).json({ message: 'No hay plazas disponibles' });
+    }
     // Buscamos el evento por id y actualizamos sus participantes
     const event = await Event.findByIdAndUpdate(id, { $addToSet: { plazas: userId } }, { new: true });
+
     if (!event) {
       return res.status(404).json({ message: 'Evento no encontrado' });
     }
-    if (event.plazas.length >= event.numPlazas) {
-      return res.status(400).json({ message: 'No hay plazas disponibles' });
-    }
+   
 
     res.status(200).json({ message: 'Usuario añadido correctamente', event });
   } catch (error) {
@@ -322,7 +325,7 @@ exports.deleteParticipant = async (req, res) => {
       await event.save();
     }
 
-    res.status(200).json({ message: 'Plaza eliminada' });
+    res.status(200).json({ message: 'Plaza eliminada', event });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Ha ocurrido un error al eliminar la plaza' });

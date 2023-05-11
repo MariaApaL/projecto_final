@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController} from '@ionic/angular';
 import { EventService } from 'src/app/services/event.service';
 
 
@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { ParticipantsListComponent } from 'src/app/components/participants-list/participants-list.component';
 import { CommentsModalComponent } from 'src/app/components/comments-modal/comments-modal.component';
 import { ReportModalComponent } from 'src/app/components/report-modal/report-modal.component';
+import { EventsInterface } from 'src/app/interfaces/event';
 declare let google: any;
 
 @Component({
@@ -19,9 +20,8 @@ declare let google: any;
 })
 export class EventInfoPage implements OnInit {
 
-
   eventId: string;
-  event: any;
+  event: EventsInterface;
   isFavorite: boolean;
   participants: any;
   isJoined = false;
@@ -32,6 +32,7 @@ export class EventInfoPage implements OnInit {
   userId = localStorage.getItem('userId');
   location: string;
  
+  favorites: any[] = [];  
 
   fav: any;
 
@@ -73,30 +74,35 @@ export class EventInfoPage implements OnInit {
 
   }
   //llama al servicio para obtener los eventos
-  getEvent() {
+  async getEvent() {
     this.eventService.getEvent(this.eventId).subscribe({
-      next: (data) => {
-        this.event = data;
+      next: async (data) => {
+        this.event = await data;
         console.log(this.event)
-   
+   // actualiza el número de participantes
         this.participants = this.event.plazas.length;
-        console.log("get", this.event.plazas.length);
+        // console.log("get", this.event.plazas.length);
+        // Comprueba si el usuario está en la lista de participantes
+        
         const plazas = this.event.plazas?.find((plaza: any) => plaza == this.userId);
+        // Si el usuario está en la lista de participantes, cambia el estado del botón de unirse
         if (plazas) {
           this.isJoined = true;
+        }else{
+          this.isJoined = false;
         }
         
         
         this.getUserEvent(this.event.author).subscribe({
-          next: (data) => {
-            console.log(data);
-            this.userAuthor = data;
+          next: async (data) => {
+            this.userAuthor = await data;
           }
         }); 
         
         this.eventName = this.capitalizeWords(this.event.name);
         this.isFavorite = localStorage.getItem(`favorite_${this.eventId}`) === 'true';
         this.checkParticipants();
+
         return this.event;
       }
     });
@@ -131,11 +137,11 @@ export class EventInfoPage implements OnInit {
   //llama al servicio para añadir un evento a favoritos
   setFavoriteEvent(eventId: any) {
     this.auth.setFavorite(this.userId, eventId).subscribe({
-      next: (data) => {
+      next: async (data) => {
         console.log(data);
         
       },
-      error: (err) => {
+      error: async (err) => {
         console.log(err);
       }
     });
@@ -153,6 +159,7 @@ export class EventInfoPage implements OnInit {
     });
   }
 
+  //Abre el modal de participantes
  async openParticipants() {
     const modal = await this.modalCtrl.create({
       component: ParticipantsListComponent,
@@ -165,62 +172,15 @@ export class EventInfoPage implements OnInit {
   }
   
   
-
-  joinEvent() {
-    this.eventService.addParticipant(this.eventId, this.userId).subscribe({
-      next: (data) => {
-        console.log(data);
-        if (data.plazas) {
-          
-          this.participants = data.plazas.length;
-          console.log("join", data.plazas.length);
-          console.log("join", this.participants);
-          this.checkParticipants(); 
-         // Actualiza si el evento está lleno o no
-        }
-      }
-    });
-  }
-  
-  leaveEvent() {
-    this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
-      next: (data) => {
-        console.log(data);
-        if (data.plazas) {
-          this.participants = data.plazas.length;
-          console.log("leave", data.plazas.length);
-        
-          this.checkParticipants();
-         // Actualiza si el evento está lleno o no
-        }
-      }
-    });
-  }
-
-  goToProfile() {
-    if(this.event.author == this.userId){
-    this.navCtrl.navigateForward(`/home/user-page`);
-    }else{
-      this.navCtrl.navigateForward(`/otheruser-page/${this.event.author}`);
-    }
-  }
-
-
-  joinOrLeaveEvent() {
+  async joinOrLeaveEvent() {
     if (this.isJoined) {
       this.leaveEvent();
-      this.participants = this.event.plazas.length;
-      this.isJoined = false;
-      this.ionViewDidEnter();
+      console.log("leave:", this.participants);
     } else {
       this.joinEvent();
-      this.participants = this.event.plazas.length;
-      this.isJoined = true;
-      this.ionViewDidEnter();
+      console.log("join:", this.participants);
     }
-  
-    console.log("agregrar", this.event.plazas.length);
-    console.log("agregrar", this.participants);
+    this.isJoined = !this.isJoined;
     
     // Si el número de participantes ha llegado al máximo y no se ha unido aún, desactiva el botón de unirse
     this.checkParticipants();
@@ -234,7 +194,52 @@ export class EventInfoPage implements OnInit {
       this.isFull = false;
     }
   }
+  
 
+  joinEvent() {
+    this.eventService.addParticipant(this.eventId, this.userId).subscribe({
+      next: async (data) => {
+        const event : EventsInterface = await data.event;
+          
+          this.participants = event.plazas.length;
+          console.log("Data", data);
+          console.log("Plazas", event.plazas.length);
+          this.checkParticipants(); 
+         // Actualiza si el evento está lleno o no
+        // }
+      }
+    });
+  }
+  
+  leaveEvent() {
+    this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
+      next: async (data) => {
+        const event:EventsInterface = await data.event;
+        console.log('ELIMINAR',data);
+        // if (data.plazas) {
+          this.participants = event.plazas.length;
+          console.log("Data", data);
+          console.log("Plazas", event.plazas.length);
+        
+          this.checkParticipants();
+         // Actualiza si el evento está lleno o no
+        // }
+      }
+    });
+  }
+
+
+  goToProfile() {
+    if(this.event.author == this.userId){
+    this.navCtrl.navigateForward(`/home/user-page`);
+    }else{
+      this.navCtrl.navigateForward(`/otheruser-page/${this.event.author}`);
+    }
+  }
+
+
+  
+//Abre el modal de denuncias
  async openReportModal(){
   const modal = await this.modalCtrl.create({
     component: ReportModalComponent,
@@ -247,7 +252,7 @@ export class EventInfoPage implements OnInit {
   await modal.present();
  }
 
-
+//Abre el modal del mapa
   async openLocation() {
     const modal = await this.modalCtrl.create({
       component: EventMapComponent,
@@ -259,9 +264,7 @@ export class EventInfoPage implements OnInit {
 
   }
 
-
-
-
+  //Abre el modal de comentarios
  async openComments(){
   const modal = await this.modalCtrl.create({
     component: CommentsModalComponent,
@@ -272,6 +275,21 @@ export class EventInfoPage implements OnInit {
   await modal.present();
 
   }
+
+
+//Llama al servicio para obtener los favoritos
+  getFavorites() {
+    this.auth.getFavorites(this.userId).subscribe({
+      next: async (data) => {
+        this.favorites = Object.values(data);
+        console.log(this.favorites);
+
+      },
+      error: async (err) => {
+        console.log(err);
+      }
+    });
+
 }
 
 
@@ -285,3 +303,4 @@ export class EventInfoPage implements OnInit {
 
 
 
+}

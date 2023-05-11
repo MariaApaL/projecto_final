@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
         {
             type: Number,
             required: false,
-            default: [],
+            default: 0,
             min: 1,
             max: 5
         }

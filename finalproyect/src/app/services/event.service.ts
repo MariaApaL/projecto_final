@@ -34,18 +34,18 @@ export class EventService {
     return this.http.get(URL, { headers });
   }
 
-  getEvent(id: any): Observable<any> {
+  getEvent(id: string): Observable<any> {
     const URL = `${ this.url }/getEvent/${id}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(URL, { headers });
   }
 
-  updateEvent(id: any, dataToUpdate: any) {
+  updateEvent(id: string, dataToUpdate: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.put(`${this.url}/updateEvent/${id}`, dataToUpdate, { headers });
   }
 
-  findEventsByAuthorId(authorId:any){
+  findEventsByAuthorId(authorId:string){
     const URL = `${ this.url }/findEventsByAuthorId/${authorId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(URL, { headers });
@@ -60,20 +60,20 @@ export class EventService {
   }
 
 
-  addParticipant(eventId: any, userId: any): Observable<any> {
+  addParticipant(eventId: string, userId: string): Observable<any> {
     const url = `${this.url}/addParticipant/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const body = { userId};
     return this.http.post(url, body, { headers: headers });
   }
 
-  getParticipants(eventId: any): Observable<any> {
+  getParticipants(eventId: string): Observable<any> {
     const url = `${this.url}/getParticipants/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(url, { headers: headers });
   }
 
-  deleteParticipant(eventId: any, userId: any): Observable<any> {
+  deleteParticipant(eventId: string, userId: string): Observable<any> {
     const body = { userId };
     const url = `${ this.url }/deleteParticipant/${ eventId }`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -81,7 +81,7 @@ export class EventService {
     return this.http.delete(url, options);
   }
 
-  getEventsByParticipantId(userId: any): Observable<any> {
+  getEventsByParticipantId(userId: string): Observable<any> {
     const url = `${this.url}/getEventsByParticipantId/${userId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(url, { headers: headers });
