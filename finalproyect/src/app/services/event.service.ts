@@ -59,6 +59,11 @@ export class EventService {
     return this.http.delete(URL, options);
   }
 
+  deleteEventsByAuthor(id: string) {
+    const URL = `${ this.url }/deleteEventsByAuthor/${id}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.delete(URL, { headers });
+  }
 
   addParticipant(eventId: string, userId: string): Observable<any> {
     const url = `${this.url}/addParticipant/${eventId}`;

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-privacy-modal',
@@ -17,7 +18,8 @@ export class PrivacyModalComponent implements OnInit {
     private modalCtrl: ModalController,
     private auth: AuthService,
     private alertCtrl: AlertController,
-    private navCtrl:NavController,) { }
+    private navCtrl:NavController,
+    private eventService:EventService) { }
 
   ngOnInit() {}
 
@@ -71,5 +73,21 @@ export class PrivacyModalComponent implements OnInit {
     await alert.present();
   }
 
- 
+  deleteUser(id:string){
+    this.auth.updateUser(id, {deleted: true}).subscribe({
+      next: user => { 
+        this.deleteAllEvents(id);
+        this.auth.logOut();
+        this.modalCtrl.dismiss();
+        this.navCtrl.navigateBack('/login');
+        console.log(user);
+      },error: (err) => {
+        console.log(err);
+      }
+    }); 
+  }
+
+  deleteAllEvents(id:string){
+    this.eventService.deleteEventsByAuthor(id);
+    }
 }
