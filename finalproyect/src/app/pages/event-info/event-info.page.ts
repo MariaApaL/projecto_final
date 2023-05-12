@@ -27,8 +27,8 @@ export class EventInfoPage implements OnInit {
   participants: any;
   isJoined = false;
   eventName: string;
-  eventAuthorId: string;
-  userAuthorId: string;
+  
+  userAuthor: UsersInterface;
   isFull: boolean;
   userId = localStorage.getItem('userId');
   location: string;
@@ -51,6 +51,7 @@ export class EventInfoPage implements OnInit {
     });
 
 
+   
 
 
 
@@ -58,9 +59,10 @@ export class EventInfoPage implements OnInit {
 
 
 
-  ngOnInit() {
-    this.getEvent();
-    this.getUser();
+  async ngOnInit() {
+    
+    await this.getEvent();
+    await this.getUser();
    
 
 
@@ -97,7 +99,9 @@ export class EventInfoPage implements OnInit {
         
         this.getUserEvent(this.event.author).subscribe({
           next: async (data) => {
-            this.userAuthorId = await data;
+            console.log('id',data);
+            this.userAuthor= await data.user;
+            console.log('userauthor',this.userAuthor);
           }
         }); 
         
@@ -270,10 +274,14 @@ export class EventInfoPage implements OnInit {
 
   //Abre el modal de comentarios
  async openComments(){
+  console.log("eventid",this.eventId);
   const modal = await this.modalCtrl.create({
     component: CommentsModalComponent,
+   
     componentProps: {
-      eventId: this.eventId
+      eventId: this.eventId,
+      
+     
     },
   });
   await modal.present();

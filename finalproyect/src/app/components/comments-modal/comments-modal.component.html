@@ -20,9 +20,9 @@
   <div class="text-area">
     <ion-item>
   
-      <ion-textarea placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
+      <ion-textarea (ionChange)="onCommentChange($event)" placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
        maxlength="240"></ion-textarea>
-      <ion-button  (ionChange)="onCommentChange($event)" class="icon" [disabled]="isEmpty" (click)="addComments()">
+      <ion-button  class="icon" [disabled]="isDisabled" (click)="addComments()">
         <ion-icon name="chatbubble-outline"></ion-icon>
       </ion-button>
     </ion-item>
@@ -30,14 +30,11 @@
   </div>
   <div class="comments">
     <p> Comentarios</p>
-    <ion-list *ngIf="commentAuthor">
+    <ion-list>
       <ion-item *ngFor="let comment of comments">
-        
-          <p>{{commentAuthor}}</p>
-          <p>{{comment.text}}</p>
-        
+        <p>{{ commentAuthors[comment.author] }}</p>
+        <p>{{ comment.text }}</p>
       </ion-item>
-
     </ion-list>
   </div>
 

@@ -41,6 +41,8 @@ module.exports = function (app) {
 
   app.delete("/deleteEventByNameAndAuthor", controller.deleteEventByNameAndAuthor);
 
+  app.delete("/deleteEventsByAuthor/:id", controller.deleteEventsByAuthor);
+
 
   // ruta GET para obtener evento por category
 
@@ -74,7 +76,7 @@ module.exports = function (app) {
 
   app.get("/getEventsByParticipantId/:id", controller.getEventsByParticipantId);
 
-
+  //COMMENTS
 
   app.post('/addComments/', controller.addComments);
 

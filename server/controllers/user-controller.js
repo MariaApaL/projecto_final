@@ -111,10 +111,10 @@ exports.login = async (req, res) => {
   }
 };
 
-//Obtiene a todos los usuarios
+//Obtiene a todos los usuarios que no estén eliminados
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({}, '-password');
+    const users = await User.find({ deleted: false }, '-password');
     res.send(users);
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -123,7 +123,7 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id, '-password');
+    const user = await User.findOne({ _id: req.params.id, deleted: false }, '-password');
     if (!user) {
       return res.status(404).send({ message: "Usuario no encontrado" });
     }
@@ -171,56 +171,24 @@ exports.updateUser = async (req, res) => {
     
     // comprobamos que el nuevo nombre de usuario o el nuevo email no contengan palabras prohibidas
 
-    // if (checkBadWord(upUser, badWords) || checkBadWord(upName, badWords)|| 
-    // checkBadWord(upEmail, badWords) || checkBadWord(upBio, badWords)) {
-    //   return res.status(400).send({ message: "Error, palabras prohibidas" });
-    // }
+    if (checkBadWord(upUser, badWords) || checkBadWord(upName, badWords)|| 
+    checkBadWord(upEmail, badWords) || checkBadWord(upBio, badWords)) {
+      return res.status(400).send({ message: "Error, palabras prohibidas" });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(userId, fieldsToUpdate, { new: true });
+
+    if (updatedUser.deleted) {
+      res.status(204).send();
+    } 
+
     res.send({ message: "Usuario actualizado con éxito", updatedUser });
   } catch (err) {
     res.status(500).send({ message: "Error al actualizar usuario", err });
   }
 };
 
-//CON ESTE UPDATE NO PUEDO ACTUALIZAR LOS CAMPOS QUE YO QUIERA.
-// exports.updateUser = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
 
-//     const { user, name, email, password, bio, blocked, deleted, picture } = req.body;
-
-//     checkWords(user, name, email, bio);
-
-//     const hashPassword = await bcrypt.hash(password, 8);
-
-//     const updatedUser = {
-//       user: user.toLowerCase,
-//       name: name,
-//       password: hashPassword,
-//       email: email.toLowerCase,
-//       bio: bio,
-//       picture: picture,
-//       blocked: blocked,
-//       deleted:deleted,
-//     };
-
-//     const userExists = await User.findOne({ $or: [{ user: updatedUser.user }, { email: updatedUser.email }], _id: { $ne: userId } });
-//     if (userExists) {
-//       return res.status(409).send({ message: "Nombre de usuario o correo electrónico ya está en uso" });
-//     }
-
-//     const newUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
-//     if (!newUser) {
-//       return res.status(404).send({ message: "Usuario no encontrado" });
-//     }
-
-//     res.send({ message: "Usuario actualizado con éxito", user });
-//   } catch (err) {
-//     res.status(500).send({ message: "Error al actualizar usuario", err });
-//   }
-
-// };
 
 //Elimina a un usuario por su id
 

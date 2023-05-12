@@ -44,12 +44,13 @@ export class UserPagePage implements OnInit {
     private alertCtrl: AlertController,
     private navCtrl:NavController) {
 
-      //Para poder recoger los datos del usuario y mostrarlos en la página
-      this.getUser();
+     
 
   }
-  ngOnInit() {
+  async ngOnInit() {
     
+     //Para poder recoger los datos del usuario y mostrarlos en la página
+     this.getUser();
 
     //Para poder recoger los eventos del usuario y mostrarlos en la página
     this.findEventsByAuthorId(this.userId);
@@ -75,11 +76,12 @@ export class UserPagePage implements OnInit {
   // muestra eventos por autor
   findEventsByAuthorId(authorId: any) {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
-      next: (data:EventsInterface) => {
-        this.myEvents =  Object.values(data);
+      next: async (data:EventsInterface) => {
+        this.myEvents =  await Object.values(data);
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log("refresco eventos")
         this.eventCount = this.myEvents.length;
+        
         return this.myEvents;
       }
     });
@@ -99,16 +101,12 @@ export class UserPagePage implements OnInit {
   //Para mostrar los datos del usuario
   getUser() {
     this.auth.getUser().subscribe({
-      next: (data) => {
+      next: async (data) => {
         
-        this.currentUser = data;
+        this.currentUser = await data;
         console.log(this.currentUser);
         // this.ionViewDidEnter();
-        
        
-      },
-      error: (err) => {
-        console.log(err);
       }
     });
   }
@@ -201,8 +199,9 @@ export class UserPagePage implements OnInit {
   //Para poder editar un evento
   editEvent(id: any) {
     if(this.selectedSegment=='my-events'){
-     
+    
       this.navCtrl.navigateForward([`/edit-event/${id}`]);
+      this.ionViewDidEnter();
       
     }
   }

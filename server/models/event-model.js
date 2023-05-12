@@ -16,15 +16,6 @@ const eventSchema = new mongoose.Schema({
     date: {
         type: Date,
         required: [true, 'Por favor, introduzca la fecha del evento'],
-        // validate: {
-        //     validator: function (v) {
-        //         const now = new Date();
-        //         const max = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
-        //         return v >= now && v <= max;
-        //     },
-
-        // }
-
 
     },
     location: {

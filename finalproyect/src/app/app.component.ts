@@ -11,22 +11,21 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class AppComponent {
  
-  constructor(private gtmService:GoogleTagManagerService,
-    private router : Router) {
+  constructor() {
 
-      gtmService.addGtmToDom();
+    
      }
 
   ngOnInit(){
-  this.router.events.forEach(item=>{
-    if(item instanceof NavigationEnd){
-      const gtmTag = {
-        'event':'page',
-        'pageName':item.url
-      };
-      this.gtmService.pushTag(gtmTag)
-    }
-  });
+  // this.router.events.forEach(item=>{
+  //   if(item instanceof NavigationEnd){
+  //     const gtmTag = {
+  //       'event':'page',
+  //       'pageName':item.url
+  //     };
+  //     this.gtmService.pushTag(gtmTag)
+  //   }
+  // });
     
   }
 }

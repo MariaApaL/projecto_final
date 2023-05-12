@@ -16,8 +16,8 @@
 </ion-header>
 
 
-
-<ion-content *ngIf="event && userAuthorId" class="content-with-margin">
+<!-- *ngIf="event && userAuthorId" -->
+<ion-content  *ngIf="event" class="content-with-margin">
 
   <div class="section">
 
@@ -66,7 +66,7 @@
     </div>
 
     <div class="description">
-      <p><span (click)="goToProfile()"><strong>{{userAuthor?.name}}</strong></span>
+      <p><span (click)="goToProfile()"><strong>{{userAuthor}}</strong></span>
         {{event.description}}</p>
 
     </div>
@@ -81,7 +81,7 @@
     </div> -->
 
     <div class="join">
-      <ion-button  [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
+      <ion-button  [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent()"
         class="join-button">
         {{isJoined ? "Cancelar" : "Unirse"}}
       </ion-button>

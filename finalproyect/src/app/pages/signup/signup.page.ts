@@ -67,18 +67,23 @@ export class SignupPage implements OnInit {
   }
  
   onRegister(){
-
+console.log('hola');
     if(this.form.valid){
-    const user = this.form.controls.user.value.trim().toLowerCase();
+      console.log('hola')
+      
+    // const user = this.form.controls.user.value.trim().toLowerCase();
+    const user = this.form.controls.user.value.replace(/\s+/g, '');
+    console.log(user);
     const password = this.form.controls.password.value.trim();
     const rpassword = this.form.controls.rpassword.value.trim();
     const name = this.form.controls.name.value.trim();
     const email = this.form.controls.email.value.trim().toLowerCase();
-    this.auth.register(user, name, password, email).subscribe({
+    const picture = "../../assets/persons/avatar.svg"
+    this.auth.register(user, name, password, email,picture).subscribe({
       next: res => {
         console.log(res); 
         this.auth.logOut();
-        this.loginUser(name, password);
+        this.loginUser(user, password);
         this.router.navigate(['/home/main'], {replaceUrl:true});
       },
       error: err => {

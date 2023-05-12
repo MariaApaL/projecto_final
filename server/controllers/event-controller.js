@@ -93,8 +93,19 @@ exports.createEvent = async (req, res) => {
 
 exports.getEvents = async (req, res) => {
   try {
-    const events = await Event.find();
-    res.send(events);
+    const events = await Event.find()
+      .populate({
+        path: 'author',
+        match: { deleted: { $ne: true } }
+      })
+      .exec();
+
+    // Filtrar los eventos que tienen un autor eliminado
+    const filteredEvents = events.filter(event => {
+      return event.author !== null;
+    });
+
+    res.send(filteredEvents);
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -102,7 +113,13 @@ exports.getEvents = async (req, res) => {
 
 exports.getEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findOne({ _id: req.params.id }).populate({
+      path: 'author',
+      match: { deleted: { $ne: true } }
+    });
+    if (!event || !event.author) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
     res.send(event);
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -110,10 +127,11 @@ exports.getEvent = async (req, res) => {
 }
 
 
+
 exports.updateEvent = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const { name, date, location, picture, price, numPlazas, description, isFavorite } = req.body;
+    const { name, date, location, picture, price, numPlazas, description } = req.body;
     const category = req.body.categories;
 
     const foundCategories = await Category.find({ type: { $in: category } });
@@ -136,7 +154,7 @@ exports.updateEvent = async (req, res) => {
       price: price,
       description: description,
       categories: categoryIds,
-      isFavorite: isFavorite
+
 
     };
 
@@ -158,6 +176,17 @@ exports.deleteByEventId = async (req, res) => {
     res.send({ message: "¡Evento eliminado exitosamente!" });
   } catch (err) {
     res.status(500).send({ message: err.message });
+  }
+};
+
+exports.deleteEventsByAuthor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedEvents = await Event.deleteMany({ author: id });
+    res.status(200).json({ message: `Se han eliminado todos los  eventos` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al eliminar los eventos' });
   }
 };
 
@@ -199,7 +228,7 @@ exports.findEventsByAuthorId = async (req, res) => {
   // const { author } = req.params.id;
   const { id } = req.params;
   try {
-    const foundAuthor = await User.findOne({ _id: id });
+    const foundAuthor = await User.findOne({ _id: id, deleted: false });
 
     if (!foundAuthor) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -298,7 +327,7 @@ exports.addParticipant = async (req, res) => {
     if (!event) {
       return res.status(404).json({ message: 'Evento no encontrado' });
     }
-   
+
 
     res.status(200).json({ message: 'Usuario añadido correctamente', event });
   } catch (error) {
@@ -369,7 +398,7 @@ exports.addComments = async (req, res) => {
     if (!event.plazas.includes(authorId)) {
       console.log(event.plazas.includes(authorId));
       console.log(authorId);
-     
+
       return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
     }
 
