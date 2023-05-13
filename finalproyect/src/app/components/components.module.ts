@@ -21,6 +21,7 @@ import { ReportModalComponent } from './report-modal/report-modal.component';
 
 
 
+
 @NgModule({
   declarations: [
     PrivacyModalComponent,
@@ -31,19 +32,15 @@ import { ReportModalComponent } from './report-modal/report-modal.component';
     EventMapComponent,
     ParticipantsListComponent,
     CommentsModalComponent,
-    ReportModalComponent
-
-
+    ReportModalComponent,
    
-    
-
   
   ],
   imports: [
     CommonModule,
     IonicModule,
     FormsModule,
- 
+    
     ReactiveFormsModule
    
     
@@ -58,7 +55,9 @@ import { ReportModalComponent } from './report-modal/report-modal.component';
     EventMapComponent,
     ParticipantsListComponent,
     CommentsModalComponent,
-    ReportModalComponent
+    ReportModalComponent,
+ 
+
     
    
    

@@ -76,6 +76,8 @@ module.exports = function (app) {
 
   app.get("/getEventsByParticipantId/:id", controller.getEventsByParticipantId);
 
+  app.delete("/deleteUserPlazas/:id", controller.deleteUserPlazas);
+
   //COMMENTS
 
   app.post('/addComments/', controller.addComments);
@@ -83,6 +85,8 @@ module.exports = function (app) {
   app.get("/getComments/:id", controller.getComments);
 
   app.delete("/deleteComment/", controller.deleteComment);
+
+  app.delete("/deleteUserComments/:id", controller.deleteUserComments);
 
  
 

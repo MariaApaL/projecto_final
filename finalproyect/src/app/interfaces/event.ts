@@ -1,3 +1,5 @@
+import { UsersInterface } from "./user";
+
 export interface EventsInterface {
         _id:         string;
         name:        string;
@@ -5,7 +7,7 @@ export interface EventsInterface {
         date:        Date;
         location:    string;
         price:       number;
-        author:      string;
+        author:      UsersInterface;
         plazas:      string[];
         numPlazas:   number;
         isFavorite:  boolean;

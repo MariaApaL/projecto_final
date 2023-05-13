@@ -32,60 +32,70 @@
       <ion-label class="ion-margin-start heading">Categories</ion-label>
       <swiper-container class="ion-margin" [slidesPerView]="2" [spaceBetween]="15">
         <swiper-slide *ngFor="let category of categories">
-    
+
           <ion-card>
             <ion-item lines="none">
               <ion-label class="ion-text-wrap">{{category?.name}}</ion-label>
             </ion-item>
           </ion-card>
 
-      </swiper-slide>
+        </swiper-slide>
       </swiper-container>
     </ion-row>
   </div>
 
   <div class="title">
-    <h2>Eventos Recientes</h2>
+    <h2>Todos los Eventos </h2>
 
-    <p >See all</p>
+    <p>See all</p>
   </div>
 
-  <div class="event-slider">
-    <swiper-container class="ion-margin" [slidesPerView]="2" [spaceBetween]="15">
-      <swiper-slide *ngFor="let event of myEvents">
-        <!-- <ng-template swiperSlide class="ion-margin" > -->
-          <ion-col class="ion-text-left">
-            <ion-card>
-              <ion-card-header class="ion-no-padding">
-                <img src="../../../../assets/events/event1.svg" />
-              </ion-card-header>
-  
-              <ion-card-content>
-                <p class="date">{{ event.date | date:'dd MMM, yyyy HH:mm' }}</p>
-                <h2 class="eventname">{{ event.name }}</h2>
-                <p class="location"><ion-icon name="location"></ion-icon>{{ event.location }}</p>
-  
-                <div class="additional-info">
-                  <p class="plazas">{{event.numPlazas}} Plazas</p>
-                </div>
-               <div class="more-info">
-                <p  (click)="selectEvent(event._id)">Ver más</p>
-               </div>
-              
-              
-              </ion-card-content>
-             
-            </ion-card>
-          </ion-col>
-        <!-- </ng-template> -->
-      </swiper-slide>
-    </swiper-container>
-    <!-- <swiper [config]="eventConfig" > -->
+  <div class="event-cards ion-margin">
+
+
+
+    <ion-card *ngFor="let event of myEvents" (click)="selectEvent(event._id)">
+
+      <ion-card-header class="ion-no-padding">
+        <img src="../../../../assets/pictures/hokahe.png" />
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="date">
+
+
+          <ion-card-subtitle><strong>{{ event.date | date:'dd MMM, yyyy HH:mm'
+              }}</strong></ion-card-subtitle>
+        </div>
+
+        <div class="name">
+          <ion-card-title class="eventname"><strong>{{ event.name }}</strong></ion-card-title>
+
+        </div>
+
+            <div class="members">
+              <ion-icon name="person"></ion-icon>
+              <p class="plazas"> <strong>{{event.plazas.length}}</strong>/{{event.numPlazas}}</p>
+          </div>
+
       
+
+
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <!-- </ng-template> -->
+    <!-- <swiper [config]="eventConfig" > -->
+
     <!-- </swiper>  -->
-    </div>
- 
-  
+  </div>
+
+
 
 
 </ion-content>

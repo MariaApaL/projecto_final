@@ -114,7 +114,7 @@ exports.login = async (req, res) => {
 //Obtiene a todos los usuarios que no estén eliminados
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({ deleted: false }, '-password');
+    const users = await User.find();
     res.send(users);
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -123,7 +123,7 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.params.id, deleted: false }, '-password');
+    const user = await User.findOne({ _id: req.params.id}, '-password');
     if (!user) {
       return res.status(404).send({ message: "Usuario no encontrado" });
     }
@@ -177,10 +177,6 @@ exports.updateUser = async (req, res) => {
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, fieldsToUpdate, { new: true });
-
-    if (updatedUser.deleted) {
-      res.status(204).send();
-    } 
 
     res.send({ message: "Usuario actualizado con éxito", updatedUser });
   } catch (err) {

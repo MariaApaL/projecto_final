@@ -17,8 +17,9 @@ export class EditEventPage implements OnInit {
     { label: 'Cultura', value: 'cultura', checked: false },
     { label: 'Deportes', value: 'deportes', checked: false },
     { label: 'Gastronomía', value: 'gastronomia', checked: false },
-    { label: 'Animales', value: 'animales', checked: false },
+    { label: 'Ocio', value: 'ocio', checked: false },
     { label: 'Solidario', value: 'solidario', checked: false },
+    { label: 'Relax', value: 'relax', checked: false },
 
   ]
  

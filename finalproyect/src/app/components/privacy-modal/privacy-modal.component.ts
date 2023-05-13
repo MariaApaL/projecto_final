@@ -55,16 +55,7 @@ export class PrivacyModalComponent implements OnInit {
           text: 'Sí',
           handler: () => {
            const id =  localStorage.getItem("userId");
-            this.auth.updateUser(id, {deleted: true}).subscribe({
-              next: user => { 
-                this.auth.logOut();
-                this.modalCtrl.dismiss();
-                this.navCtrl.navigateBack('/login');
-                console.log(user);
-              },error: (err) => {
-                console.log(err);
-              }
-            }); 
+           this.deleteUser(id); 
           }
         }
       ]
@@ -77,6 +68,8 @@ export class PrivacyModalComponent implements OnInit {
     this.auth.updateUser(id, {deleted: true}).subscribe({
       next: user => { 
         this.deleteAllEvents(id);
+        this.deleteAllComments(id);
+        this.deleteAllPlazas(id);
         this.auth.logOut();
         this.modalCtrl.dismiss();
         this.navCtrl.navigateBack('/login');
@@ -88,6 +81,28 @@ export class PrivacyModalComponent implements OnInit {
   }
 
   deleteAllEvents(id:string){
-    this.eventService.deleteEventsByAuthor(id);
-    }
+    this.eventService.deleteEventsByAuthor(id).subscribe({
+      next: events => {
+        console.log("eventos eliminados");
+      }
+    });
+  }
+
+  deleteAllComments(id:string){
+   this.eventService.deleteUserComments(id).subscribe({
+      next: comments => { 
+        console.log("comentarios eliminados");
+      }
+    });
+  }
+
+  deleteAllPlazas(id:string){
+    this.eventService.deleteUserPlazas(id).subscribe({
+      next: plazas => { 
+        console.log("plazas eliminadas");
+      }
+    });
+  }
+
+
 }

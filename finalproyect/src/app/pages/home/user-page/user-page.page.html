@@ -57,7 +57,53 @@ https://www.behance.net/search/projects/?search=event+app-->
     <!-- FIN DEL SEGMENTO DE MEGUSTA Y MIS EVENTOS -->
 
     <!--EVENTOS -->
-    <ion-row class="ion-text-left default-left-padding" *ngIf="selectedSegment === 'my-events'">
+    <div class="event-cards ion-margin" *ngIf="selectedSegment === 'my-events'">
+
+      <ion-card *ngFor="let event of myEvents" (click)="selectEvent(event._id)">
+  
+        <ion-card-header class="ion-no-padding">
+          <img src="../../../../assets/pictures/hokahe.png" />
+        </ion-card-header>
+  
+        <ion-card-content>
+          <div class="date">
+  
+  
+            <ion-card-subtitle><strong>{{ event.date | date:'dd MMM, yyyy HH:mm'
+                }}</strong></ion-card-subtitle>
+          </div>
+  
+          <div class="name">
+            <ion-card-title class="eventname"><strong>{{ event.name }}</strong></ion-card-title>
+  
+          </div>
+  
+          <div class="buttons" >
+              <div class="members">
+                <ion-icon name="person"></ion-icon>
+                <p class="plazas"> <strong>{{event.plazas.length}}</strong>/{{event.numPlazas}}</p>
+            </div>
+  
+            <div class="event-buttons">
+              <ion-button class="delete-button" slot="end" (click)="deleteEvent(event.name,userId)">
+                <ion-icon name="trash-outline" slot="icon-only" /></ion-button>
+              <ion-button class="edit-button" slot="end" (click)="editEvent(event._id)">
+                <ion-icon name="pencil-outline" slot="icon-only" />
+              </ion-button>
+
+            </div>
+  </div>
+  
+  
+        </ion-card-content>
+  
+      </ion-card>
+  
+
+      </div>
+
+
+    <!-- <ion-row class="ion-text-left default-left-padding" *ngIf="selectedSegment === 'my-events'">
       <ng-container *ngFor="let event of myEvents">
         <ion-col size="6">
           <ion-card>
@@ -89,10 +135,51 @@ https://www.behance.net/search/projects/?search=event+app-->
           </ion-card>
         </ion-col>
       </ng-container>
-    </ion-row>
+    </ion-row> -->
 
     <!--  MIS FAVS  -->
-    <ion-row class="ion-text-left default-left-padding" *ngIf="selectedSegment === 'my-favs'">
+
+    <div class="event-cards ion-margin" *ngIf="selectedSegment === 'my-favs'">
+
+      <ion-card *ngFor="let fav of myFavs" >
+  
+        <ion-card-header class="ion-no-padding" (click)="selectEvent(fav._id)">
+          <img src="../../../../assets/pictures/hokahe.png" />
+        </ion-card-header>
+  
+        <ion-card-content>
+          <div class="date">
+  
+  
+            <ion-card-subtitle><strong>{{ fav.date | date:'dd MMM, yyyy HH:mm'
+                }}</strong></ion-card-subtitle>
+          </div>
+  
+          <div class="name">
+            <ion-card-title class="eventname"><strong>{{ fav.name }}</strong></ion-card-title>
+  
+          </div>
+    <div class="buttons" >
+              <div class="members">
+                <ion-icon name="person"></ion-icon>
+                <p class="plazas"> <strong>{{fav.plazas.length}}</strong>/{{fav.numPlazas}}</p>
+            </div>
+            <div class="fav-buttons">
+              <ion-buttons>
+                <ion-button (click)="deleteFavorite(fav._id)">
+                  <ion-icon slot="icon-only" name="heart"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </div>
+          </div>
+  
+  
+  
+        </ion-card-content>
+  
+      </ion-card>
+  </div>
+    <!-- <ion-row class="ion-text-left default-left-padding" *ngIf="selectedSegment === 'my-favs'">
       <ng-container *ngFor="let fav of myFavs">
         <ion-col size="6">
           <ion-card>
@@ -123,11 +210,11 @@ https://www.behance.net/search/projects/?search=event+app-->
           </ion-card>
         </ion-col>
       </ng-container>
-    </ion-row>
+    </ion-row> -->
 
 
     <!--ASISTIDOS -->
-    <ion-row class="ion-text-left default-left-padding" *ngIf="selectedSegment === 'my-joined'">
+    <!-- <ion-row class="ion-text-left default-left-padding" *ngIf="selectedSegment === 'my-joined'">
       <ng-container *ngFor="let join of joinedEvents">
         <ion-col size="6">
           <ion-card>
@@ -152,6 +239,39 @@ https://www.behance.net/search/projects/?search=event+app-->
           </ion-card>
         </ion-col>
       </ng-container>
-    </ion-row>
+    </ion-row> -->
+    <div class="event-cards ion-margin" *ngIf="selectedSegment === 'my-joined'">
+
+      <ion-card  *ngFor="let join of joinedEvents" >
+  
+        <ion-card-header class="ion-no-padding" (click)="selectEvent(join._id)">
+          <img src="../../../../assets/pictures/hokahe.png" />
+        </ion-card-header>
+  
+        <ion-card-content>
+          <div class="date">
+  
+  
+            <ion-card-subtitle><strong>{{ join.date | date:'dd MMM, yyyy HH:mm'
+                }}</strong></ion-card-subtitle>
+          </div>
+  
+          <div class="name">
+            <ion-card-title class="eventname"><strong>{{ join.name }}</strong></ion-card-title>
+  
+          </div>
+  
+              <div class="members">
+                <ion-icon name="person"></ion-icon>
+                <p class="plazas"> <strong>{{join.plazas.length}}</strong>/{{join.numPlazas}}</p>
+            </div>
+         
+  
+  
+  
+        </ion-card-content>
+  
+      </ion-card>
+  </div>
   </div>
 </ion-content>

@@ -1,17 +1,15 @@
-<ion-menu contentId="main-content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu Content</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-menu contentId="main-content" type="overlay">
+
   <ion-content class="ion-padding">
     <ion-list>
-      <ion-item>Ajustes</ion-item>
-      <ion-item>Mi cuenta</ion-item>
-      <ion-item>Usuarios</ion-item>
-      <ion-item>Vídeos</ion-item>
-      <ion-item>Publicaciones</ion-item>
+      <ion-item class="ion-margin-top" button="true" (click)="chooseOptions(item)" *ngFor="let item of options">
+        <ion-label>{{ item?.label }}</ion-label>
+      </ion-item>
     </ion-list>
+    <ion-item class="logout" (click)="logOut()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      Cerrar Sesión
+    </ion-item>
   </ion-content>
 </ion-menu>
 <div class="ion-page" id="main-content">

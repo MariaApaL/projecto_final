@@ -49,6 +49,7 @@ require('./routes/user-routes')(app);
 require('./routes/event-routes')(app);
 require('./routes/category-routes')(app);
 require('./routes/report-routes')(app);
+require('./routes/statistic-routes')(app);
 // require('./routes/img-routes')(app);
 
 
@@ -101,7 +102,8 @@ app.listen(PORT, () => {
             new Category({ type: "cultura" }).save(),
             new Category({ type: "deportes" }).save(),
             new Category({ type: "gastronomia" }).save(),
-            new Category({ type: "animales" }).save(),
+            new Category({ type: "ocio" }).save(),
+            new Category({ type: "relax" }).save(),
             new Category({ type: "solidario" }).save(),
           ]);
           console.log("Categorias agregadas correctamente.");

@@ -20,9 +20,9 @@
   <div class="text-area">
     <ion-item>
   
-      <ion-textarea (ionChange)="onCommentChange($event)" placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
+      <ion-textarea  (ionChange)="onCommentChange($event)" placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
        maxlength="240"></ion-textarea>
-      <ion-button  class="icon" [disabled]="isDisabled" (click)="addComments()">
+      <ion-button  class="icon" [disabled]="disabledButton" (click)="addComments()">
         <ion-icon name="chatbubble-outline"></ion-icon>
       </ion-button>
     </ion-item>

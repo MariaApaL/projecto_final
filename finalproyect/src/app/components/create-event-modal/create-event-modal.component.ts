@@ -27,11 +27,11 @@ export class CreateEventModalComponent implements OnInit {
     { label: 'Cultura', value: 'cultura', checked: false },
     { label: 'Deportes', value: 'deportes', checked: false },
     { label: 'Gastronomía', value: 'gastronomia', checked: false },
-    { label: 'Animales', value: 'animales', checked: false },
+    { label: 'Ocio', value: 'ocio', checked: false },
     { label: 'Solidario', value: 'solidario', checked: false },
+    { label: 'Relax', value: 'relax', checked: false },
 
   ]
-
 
   ngOnInit() {
   
@@ -56,7 +56,7 @@ export class CreateEventModalComponent implements OnInit {
       eventname: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
       date: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.maxLength(300)]),
-      plazas: new FormControl('', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$'),Validators.maxLength(3)]),
+      plazas: new FormControl('', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$'),Validators.maxLength(2)]),
       price: new FormControl(0, [ Validators.pattern('^[0-9]+(\.[0-9]{1,2})?$'),Validators.maxLength(3)]),
       category: new FormControl('', [Validators.required])
     })
@@ -99,12 +99,11 @@ export class CreateEventModalComponent implements OnInit {
     const author = localStorage.getItem('userId');
     
 
-   
     this.eventService.createEvent(name,date,location,author,
       numPlazas,description,price,categories )
       .subscribe({
         next: (data) => {
-          localStorage.setItem('eventName', data.name);
+         
           console.log(data)
 
           this.presentAlert("Evento creado", "El evento se ha creado correctamente")
@@ -115,6 +114,9 @@ export class CreateEventModalComponent implements OnInit {
         
         && (date=='' || date == undefined || date == null)){
         this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos")
+        console.error(err);
+      }else{
+        this.presentAlert("Error al crear el evento",err.error.message )
         console.error(err);
       }
     }

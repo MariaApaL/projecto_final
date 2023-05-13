@@ -11,8 +11,8 @@ export class AuthService {
 
   // Se define la URL base para las solicitudes HTTP y
   //  se establece un encabezado para el tipo de contenido de "application/json".
-    //  private url = 'http://localhost:3300';
-  private url = 'https://finalproject-gout.herokuapp.com';
+     private url = 'http://localhost:3300';
+  // private url = 'https://finalproject-gout.herokuapp.com';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
   // inicio de sesión con los datos de usuario proporcionados en el cuerpo de la solicitud.
@@ -75,10 +75,12 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  // devuelve el ID del usuario almacenado en el localStorage.
   getId(){
     return localStorage.getItem('userId');
   }
 
+  // busca un usuario por id
   getUserById(id: any): Observable<any> {
     const url = `${this.url}/getUserById/${id}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -93,6 +95,7 @@ export class AuthService {
     return this.http.get(url, { headers: headers });
   }
 
+  // guarda en favoritos
   setFavorite(userId: any, eventId: any): Observable<any> {
     const url = `${this.url}/setFavorite/${userId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -100,18 +103,28 @@ export class AuthService {
     return this.http.post(url, body, { headers: headers });
   }
 
+  // obtiene los favoritos
   getFavorites(userId: any): Observable<any> {
     const url = `${this.url}/getFavorites/${userId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(url, { headers: headers });
   }
 
+  // elimina de favoritos
   deleteFavorite(userId: any, eventId: any): Observable<any> {
     const body = { eventId };
     const url = `${ this.url }/deleteFavorite/${ userId }`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const options = { headers: headers, body: body };
     return this.http.delete(url, options);
+  }
+
+
+  //obtiene todos los usuarios
+  getUsers(): Observable<any> {
+    const url = `${this.url}/getAll`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
   }
 
 }

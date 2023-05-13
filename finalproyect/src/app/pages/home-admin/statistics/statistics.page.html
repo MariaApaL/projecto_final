@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home-admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Estadísticas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h1>Datos Generales</h1>
+  <div class="ion-text-center">
+    <ion-list>
+      <ion-item>
+        <ion-label>Usuarios totales</ion-label>
+        <ion-badge slot="end">{{totalUsers}}</ion-badge>
+      </ion-item>
+      
+        <ion-item>
+          <ion-label>Usuarios Activos</ion-label>
+          <ion-badge slot="end">{{totalActive}}</ion-badge>
+        </ion-item>
+        <ion-item>
+        <ion-label>Eventos totales</ion-label>
+        <ion-badge slot="end">{{totalEvents}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Usuarios Reportados</ion-label>
+        <ion-badge slot="end">{{blockedUsers}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Eventos por usuarios</ion-label>
+        <ion-badge slot="end">{{avgEvents}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Participantes por Eventos</ion-label>
+        <ion-badge slot="end">{{avgParticipants}}</ion-badge>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label>Reportes por Usuario</ion-label>
+        <ion-badge slot="end">{{avgReports}}</ion-badge>
+      </ion-item>
+ 
+    </ion-list>
+    </div>
+  <h1>Fechas</h1>
+  <h3>Usuarios</h3>
+  <div class="ion-text-center">
+  <ion-list>
+    <ion-item>
+      <ion-label>Creados hace una semana</ion-label>
+      <ion-badge slot="end">{{totalUsersLastWeek}}</ion-badge>
+    </ion-item>
+    <ion-item>
+      <ion-label>Creados el último mes</ion-label>
+      <ion-badge slot="end">{{totalUsersLastMonth}}</ion-badge>
+    </ion-item>
+  </ion-list>
+  </div>
+  <h3>Eventos</h3>
+  <div class="ion-text-center">
+  <ion-list>
+    <ion-item>
+      <ion-label>Creados hace una semana</ion-label>
+      <ion-badge slot="end">{{totalEventLastWeek}}</ion-badge>
+    </ion-item>
+    <ion-item>
+      <ion-label>Creados el último mes</ion-label>
+      <ion-badge slot="end">{{totalEventsLastMonth}}</ion-badge>
+    </ion-item>
+  </ion-list>
+  </div>
+
+  <a  class="google" 
+  href="https://analytics.google.com/analytics/web/#/p373859900/reports/reportinghub?params=_u..nav%3Dmaui">Ver más en Google Analytics</a>
+  
+
+  <div class="ion-text-center">
+    <!-- <ion-button (click)="openModal()">Ver estadísticas</ion-button> -->
+  </div>

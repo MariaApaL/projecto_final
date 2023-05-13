@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { AlertController, ModalController, NavParams } from '@ionic/angular';
 import { is } from 'date-fns/locale';
 import { CommentsInterface } from 'src/app/interfaces/comments';
 import { EventsInterface } from 'src/app/interfaces/event';
@@ -16,7 +16,9 @@ export class CommentsModalComponent implements OnInit {
 
   constructor(private modalCtrl:ModalController, 
     private eventService:EventService,
-    navParams: NavParams, private auth: AuthService) { 
+    navParams: NavParams, 
+    private auth: AuthService,
+    private alertCtrl: AlertController) { 
       this.eventId = navParams.get('eventId')
 
    }
@@ -25,7 +27,8 @@ export class CommentsModalComponent implements OnInit {
    eventId: string;
    userId = localStorage.getItem('userId');
    comment: string;
-   isDisabled = true;
+   disabledButton = true;
+   disabledText = false;
    comments: CommentsInterface[] = [];
   //  commentAuthor: string;
    participants: any[] = [];
@@ -133,42 +136,57 @@ export class CommentsModalComponent implements OnInit {
   // }
   onCommentChange(event: any) {
     event.target.disabled = true;
+   
     this.comment = event.target.value;
+
     const eventDate = new Date(this.eventDate);
     const currentDate = new Date();
-    console.log('currentDate',currentDate); 
+  
     switch (true) {
       case !this.isParticipant:
         console.log('entra en 1');
-        this.isDisabled = true;
-        event.target.disabled = true;
+        this.disabledButton=true;
+        this.disabledText=true;
+        this.presentAlert('No puedes comentar', 'Debes estar apuntado al evento para poder comentar');
         break;
       case this.comment === '' && this.isParticipant:
         console.log('entra en 2');
-        this.isDisabled = true;
-        event.target.disabled = false;
+        this.disabledButton = true;
+        event.target.disabled = true;
         break;
       case this.comment === '' && this.isParticipant && eventDate < currentDate:
         console.log('entra en 3');
-        this.isDisabled = true;
+        this.disabledButton= true;
+        this.disabledButton= false;
         event.target.disabled = false;
         break;
-      case this.comment === '' && this.isParticipant && eventDate > currentDate:
+      case this.isParticipant && eventDate > currentDate:
         console.log('entra en 4');
-        this.isDisabled = true;
+        this.disabledButton = true;
+        this.disabledText = true;
         event.target.disabled = true;
+        this.presentAlert('No puedes comentar', 'El evento aún no se ha realizado');
         break;
-        case this.isParticipant && eventDate > currentDate:
-        console.log('entra en 5');
-        this.isDisabled = true;
-        event.target.disabled = true;
-        break;
+
       default:
-        console.log('entra en 6');
-        this.isDisabled = false;
+        console.log('entra en 5');
+        this.disabledButton = false;
+        this.disabledText = false;
         event.target.disabled = false;
         break;
     }
+  }
+
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertCtrl.create({
+      cssClass: "",
+      header: header,
+      message: message,
+      buttons: ["OK"]
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
   }
 
 }

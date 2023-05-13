@@ -29,7 +29,10 @@ export class EventInfoPage implements OnInit {
   eventName: string;
   
   userAuthor: UsersInterface;
-  isFull: boolean;
+  
+  disabledButton: boolean;
+
+  eventDate: Date;  
   userId = localStorage.getItem('userId');
   location: string;
   numFavorites: number;
@@ -62,7 +65,10 @@ export class EventInfoPage implements OnInit {
   async ngOnInit() {
     
     await this.getEvent();
-    await this.getUser();
+     this.getUser();
+
+  
+    
    
 
 
@@ -71,8 +77,8 @@ export class EventInfoPage implements OnInit {
 
 
   ionViewDidEnter() {
-    this.getEvent();
- 
+    // this.getEvent();
+    
     // this.getUserEvent(this.eventAuthor);
    
 
@@ -84,7 +90,10 @@ export class EventInfoPage implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe({
       next: async (data) => {
         this.event = await data;
-        console.log(this.event)
+        const eventAuthor = this.event.author._id;
+       
+        this.getUserEvent(eventAuthor);
+        this.eventDate = this.event.date;
    // actualiza el número de participantes
         this.participants = this.event.plazas.length;
 
@@ -97,14 +106,7 @@ export class EventInfoPage implements OnInit {
         }
         
         
-        this.getUserEvent(this.event.author).subscribe({
-          next: async (data) => {
-            console.log('id',data);
-            this.userAuthor= await data.user;
-            console.log('userauthor',this.userAuthor);
-          }
-        }); 
-        
+     
         this.eventName = this.capitalizeWords(this.event.name);
     
         this.checkParticipants();
@@ -114,8 +116,16 @@ export class EventInfoPage implements OnInit {
     });
   }
 
-  getUserEvent(eventAuthor: string): Observable<any> {
-    return this.auth.getUserById(eventAuthor);
+  getUserEvent(eventAuthor: any) {
+    this.auth.getUserById(eventAuthor).subscribe({
+      next: async (data) => {
+        console.log('id',data);
+        this.userAuthor  = await data.user;
+       
+        
+        console.log('userauthor',this.userAuthor);
+      }
+    });
   }
   
 
@@ -196,10 +206,37 @@ export class EventInfoPage implements OnInit {
 
 
   checkParticipants() {
-    if (this.participants == this.event.numPlazas && !this.isJoined) {
-      this.isFull = true;
-    } else {
-      this.isFull = false;
+    this.eventDate = new Date(this.event.date);
+    let  now = new Date();
+    switch(true){
+      case this.participants == this.event.numPlazas && !this.isJoined:
+      this.disabledButton = true;
+      break;
+
+      case this.eventDate < now && !this.isJoined:
+      this.disabledButton = true;
+      break;
+
+      case this.eventDate < now && this.isJoined:
+      this.disabledButton = true;
+      break;
+
+      case this.eventDate > now && !this.isJoined:
+      this.disabledButton = false;
+      break;
+
+      case this.eventDate > now && this.isJoined:
+      this.disabledButton = false;
+      break;
+
+      case this.participants < this.event.numPlazas:
+      this.disabledButton = false;
+      break;
+
+      default:
+      this.disabledButton = false;
+      break;
+
     }
   }
   
@@ -210,8 +247,7 @@ export class EventInfoPage implements OnInit {
         const event : EventsInterface = await data.event;
           
           this.participants = event.plazas.length;
-          console.log("Data", data);
-          console.log("Plazas", event.plazas.length);
+
           this.checkParticipants(); 
          // Actualiza si el evento está lleno o no
         // }
@@ -223,22 +259,17 @@ export class EventInfoPage implements OnInit {
     this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
       next: async (data) => {
         const event:EventsInterface = await data.event;
-        console.log('ELIMINAR',data);
-        // if (data.plazas) {
-          this.participants = event.plazas.length;
-          console.log("Data", data);
-          console.log("Plazas", event.plazas.length);
-        
+
+          this.participants = event.plazas.length;        
           this.checkParticipants();
-         // Actualiza si el evento está lleno o no
-        // }
+
       }
     });
   }
 
 
   goToProfile() {
-    if(this.event.author == this.userId){
+    if(this.event.author._id == this.userId){
     this.navCtrl.navigateForward(`/home/user-page`);
     }else{
       this.navCtrl.navigateForward(`/otheruser-page/${this.event.author}`);

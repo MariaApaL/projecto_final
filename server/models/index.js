@@ -15,7 +15,7 @@ db.event = require("./event-model");
 db.report = require("./report-model")
 
 db.ROLES = ["user", "admin"];
-db.CATEGORIES = [ "cultura" , "deportes", "gastronomia", "animales" , "solidario"];
+db.CATEGORIES = [ "cultura" , "deportes", "gastronomia", "ocio" , "solidario", 'relax'];
 db.REPORTS = ["spam", "odio", "sexual", "violencia", "fraude"];
 
 module.exports = db;

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, InfiniteScrollCustomEvent, NavController } from '@ionic/angular';
+import { EventsInterface } from 'src/app/interfaces/event';
+import { UsersInterface } from 'src/app/interfaces/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
 
@@ -16,14 +18,15 @@ export class MainPage implements OnInit {
     private alertCtrl: AlertController,
     private auth: AuthService) { 
 
-      this.getEvents();
       
+    this.getEvents();
     }
 
-
+  scrollEvents = 8;
   categories: any[] = [];
-  myEvents: any[] = [];
+  myEvents: EventsInterface[] = [];
   userId = localStorage.getItem('userId');
+  userAuthor: string;
 
 
   ngOnInit() {
@@ -31,22 +34,22 @@ export class MainPage implements OnInit {
       { id: 1, name: 'Cultura' },
       { id: 2, name: 'Deportes' },
       { id: 3, name: 'Gastronomía' },
-      { id: 4, name: 'Animales' },
-      { id: 4, name: 'Solidario' }
+      { id: 4, name: 'Relax' },
+      { id: 5, name: 'Ocio' },
+      { id: 6, name: 'Solidario' }
     ];
 
     
     
-    this.getEvents();
+    console.log('ngOnInit');
     // this.ionViewWillEnter();
+   
     
   }
 
- 
-  
 
-  ionViewDidEnter() {
-    console.log('recarga')
+  ionViewWillEnter() {
+    console.log('ionWillEnter')
     this.getEvents();
 
   }
@@ -54,18 +57,17 @@ export class MainPage implements OnInit {
   //llama al servicio para obtener los eventos
   getEvents() {
     this.eventService.getEvents().subscribe({
-      next: (data) => {
-        this.myEvents = Object.values(data);
+      next: async (data) => {
+        this.myEvents = await Object.values(data);
        
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-        
-        return this.myEvents;
+      
+       
       }
-
     });
+    }
 
-  }
-
+  
 
 
   //Navega a la página de información del evento
@@ -75,7 +77,14 @@ export class MainPage implements OnInit {
     
   }
 
+  onIonInfinite(ev) {
+    this.getEvents();
+    setTimeout(() => {
+      (ev as InfiniteScrollCustomEvent).target.complete();
+    }, 500);
+  }
 
+  
 
 
 

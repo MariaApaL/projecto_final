@@ -7,7 +7,12 @@ const routes: Routes = [
   {
     path: '',
     component: HomeAdminPage
+  },
+  {
+    path: 'statistics',
+    loadChildren: () => import('./statistics/statistics.module').then( m => m.StatisticsPageModule)
   }
+
 ];
 
 @NgModule({

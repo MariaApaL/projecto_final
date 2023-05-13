@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
+import { AlertController, InfiniteScrollCustomEvent, ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal/bottom-sheet-modal.component';
 import { AuthService } from 'src/app/services/auth.service';

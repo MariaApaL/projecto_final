@@ -93,12 +93,7 @@ exports.createEvent = async (req, res) => {
 
 exports.getEvents = async (req, res) => {
   try {
-    const events = await Event.find()
-      .populate({
-        path: 'author',
-        match: { deleted: { $ne: true } }
-      })
-      .exec();
+    const events = await Event.find();
 
     // Filtrar los eventos que tienen un autor eliminado
     const filteredEvents = events.filter(event => {
@@ -113,10 +108,7 @@ exports.getEvents = async (req, res) => {
 
 exports.getEvent = async (req, res) => {
   try {
-    const event = await Event.findOne({ _id: req.params.id }).populate({
-      path: 'author',
-      match: { deleted: { $ne: true } }
-    });
+    const event = await Event.findOne({ _id: req.params.id })
     if (!event || !event.author) {
       return res.status(404).json({ message: 'Evento no encontrado' });
     }
@@ -228,7 +220,7 @@ exports.findEventsByAuthorId = async (req, res) => {
   // const { author } = req.params.id;
   const { id } = req.params;
   try {
-    const foundAuthor = await User.findOne({ _id: id, deleted: false });
+    const foundAuthor = await User.findOne({ _id: id});
 
     if (!foundAuthor) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -379,6 +371,26 @@ exports.getParticipants = async (req, res) => {
   }
 }
 
+//elimina todas las plazas donde el usuario este apuntado
+exports.deleteUserPlazas = async (req, res) => {
+  const {id} = req.params;
+
+  try {
+    // Buscar eventos donde se haya registrado el usuario
+    const eventos = await Event.find({ plazas: id });
+
+    // Eliminar al usuario de las plazas de cada evento
+    for (const evento of eventos) {
+      evento.plazas = evento.plazas.filter(plaza => plaza.toString() !== id);
+      await evento.save();
+    }
+
+    return res.status(200).json({ message: `Se eliminaron todas las plazas del usuario` });
+  } catch (error) {
+    return res.status(500).json({ message: 'Hubo un error al eliminar las plazas del usuario', error });
+  }
+};
+
 exports.addComments = async (req, res) => {
   const { eventId, authorId, text } = req.body;
 
@@ -456,6 +468,7 @@ exports.deleteComment = async (req, res) => {
       return res.status(404).json({ message: 'Comentario no encontrado' });
     }
 
+    //para tipar el authorId
     const ObjectId = mongoose.Types.ObjectId;
     if (!comment.author.equals(new ObjectId(authorId))) {
       console.log(comment.author.equals(new ObjectId(authorId)));
@@ -472,4 +485,16 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
-
+//Borra todos los comentarios de un usuario
+exports.deleteUserComments = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    await Event.updateMany(
+      { 'comments.author': userId },
+      { $pull: { comments: { author: userId } } }
+    );
+    res.status(200).json({ message: 'Todos los comentarios del usuario han sido eliminados.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al eliminar los comentarios del usuario.' });
+  }
+};
