@@ -127,4 +127,13 @@ export class AuthService {
     return this.http.get(url, { headers: headers });
   }
 
+  //se obtiene usuario por id de evento
+  getUserByEventId(eventId:string): Observable<any> {
+    const url = `${this.url}/getUserByEventId/${eventId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
+  }
+
+
+
 }

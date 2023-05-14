@@ -4,7 +4,7 @@ https://www.behance.net/search/projects/?search=event+app-->
 
 <ion-header no-border>
   <ion-toolbar>
-    <ion-title>
+    <ion-title *ngIf="currentUser">
       {{currentUser.user}}
     </ion-title>
     <ion-buttons slot="end">
@@ -16,7 +16,7 @@ https://www.behance.net/search/projects/?search=event+app-->
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="currentUser">
 
   <!-- USER PROFILE -->
   <div class="profile-pic">
@@ -59,9 +59,9 @@ https://www.behance.net/search/projects/?search=event+app-->
     <!--EVENTOS -->
     <div class="event-cards ion-margin" *ngIf="selectedSegment === 'my-events'">
 
-      <ion-card *ngFor="let event of myEvents" (click)="selectEvent(event._id)">
+      <ion-card *ngFor="let event of myEvents" >
   
-        <ion-card-header class="ion-no-padding">
+        <ion-card-header class="ion-no-padding" (click)="selectEvent(event._id)">
           <img src="../../../../assets/pictures/hokahe.png" />
         </ion-card-header>
   
@@ -74,7 +74,7 @@ https://www.behance.net/search/projects/?search=event+app-->
           </div>
   
           <div class="name">
-            <ion-card-title class="eventname"><strong>{{ event.name }}</strong></ion-card-title>
+            <ion-card-title class="eventname" (click)="selectEvent(event._id)"><strong>{{ event.name }}</strong></ion-card-title>
   
           </div>
   
@@ -156,7 +156,7 @@ https://www.behance.net/search/projects/?search=event+app-->
           </div>
   
           <div class="name">
-            <ion-card-title class="eventname"><strong>{{ fav.name }}</strong></ion-card-title>
+            <ion-card-title class="eventname" (click)="selectEvent(fav._id)"><strong>{{ fav.name }}</strong></ion-card-title>
   
           </div>
     <div class="buttons" >
@@ -257,7 +257,7 @@ https://www.behance.net/search/projects/?search=event+app-->
           </div>
   
           <div class="name">
-            <ion-card-title class="eventname"><strong>{{ join.name }}</strong></ion-card-title>
+            <ion-card-title class="eventname" (click)="selectEvent(join._id)"><strong>{{ join.name }}</strong></ion-card-title>
   
           </div>
   

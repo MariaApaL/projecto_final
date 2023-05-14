@@ -4,6 +4,7 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 const Report = db.report;
+const Event = db.event;
 
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
@@ -35,9 +36,13 @@ exports.signup = async (req, res) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 8);
-    //controlamos que el nick y el email se creen como minuscula en la base de datos
-
-
+   
+    const token = jwt.sign({ id: user.id }, config.secret, {
+      expiresIn: "1y" // Un año de expiración
+    });
+    const role = req.body.roles ? await Role.find({ name: { $in: req.body.roles } }) : await Role.findOne({ name: 'user' });
+   
+     //controlamos que el user y el email se creen como minuscula en la base de datos
     const newUser = new User({
 
       user: user.toLowerCase(),
@@ -46,18 +51,21 @@ exports.signup = async (req, res) => {
       password: hashPassword,
       bio: bio,
       picture: picture,
+      accessToken: token,
+      roles: [role._id]
     });
 
-    //Asigna el rol pero si no, se asigna user por defecto
-    const role = req.body.roles ? await Role.find({ name: { $in: req.body.roles } }) : await Role.findOne({ name: 'user' });
+    
+    
 
-    newUser.roles = [role._id];
+  
+   
     await newUser.save();
 
 
-    res.send({ 
-      message: "¡Usuario registrado exitosamente!",
-      user: newUser 
+    res.status(200).send({
+     user : newUser,
+     accessToken: token
     });
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -216,28 +224,27 @@ exports.getUser = async (req, res) => {
   }
 };
 
-// exports.setFavorite = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { eventId } = req.body;
+exports.getUserByEventId = async (req, res) => {
+  try {
 
-//     // Comprobamos que el usuario exista y agregamos el evento a sus favoritos si no existe
-//     const result = await User.findOneAndUpdate(
-//       { _id: id, favorites: { $ne: eventId } },
-//       { $addToSet: { favorites: eventId } }
-//     );
+    const { id } = req.params;
+    const event = await Event.findById(id);
+    console.log(event)
+    if (!event) {
+      return res.status(404).json({ error: 'El evento no existe' });
+    }
 
-//     if (!result) {
-//       return res.status(404).json({ message: 'Usuario no encontrado' });
-//     }
+    const user = await User.findById(event.author);
+    if (!user) {
+      return res.status(404).json({ error: 'El usuario del evento no existe' });
+    }
 
-//     res.status(200).json({ message: 'Evento añadido a favoritos correctamente' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Ha ocurrido un error al añadir el evento a favoritos' });
-//   }
-// };
-
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Ha ocurrido un error al buscar el usuario del evento' });
+  }
+};
 
 
 exports.setFavorite = async (req, res) => {
@@ -304,42 +311,7 @@ exports.deleteFavorite = async (req, res) => {
 
 
 
-exports.addReportToUser = async (req, res) => {
-  try {
-    // Verificamos que exista el usuario y el report
-    const { id} = req.params;
-    const {reportId} = req.body;
-    const user = await User.findById(id);
-    const report = await Report.findOne({ type: reportId});
-    if (!user || !report) {
-      return res.status(404).json({ message: 'No se encontró el usuario o el reporte.' });
-    }
-    // Añadimos el reporte al usuario y guardamos los cambios
-    user.reports.push(report);
-    await user.save();
-    res.status(200).json({ message: 'Se ha añadido el reporte al usuario.' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Ha ocurrido un error al añadir el reporte al usuario.' });
-  }
-};
 
-exports.getReportsByType = async (req, res) => {
-  try {
-    // Verificamos que exista el usuario y el tipo de reporte
-    const { id } = req.params;
-    const {reportType} = req.body;
-    const user = await User.findById(userId).populate('reports');
-    if (!user) {
-      return res.status(404).json({ message: 'No se encontró el usuario.' });
-    }
-    const reportsByType = user.reports.filter(report => report.type === reportType);
-    res.status(200).json({ reports: reportsByType });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Ha ocurrido un error al obtener los reportes por tipo.' });
-  }
-};
 
 // exports.addValuation = async (req, res) => {
 //   const id = req.params.id;

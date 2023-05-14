@@ -54,7 +54,7 @@
 
 
 
-    <ion-card *ngFor="let event of myEvents" (click)="selectEvent(event._id)">
+    <ion-card *ngFor="let event of myEvents" >
 
       <ion-card-header class="ion-no-padding">
         <img src="../../../../assets/pictures/hokahe.png" />
@@ -69,7 +69,7 @@
         </div>
 
         <div class="name">
-          <ion-card-title class="eventname"><strong>{{ event.name }}</strong></ion-card-title>
+          <ion-card-title class="eventname" (click)="selectEvent(event._id)"><strong>{{ event.name }}</strong></ion-card-title>
 
         </div>
 

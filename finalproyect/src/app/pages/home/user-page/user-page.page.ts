@@ -7,6 +7,7 @@ import { EventService } from 'src/app/services/event.service';
 
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { EventsInterface } from 'src/app/interfaces/event';
+import { UsersInterface } from 'src/app/interfaces/user';
 
 
 
@@ -16,40 +17,40 @@ import { EventsInterface } from 'src/app/interfaces/event';
   styleUrls: ['./user-page.page.scss'],
 })
 export class UserPagePage implements OnInit {
-//Recojo la info del usuario
-  currentUser: any = {};
+  //Recojo la info del usuario
+  currentUser: UsersInterface;
 
   //para cambiar de segmento
   selectedSegment = 'my-favs';
-//Recoger el numero de eventos creados
+  //Recoger el numero de eventos creados
   eventCount: number = 0;
 
-//recoger los eventos del usuario
-  myEvents:EventsInterface[] = []
+  //recoger los eventos del usuario
+  myEvents: EventsInterface[] = []
   //Recoger los eventos en los que participa el usuario
-  joinedEvents:EventsInterface[] = []
+  joinedEvents: EventsInterface[] = []
   //Recoger los favoritos del usuario
-  myFavs:EventsInterface[] = []
+  myFavs: EventsInterface[] = []
   //Recoger el id del usuario
   userId = localStorage.getItem('userId');
   //para el boton de favoritos
   isFavorite: boolean;
- //Donde guardo favoritos
-  favorites: any[]=[];
- 
+  //Donde guardo favoritos
+  favorites: any[] = [];
+
 
   constructor(private modalCtrl: ModalController,
-    private auth: AuthService, 
+    private auth: AuthService,
     private eventService: EventService,
     private alertCtrl: AlertController,
-    private navCtrl:NavController) {
+    private navCtrl: NavController) {
 
-     
+
 
   }
-  async ngOnInit() {
-    
-     //Para poder recoger los datos del usuario y mostrarlos en la página
+  ngOnInit() {
+
+    //Para poder recoger los datos del usuario y mostrarlos en la página
      this.getUser();
 
     //Para poder recoger los eventos del usuario y mostrarlos en la página
@@ -59,60 +60,71 @@ export class UserPagePage implements OnInit {
     // this.getFavoritesFromLocalStorage();
 
     this.getEventsJoined(this.userId);
-  } 
- 
+  }
+
 
   ionViewDidEnter() {
-   
+
     //refrescamos la página 
-  this.getUser();
-  this.findEventsByAuthorId(this.userId);
-  this.getFavorites(this.userId);
-  this.getEventsJoined(this.userId);
-  // this.getFavoritesFromLocalStorage();
+    this.getUser();
+    this.findEventsByAuthorId(this.userId);
+    this.getFavorites(this.userId);
+    this.getEventsJoined(this.userId);
+    // this.getFavoritesFromLocalStorage();
 
   }
-  
+
   // muestra eventos por autor
   findEventsByAuthorId(authorId: any) {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
-      next: async (data:EventsInterface) => {
-        this.myEvents =  await Object.values(data);
+      next: async (data: EventsInterface) => {
+        this.myEvents = await Object.values(data);
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log("refresco eventos")
         this.eventCount = this.myEvents.length;
-        
+
         return this.myEvents;
       }
     });
   }
 
-  getEventsJoined(userId:any){
+  getEventsJoined(userId: any) {
     this.eventService.getEventsByParticipantId(userId).subscribe({
-      next: (data:EventsInterface) => {
-        this.joinedEvents =  Object.values(data);
-;
+      next: (data: EventsInterface) => {
+        this.joinedEvents = Object.values(data);
+        ;
         this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-       console.log(this.joinedEvents)
-       return this.joinedEvents;
+        console.log(this.joinedEvents)
+        return this.joinedEvents;
       }
     });
   }
   //Para mostrar los datos del usuario
+  // getUser() {
+  //   this.auth.getUser().subscribe({
+  //     next: async (data) => {
+  //       console.log("user",data);
+  //       this.currentUser = await data;
+  //       console.log(this.currentUser);
+  //       // this.ionViewDidEnter();
+
+  //     }
+  //   });
+  // }
   getUser() {
-    this.auth.getUser().subscribe({
+    this.auth.getUserById(this.userId).subscribe({
       next: async (data) => {
-        
+        console.log("user", data);
         this.currentUser = await data;
         console.log(this.currentUser);
         // this.ionViewDidEnter();
-       
       }
     });
+
   }
 
   // Para mostrar favoritos
-  getFavorites(userId:any) {
+  getFavorites(userId: any) {
     this.auth.getFavorites(userId).subscribe({
       next: (data) => {
         console.log(data);
@@ -131,11 +143,11 @@ export class UserPagePage implements OnInit {
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: BottomSheetModalComponent,
-    
+
       breakpoints: [0, 0.3],
       initialBreakpoint: 0.3,
       handleBehavior: 'none'
-      
+
     });
     await modal.present();
   }
@@ -149,26 +161,26 @@ export class UserPagePage implements OnInit {
   //   const chose = event.detail.value;
 
   //   this.isFav = chose === 'my-favs';
-   
-    
+
+
   // }
 
 
   //Para poder eliminar un evento
-  deleteEvent(name:string,author:string) {  
-    if(this.selectedSegment=='my-events'){
-      this.eventService.deleteEventByNameAndAuthor(name,author).subscribe({
+  deleteEvent(name: string, author: string) {
+    if (this.selectedSegment == 'my-events') {
+      this.eventService.deleteEventByNameAndAuthor(name, author).subscribe({
         next: (data) => {
           console.log(data);
           this.presentAlert();
-          
+
         },
         error: (err) => {
           console.log(err);
         }
-    });
+      });
     }
-   
+
   }
 
   async presentAlert() {
@@ -198,11 +210,11 @@ export class UserPagePage implements OnInit {
   }
   //Para poder editar un evento
   editEvent(id: any) {
-    if(this.selectedSegment=='my-events'){
-    
+    if (this.selectedSegment == 'my-events') {
+
       this.navCtrl.navigateForward([`/edit-event/${id}`]);
       this.ionViewDidEnter();
-      
+
     }
   }
 
@@ -218,34 +230,34 @@ export class UserPagePage implements OnInit {
   //       console.log(err);
   //     }
   //   });
-    
-    
+
+
   // }
 
 
 
-    //Navega a la página de información del evento
-    selectEvent(id: string) {
-      localStorage.removeItem('previousUrl');
-      this.navCtrl.navigateForward(`/event-info/${id}`);
-      localStorage.setItem('previousUrl', location.href);
-    }
+  //Navega a la página de información del evento
+  selectEvent(id: string) {
+    localStorage.removeItem('previousUrl');
+    this.navCtrl.navigateForward(`/event-info/${id}`);
+    localStorage.setItem('previousUrl', location.href);
+  }
 
-    //Llama al servicio para eleminar los favoritos
-    deleteFavorite(eventId: any) {
-      this.auth.deleteFavorite(this.userId, eventId).subscribe({
-        next:async (data) => {
-          const favorites:EventsInterface = await data.favorites;
-          
-          this.ionViewDidEnter();
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      });
-    }
-  
-   
-    
+  //Llama al servicio para eleminar los favoritos
+  deleteFavorite(eventId: any) {
+    this.auth.deleteFavorite(this.userId, eventId).subscribe({
+      next: async (data) => {
+        const favorites: EventsInterface = await data.favorites;
+
+        this.ionViewDidEnter();
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+
+
 }
 

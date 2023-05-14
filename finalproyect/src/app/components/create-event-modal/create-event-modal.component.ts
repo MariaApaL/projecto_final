@@ -56,7 +56,7 @@ export class CreateEventModalComponent implements OnInit {
       eventname: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
       date: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.maxLength(300)]),
-      plazas: new FormControl('', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$'),Validators.maxLength(2)]),
+      plazas: new FormControl('', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$'),Validators.maxLength(3)]),
       price: new FormControl(0, [ Validators.pattern('^[0-9]+(\.[0-9]{1,2})?$'),Validators.maxLength(3)]),
       category: new FormControl('', [Validators.required])
     })

@@ -47,6 +47,8 @@ module.exports = function(app) {
 
   app.get("/getUser", controller.getUser);
 
+  app.get("/getUserByEventId/:id", controller.getUserByEventId);
+
   // ruta GET para obtener un usuario por su id
   app.get("/getUserById/:id", controller.getUserById);
 
@@ -57,6 +59,7 @@ module.exports = function(app) {
   //Eliminar de favoritos.
   app.delete("/deleteFavorite/:id", controller.deleteFavorite);
 
+ 
 
 
 };

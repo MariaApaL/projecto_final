@@ -40,6 +40,7 @@ export class EventInfoPage implements OnInit {
   favorites: any[] = [];  
 
   fav: any;
+  userAuthorId: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,7 +66,7 @@ export class EventInfoPage implements OnInit {
   async ngOnInit() {
     
     await this.getEvent();
-     this.getUser();
+     this.getUserEvent(this.eventId);
 
   
     
@@ -90,9 +91,9 @@ export class EventInfoPage implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe({
       next: async (data) => {
         this.event = await data;
-        const eventAuthor = this.event.author._id;
+        
        
-        this.getUserEvent(eventAuthor);
+        // this.getUserEvent(this.eventId);
         this.eventDate = this.event.date;
    // actualiza el número de participantes
         this.participants = this.event.plazas.length;
@@ -116,14 +117,13 @@ export class EventInfoPage implements OnInit {
     });
   }
 
-  getUserEvent(eventAuthor: any) {
-    this.auth.getUserById(eventAuthor).subscribe({
+  getUserEvent(eventId: any) {
+    this.auth.getUserByEventId(eventId).subscribe({
       next: async (data) => {
-        console.log('id',data);
-        this.userAuthor  = await data.user;
-       
-        
-        console.log('userauthor',this.userAuthor);
+        this.userAuthor = await data.user;
+        this.userAuthorId = data._id;
+        console.log("user",this.userAuthor);
+        return this.userAuthor;
       }
     });
   }
@@ -269,10 +269,11 @@ export class EventInfoPage implements OnInit {
 
 
   goToProfile() {
-    if(this.event.author._id == this.userId){
+    if(this.userAuthorId== this.userId){
+
     this.navCtrl.navigateForward(`/home/user-page`);
     }else{
-      this.navCtrl.navigateForward(`/otheruser-page/${this.event.author}`);
+      this.navCtrl.navigateForward(`/otheruser-page/${this.userAuthorId}`);
     }
   }
 
@@ -282,6 +283,9 @@ export class EventInfoPage implements OnInit {
  async openReportModal(){
   const modal = await this.modalCtrl.create({
     component: ReportModalComponent,
+    componentProps: {
+      eventId: this.eventId
+    },
   
     breakpoints: [0, 0.5, 1],
     initialBreakpoint: 1,

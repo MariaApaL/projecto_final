@@ -67,9 +67,9 @@ export class SignupPage implements OnInit {
   }
  
   onRegister(){
-console.log('hola');
+
     if(this.form.valid){
-      console.log('hola')
+      
       
     // const user = this.form.controls.user.value.trim().toLowerCase();
     const user = this.form.controls.user.value.replace(/\s+/g, '');
@@ -83,7 +83,15 @@ console.log('hola');
       next: res => {
         console.log(res); 
         this.auth.logOut();
-        this.loginUser(user, password);
+        this.login(res.user.user, password);
+       // Guardamos el token en el localStorage
+       localStorage.setItem('token', res.accessToken);
+       localStorage.setItem('userRole', res.user.roles);
+       // Guardamos el id del usuario en el localStorage
+       localStorage.setItem('userId', res.user._id);
+      
+  
+      
         this.router.navigate(['/home/main'], {replaceUrl:true});
       },
       error: err => {
@@ -109,26 +117,17 @@ console.log('hola');
    
   }
 
-  loginUser(user:string,password:string){
-    
-        this.auth.login(user, password).subscribe({
-          next: res => {
 
-         // Guardamos el token en el localStorage
-         localStorage.setItem('token', res.accessToken);
-         // Guardamos el rol del usuario en el localStorage
-          localStorage.setItem('userRole', res.role);
-        
-         // Guardamos el id del usuario en el localStorage
-         localStorage.setItem('userId', res.id);
-         console.log("Login correcto");
-          },
-          error: err => {
-              
-            console.error(err);
-          }
-        })
+  login(usermail:any, password:string){
+    this.auth.login(usermail, password).subscribe({
+      next: res => {
+        console.log("entro en login")
+        console.log('user',res);
+        // Guardamos el token en el localStorage
   }
+});
+  }
+ 
 
   loginDisabled(){
     if(this.form.controls.user.valid && this.form.controls.password.value != ''){
