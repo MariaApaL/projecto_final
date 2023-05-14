@@ -13,4 +13,5 @@ export interface UsersInterface {
     deleted: boolean
     blocked: boolean
     valuations: any[]
+    reports: any[]
   }

@@ -83,7 +83,7 @@ export class StatisticsPage implements OnInit {
   getAvgEventsPerUser() {
     this.statisticsService.getUsersAvgEventCount().subscribe((res: { avgEventCount: number }) => {
 
-      this.avgEvents = res.avgEventCount;
+      this.avgEvents = res.avgEventCount.toFixed(2);
     });
   }
 
@@ -91,7 +91,7 @@ export class StatisticsPage implements OnInit {
   getAverageReportsPerUser() {
     this.statisticsService.getAverageReportsPerUser().subscribe((res: { averageReports: number }) => {
 
-      this.avgReports = res.averageReports;
+      this.avgReports = res.averageReports.toFixed(2);
     });
   }
 
@@ -99,7 +99,7 @@ export class StatisticsPage implements OnInit {
   getAvgParticipants() {
     this.statisticsService.getAvgParticipants().subscribe((res: { avgParticipants: number }) => {
 
-      this.avgParticipants = res.avgParticipants;
+      this.avgParticipants = res.avgParticipants.toFixed(2);
     });
   }
 

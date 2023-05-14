@@ -18,8 +18,9 @@ module.exports = function(app) {
  app.post("/addReport/:id", controller.addReport);
 
  //obtener reportes por tipo
- app.get("getReportsByType/:id", controller.getReportsByType);
+ app.get("/getReportsByType/:id", controller.getReportsByType);
 
-//limita reportes 
-  // app.get("/checkReportLimit/:id", controller.checkReportLimit);
+//borrar por id de eventos:
+app.delete("/deleteReportsByEventId/:id", controller.deleteReportsByEventId);
+ 
 }

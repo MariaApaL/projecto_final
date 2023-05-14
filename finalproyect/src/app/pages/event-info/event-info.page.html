@@ -4,8 +4,8 @@
     <ion-buttons class="close-button" slot="start">
       <ion-icon class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button (click)="openReportModal()">
+    <ion-buttons  slot="end">
+      <ion-button *ngIf="!isMine" (click)="openReportModal()">
         <ion-icon name="ellipsis-vertical-outline"></ion-icon>
       </ion-button>
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, NavController} from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { EventService } from 'src/app/services/event.service';
 
 
@@ -21,26 +21,39 @@ declare let google: any;
 })
 export class EventInfoPage implements OnInit {
 
+  //Guarda el id del evento
   eventId: string;
+  //Guarda el evento
   event: EventsInterface;
+  //para comprobar si el evento está en favoritos
   isFavorite: boolean;
+  //Guarda el número de participantes
   participants: any;
+  //para comprobar si el usuario está en la lista de participantes
   isJoined = false;
+  //Guarda el nombre del evento
   eventName: string;
-  
+  //Guarda el autor del evento
   userAuthor: UsersInterface;
-  
+  //para desactivar el botón de unirse
   disabledButton: boolean;
-
-  eventDate: Date;  
+  //guarda la fecha del evento
+  eventDate: Date;
+  //guarda el id del usuario
   userId = localStorage.getItem('userId');
+  //guarda la localización del evento
   location: string;
+  //guarda el número de favoritos
   numFavorites: number;
+  //guarda el usuario
   currentUser: UsersInterface;
-  favorites: any[] = [];  
+  //guarda los favoritos
+  favorites: any[] = [];
 
-  fav: any;
+  //guarda el id del autor del evento
   userAuthorId: string;
+  //para mostrar el botón de reportes
+  isMine: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,7 +68,7 @@ export class EventInfoPage implements OnInit {
     });
 
 
-   
+
 
 
 
@@ -64,13 +77,14 @@ export class EventInfoPage implements OnInit {
 
 
   async ngOnInit() {
-    
-    await this.getEvent();
-     this.getUserEvent(this.eventId);
 
-  
+    await this.getEvent();
+    this.getUserEvent(this.eventId);
     
-   
+
+
+
+
 
 
 
@@ -79,9 +93,9 @@ export class EventInfoPage implements OnInit {
 
   ionViewDidEnter() {
     // this.getEvent();
-    
+
     // this.getUserEvent(this.eventAuthor);
-   
+
 
 
 
@@ -91,25 +105,25 @@ export class EventInfoPage implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe({
       next: async (data) => {
         this.event = await data;
-        
-       
+
+
         // this.getUserEvent(this.eventId);
         this.eventDate = this.event.date;
-   // actualiza el número de participantes
+        // actualiza el número de participantes
         this.participants = this.event.plazas.length;
 
         const plazas = this.event.plazas?.find((plaza: any) => plaza == this.userId);
         // Si el usuario está en la lista de participantes, cambia el estado del botón de unirse
         if (plazas) {
           this.isJoined = true;
-        }else{
+        } else {
           this.isJoined = false;
         }
-        
-        
-     
+
+
+
         this.eventName = this.capitalizeWords(this.event.name);
-    
+        
         this.checkParticipants();
 
         return this.event;
@@ -122,12 +136,13 @@ export class EventInfoPage implements OnInit {
       next: async (data) => {
         this.userAuthor = await data.user;
         this.userAuthorId = data._id;
-        console.log("user",this.userAuthor);
+        this.checkIfmine();
+        console.log("user", this.userAuthor);
         return this.userAuthor;
       }
     });
   }
-  
+
 
   capitalizeWords(eventName: string) {
     return eventName.replace(/\b\w/g, l => l.toUpperCase());
@@ -142,7 +157,7 @@ export class EventInfoPage implements OnInit {
   addFavorite() {
     if (this.isFavorite) {
       this.deleteFavorite(this.eventId);
-      
+
     } else {
       this.setFavoriteEvent(this.eventId);
     }
@@ -154,9 +169,9 @@ export class EventInfoPage implements OnInit {
   //llama al servicio para añadir un evento a favoritos
   setFavoriteEvent(eventId: string) {
     this.auth.setFavorite(this.userId, eventId).subscribe({
-      next: async (data:UsersInterface) => {
+      next: async (data: UsersInterface) => {
         console.log(data);
-        
+
       },
       error: async (err) => {
         console.log(err);
@@ -167,7 +182,7 @@ export class EventInfoPage implements OnInit {
   //Llama al servicio para eleminar los favoritos
   deleteFavorite(eventId: string) {
     this.auth.deleteFavorite(this.userId, eventId).subscribe({
-      next: (data:UsersInterface) => {
+      next: (data: UsersInterface) => {
         console.log(data);
       },
       error: (err) => {
@@ -178,7 +193,7 @@ export class EventInfoPage implements OnInit {
 
 
   //Abre el modal de participantes
- async openParticipants() {
+  async openParticipants() {
     const modal = await this.modalCtrl.create({
       component: ParticipantsListComponent,
       componentProps: {
@@ -188,8 +203,8 @@ export class EventInfoPage implements OnInit {
     await modal.present();
 
   }
-  
-  
+
+
   async joinOrLeaveEvent() {
     if (this.isJoined) {
       this.leaveEvent();
@@ -199,7 +214,7 @@ export class EventInfoPage implements OnInit {
       console.log("join:", this.participants);
     }
     this.isJoined = !this.isJoined;
-    
+
     // Si el número de participantes ha llegado al máximo y no se ha unido aún, desactiva el botón de unirse
     this.checkParticipants();
   }
@@ -207,61 +222,61 @@ export class EventInfoPage implements OnInit {
 
   checkParticipants() {
     this.eventDate = new Date(this.event.date);
-    let  now = new Date();
-    switch(true){
+    let now = new Date();
+    switch (true) {
       case this.participants == this.event.numPlazas && !this.isJoined:
-      this.disabledButton = true;
-      break;
+        this.disabledButton = true;
+        break;
 
       case this.eventDate < now && !this.isJoined:
-      this.disabledButton = true;
-      break;
+        this.disabledButton = true;
+        break;
 
       case this.eventDate < now && this.isJoined:
-      this.disabledButton = true;
-      break;
+        this.disabledButton = true;
+        break;
 
       case this.eventDate > now && !this.isJoined:
-      this.disabledButton = false;
-      break;
+        this.disabledButton = false;
+        break;
 
       case this.eventDate > now && this.isJoined:
-      this.disabledButton = false;
-      break;
+        this.disabledButton = false;
+        break;
 
       case this.participants < this.event.numPlazas:
-      this.disabledButton = false;
-      break;
+        this.disabledButton = false;
+        break;
 
       default:
-      this.disabledButton = false;
-      break;
+        this.disabledButton = false;
+        break;
 
     }
   }
-  
+
 
   joinEvent() {
     this.eventService.addParticipant(this.eventId, this.userId).subscribe({
       next: async (data) => {
-        const event : EventsInterface = await data.event;
-          
-          this.participants = event.plazas.length;
+        const event: EventsInterface = await data.event;
 
-          this.checkParticipants(); 
-         // Actualiza si el evento está lleno o no
+        this.participants = event.plazas.length;
+
+        this.checkParticipants();
+        // Actualiza si el evento está lleno o no
         // }
       }
     });
   }
-  
+
   leaveEvent() {
     this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
       next: async (data) => {
-        const event:EventsInterface = await data.event;
+        const event: EventsInterface = await data.event;
 
-          this.participants = event.plazas.length;        
-          this.checkParticipants();
+        this.participants = event.plazas.length;
+        this.checkParticipants();
 
       }
     });
@@ -269,33 +284,48 @@ export class EventInfoPage implements OnInit {
 
 
   goToProfile() {
-    if(this.userAuthorId== this.userId){
+    if (this.userAuthorId == this.userId) {
 
-    this.navCtrl.navigateForward(`/home/user-page`);
-    }else{
+      this.navCtrl.navigateForward(`/home/user-page`);
+    } else {
       this.navCtrl.navigateForward(`/otheruser-page/${this.userAuthorId}`);
     }
   }
 
 
-  
-//Abre el modal de denuncias
- async openReportModal(){
-  const modal = await this.modalCtrl.create({
-    component: ReportModalComponent,
-    componentProps: {
-      eventId: this.eventId
-    },
-  
-    breakpoints: [0, 0.5, 1],
-    initialBreakpoint: 1,
-    handleBehavior: 'none'
-    
-  });
-  await modal.present();
- }
+  //para mostrar el boton de reportes
+  checkIfmine() {
+    console.log("user auhtor", this.userAuthorId);
+    console.log("user", this.userId);
+    if (this.userAuthorId == this.userId) {
 
-//Abre el modal del mapa
+      this.isMine = true;
+      console.log("mine", this.isMine);
+
+    } else {
+      this.isMine = false;
+      console.log("not mine", this.isMine);
+    }
+  }
+
+
+  //Abre el modal de denuncias
+  async openReportModal() {
+    const modal = await this.modalCtrl.create({
+      component: ReportModalComponent,
+      componentProps: {
+        eventId: this.eventId
+      },
+
+      breakpoints: [0, 0.5],
+      initialBreakpoint: 0.5,
+      handleBehavior: 'none'
+
+    });
+    await modal.present();
+  }
+
+  //Abre el modal del mapa
   async openLocation() {
     const modal = await this.modalCtrl.create({
       component: EventMapComponent,
@@ -308,39 +338,39 @@ export class EventInfoPage implements OnInit {
   }
 
   //Abre el modal de comentarios
- async openComments(){
-  console.log("eventid",this.eventId);
-  const modal = await this.modalCtrl.create({
-    component: CommentsModalComponent,
-   
-    componentProps: {
-      eventId: this.eventId,
-      
-     
-    },
-  });
-  await modal.present();
+  async openComments() {
+    console.log("eventid", this.eventId);
+    const modal = await this.modalCtrl.create({
+      component: CommentsModalComponent,
+
+      componentProps: {
+        eventId: this.eventId,
+
+
+      },
+    });
+    await modal.present();
 
   }
 
-//recoge el usuario
-getUser() {
-  this.auth.getUser().subscribe({
-    next: async (data) => {
-      this.currentUser = await data;
-      console.log(this.currentUser);
-      const favorites = this.currentUser.favorites?.find((fav: any) => fav == this.eventId);
-      console.log("fav",favorites);
+  //recoge el usuario
+  getUser() {
+    this.auth.getUser().subscribe({
+      next: async (data) => {
+        this.currentUser = await data;
+        console.log(this.currentUser);
+        const favorites = this.currentUser.favorites?.find((fav: any) => fav == this.eventId);
+        console.log("fav", favorites);
         // Si el usuario está en la lista de participantes, cambia el estado del botón de unirse
         if (favorites) {
           this.isFavorite = true;
-          console.log("user",this.isFavorite);
-        }else{
+          console.log("user", this.isFavorite);
+        } else {
           this.isFavorite = false;
-          console.log("user",this.isFavorite);
+          console.log("user", this.isFavorite);
         }
-    }
-  });
-}
+      }
+    });
+  }
 
 }

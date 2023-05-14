@@ -22,6 +22,29 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
-    Tap the button in the toolbar to open the menu.
+    <div class="panel">
+      <h1>CONTROL DE DENUNCIAS</h1>
+     
+    </div>
+
+    <div class="content">
+    <h3>Denuncias</h3>
+      <ion-list>
+        <ion-item>
+          <ion-label>Más de 50 denuncias totales</ion-label>
+          <ion-badge slot="end" (click)="openReports('moreThan50')">{{filteredUsersMorenThan50.length}}</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-label>Más de 30 denuncias totales</ion-label>
+          <ion-badge slot="end"(click)="openReports('moreThan30')">{{filteredUsersMorenThan30.length}}</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-label>Más de 10 denuncias totales</ion-label>
+          <ion-badge slot="end" (click)="openReports('moreThan10')">{{filteredUsersMorenThan10.length}}</ion-badge>
+        </ion-item>
+
+      </ion-list>
+    
+    </div>
   </ion-content>
 </div>

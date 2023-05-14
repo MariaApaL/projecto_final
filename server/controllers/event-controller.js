@@ -182,6 +182,8 @@ exports.deleteEventsByAuthor = async (req, res) => {
   }
 };
 
+
+
 exports.deleteEventByNameAndAuthor = async (req, res) => {
   try {
     const { name, author } = req.body;

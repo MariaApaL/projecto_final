@@ -13,6 +13,7 @@ import { EventMapComponent } from './event-map/event-map.component';
 import { ParticipantsListComponent } from './participants-list/participants-list.component';
 import { CommentsModalComponent } from './comments-modal/comments-modal.component';
 import { ReportModalComponent } from './report-modal/report-modal.component';
+import { ReportUserModalComponent } from './report-user-modal/report-user-modal.component';
 
 
 
@@ -33,6 +34,7 @@ import { ReportModalComponent } from './report-modal/report-modal.component';
     ParticipantsListComponent,
     CommentsModalComponent,
     ReportModalComponent,
+    ReportUserModalComponent
    
   
   ],
@@ -54,6 +56,7 @@ import { ReportModalComponent } from './report-modal/report-modal.component';
     EventCardComponent,
     EventMapComponent,
     ParticipantsListComponent,
+    ReportUserModalComponent,
     CommentsModalComponent,
     ReportModalComponent,
  

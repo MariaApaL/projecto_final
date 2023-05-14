@@ -64,6 +64,12 @@ export class EventService {
     return this.http.delete(URL, options);
   }
 
+  deleteByEventId(id: string) {
+    const URL = `${this.url}/deleteByEventId/${id}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.delete(URL, { headers });
+  }
+
   //elimina un evento por autor id
   deleteEventsByAuthor(id: string) {
     const URL = `${this.url}/deleteEventsByAuthor/${id}`;

@@ -42,12 +42,6 @@ export class OtheruserPagePage implements OnInit {
     this.findEventsByAuthorId(this.profileUserId);
   } 
  
-
-  ionViewDidEnter() {
-   
- 
-
-  }
   
   // muestra eventos por autor
   getUserById(userId: any) {
@@ -72,46 +66,8 @@ findEventsByAuthorId(authorId: any) {
     }
   });
 }
-  
-  async openModal() {
-    const modal = await this.modalCtrl.create({
-      component: ReportModalComponent,
-    
-      breakpoints: [0, 0.5, 1],
-      initialBreakpoint: 1,
-      handleBehavior: 'none'
-      
-    });
-    await modal.present();
-  }
 
 
-
-  // async presentAlert() {
-  //   const alert = await this.alertCtrl.create({
-  //     header: 'Borrar Evento',
-  //     message: '¿Estás seguro de que quieres borrar el evento?',
-  //     buttons: [
-  //       {
-  //         text: 'No',
-  //         role: 'cancel',
-  //         cssClass: 'secondary',
-  //         handler: (blah) => {
-  //           this.modalCtrl.dismiss();
-  //           console.log('Confirm Cancel');
-  //         }
-  //       }, {
-  //         text: 'Sí',
-  //         handler: () => {
-  //           this.ionViewDidEnter();
-  //           console.log('Confirm Okay');
-  //         }
-  //       }
-  //     ]
-  //   });
-
-  //   await alert.present();
-  // }
 
     //Navega a la página de información del evento
     selectEvent(id: string) {
@@ -120,40 +76,7 @@ findEventsByAuthorId(authorId: any) {
       localStorage.setItem('previousUrl', location.href);
     }
 
-    addFavorite(eventId: any) {
-      if (this.isFavorite) {
-        this.deleteFavorite(eventId);
-      } else {
-        this.setFavoriteEvent(eventId);
-      }
-      this.isFavorite = !this.isFavorite;
-      localStorage.setItem(`favorite_${eventId}`, JSON.stringify(this.isFavorite));
-    }
-  
-  
-    //llama al servicio para añadir un evento a favoritos
-    setFavoriteEvent(eventId: any) {
-      this.auth.setFavorite(this.userId, eventId).subscribe({
-        next: (data) => {
-          console.log(data);
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      });
-    }
-  
-    //Llama al servicio para eleminar los favoritos
-    deleteFavorite(eventId: any) {
-      this.auth.deleteFavorite(this.userId, eventId).subscribe({
-        next: (data) => {
-          console.log(data);
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      });
-    }
+    
 
 
     goBack(){

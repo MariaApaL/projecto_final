@@ -39,27 +39,43 @@ function isSameDay(date1, date2) {
 exports.addReport = async (req, res) => {
     try {
         const { id } = req.params;
-        const { reportType, eventId } = req.body;
-        const user = await User.findById(id);
+        const { reportType, eventId, userId } = req.body;
+        const event = await Event.findById(eventId);
+
         const report = await Report.findOne({ type: reportType });
-        if (!user || !report) {
-            return res.status(404).json({ message: 'No se encontró el usuario o el reporte.' });
+
+        const reportedUser = await User.findById(id);
+
+        const user = await User.findById(userId);
+
+
+        if (!event || !report || !user || !reportedUser) {
+            return res.status(404).json({ message: 'No se encontró el evento, el reporte o el usuario.' });
         }
+
         const today = new Date();
-        const eventReportsToday = user.reports.filter(report => report.eventId.toString() === eventId && isSameDay(report.created, today));
+        const eventReportsToday = reportedUser.reports.filter(report =>
+            report.eventId.toString() === eventId &&
+            isSameDay(report.created, today) &&
+            report.userId.toString() === userId
+        );
+
         if (eventReportsToday.length >= 2) {
             return res.status(400).json({ message: 'Ya has realizado los reportes diarios máximos a este evento' });
         }
-        user.reports.push({
+
+        reportedUser.reports.push({
             report: report,
             createdAt: today,
-            eventId: eventId
+            eventId: eventId,
+            userId: userId
         });
-        await user.save();
-        res.status(200).json({ message: 'Se ha añadido el reporte al usuario.' });
+
+        await reportedUser.save();
+        res.status(200).json({ message: 'Se ha añadido el reporte al evento.' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Ha ocurrido un error al añadir el reporte al usuario.' });
+        res.status(500).json({ message: 'Ha ocurrido un error al añadir el reporte al evento.' });
     }
 };
 
@@ -79,3 +95,26 @@ exports.getReportsByType = async (req, res) => {
         res.status(500).json({ message: 'Ha ocurrido un error al obtener los reportes por tipo.' });
     }
 };
+
+exports.deleteReportsByEventId = async (req, res) => {
+    const  eventId  = req.params.id;
+
+    try {
+      // Busca los usuarios que tienen reportes con el eventId indicado
+      const usuariosConReportes = await User.find({ 'reports.eventId': eventId });
+      
+      // Para cada usuario, elimina el reporte que tiene el eventId indicado
+      for (let i = 0; i < usuariosConReportes.length; i++) {
+        const usuario = usuariosConReportes[i];
+        usuario.reports = usuario.reports.filter(report => report.eventId != eventId);
+        await usuario.save();
+      }
+  
+      // Elimina los reportes que tienen el eventId indicado en la colección de reportes
+      await Report.deleteMany({ eventId });
+  
+      res.status(200).json({ message: 'Se eliminaron todos los reportes asociados al evento indicado.' });
+    } catch (error) {
+      res.status(500).json({ error: 'Ocurrió un error al eliminar los reportes.' });
+    }
+  }

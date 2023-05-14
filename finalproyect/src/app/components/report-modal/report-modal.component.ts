@@ -21,8 +21,9 @@ export class ReportModalComponent implements OnInit {
     { label: 'Fraude', report: 'fraude' },
   ];
 
-  userId: string;
+  userReportedId: string;
   eventId: string;
+  currentUser = localStorage.getItem('userId');
 
 
   constructor(
@@ -44,7 +45,7 @@ export class ReportModalComponent implements OnInit {
 
 
   chooseOptions(item: any) {
-    this.reportService.addReport(this.userId, item.report, this.eventId).subscribe(
+    this.reportService.addReport(this.userReportedId, item.report, this.eventId, this.currentUser).subscribe(
       res => {
         console.log(res);
         this.presentAlert('Reporte enviado');
@@ -71,7 +72,7 @@ export class ReportModalComponent implements OnInit {
   getUserByEventId(id: string) {
     this.auth.getUserByEventId(id).subscribe(
       res => {
-        this.userId = res._id;
+        this.userReportedId = res._id;
       }
     )
 

@@ -20,9 +20,9 @@ export class ReportService {
 
 
     //reporta user
-    addReport(userId:string, reportType:string, eventId:string): Observable<any> {
-      const body = { reportType, eventId };
-      const url = `${this.url}/addReport/${userId}`;
+    addReport(reportedId:string, reportType:string, eventId:string,userId ): Observable<any> {
+      const body = { reportType, eventId, userId };
+      const url = `${this.url}/addReport/${reportedId}`;
       const headers = new HttpHeaders().set('Content-Type', 'application/json');
       return this.http.post(url, body, { headers: headers });
   }
@@ -36,29 +36,18 @@ export class ReportService {
       return this.http.get(url, options);
     }
 
-    //limita reportes
-    // checkReportLimit(userId:any, eventId:any): Observable<any> {
-    //   const body = { eventId };
-    //   const url = `${this.url}/checkReportLimit/${userId}`;
-    //   const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    //   const options = { headers: headers, body: body };
-    //   return this.http.get(url, options);
-    // }
+    //usuarios por num reportes
+    getUsersByReportCount(reportCount:number): Observable<any> {  
+      const url = `${this.url}/getUsersByReportCount/${reportCount}`;
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+      return this.http.get<number>(url, { headers: headers });
+    }
+
+    deleteReportsByEventId(eventId:string): Observable<any> {
+      const url = `${this.url}/deleteReportsByEventId/${eventId}`;
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+      return this.http.delete(url, { headers: headers });
+    }
 
 
-
-
-
-
-
-
-
-
-//   app.post("/addReport/:id", controller.addReport);
-
-//   //obtener reportes por tipo
-//   app.get("getReportsByType/:id", controller.getReportsByType);
- 
-//  //limita reportes 
-//    app.post("/checkReportLimit/:id", controller.checkReportLimit);
 }

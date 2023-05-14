@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Denuncias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let user of filteredUsers">
+      <ion-card-header>
+        <ion-card-title (click)="goUserInfo(user._id)">{{user.user}}</ion-card-title>
+        <div class="button">
+          <ion-button color="primary" size="small"(click)="deleteUser(user._id)">Borrar</ion-button>
+        
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+       <ion-list>
+        <h2>Eventos Denunciados</h2>
+        <ion-item *ngFor="let event of filteredEvents">
+          
+          <ion-badge slot="end" color="tertiary"(click)="goEventInfo(event)">{{event}}</ion-badge>
+          <ion-badge slot="end" color="primary" (click)="deleteEvent(event)">Borrar</ion-badge>
+        </ion-item>
+       </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>
