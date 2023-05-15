@@ -55,15 +55,7 @@ const userSchema = new mongoose.Schema({
             default: []
         }
     ],
-    valuations: [
-        {
-            type: Number,
-            required: false,
-            default: 0,
-            min: 1,
-            max: 5
-        }
-    ],
+   
     reports: [
         {
             report:{

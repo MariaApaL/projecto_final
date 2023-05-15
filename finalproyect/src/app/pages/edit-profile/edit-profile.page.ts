@@ -3,7 +3,7 @@ import { ModalController, NavController } from '@ionic/angular';
 import { th } from 'date-fns/locale';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
-import { ImgServiceService } from 'src/app/services/img.service.service';
+
 
 @Component({
   selector: 'app-edit-profile',
@@ -30,7 +30,7 @@ export class EditProfilePage implements OnInit {
   constructor(private modalCtrl: ModalController,
     private auth: AuthService,
     private navCrtl: NavController,
-    private imgService: ImgServiceService
+
   ) { }
 
   ngOnInit() {
@@ -57,24 +57,7 @@ export class EditProfilePage implements OnInit {
     
 
   }
-  onUploadImage(event: Event) {
-   
-      const file = (event.target as HTMLInputElement).files![0];
-      const formData = new FormData();
-      formData.append('file', file);
-      const userId = this.auth.getId();
   
-      // Aquí se debe llamar al método del servicio para subir la imagen
-      this.imgService.uploadUserImg(userId,file).subscribe({
-        next: user => { 
-  
-         console.log(user)
-        },error: (err) => {
-          console.log(err);
-        }
-      }); 
-      
-    }
   
 
   //  onUploadImage(event: Event) {

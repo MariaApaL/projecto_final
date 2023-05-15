@@ -8,8 +8,8 @@ const Report = db.report;
 const path = require('path');
 const router = express.Router();
 require('dotenv').config();
-// const db_user = process.env.db_user;
-// const db_pass = process.env.db_pass;
+
+
 
 let corsOptions = {
   origin: true,
@@ -31,17 +31,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get("/user", (req, res) => {
-  res.json({ message: "Aplicación lanzada." });
+app.get("/", (req, res) => {
+  res.json({ message: "GOut App - Welcome." });
 });
 
 
-//multer
+//ESTO ES PARA MULTER
 app.use(router);
 
 router.get('/images/:filename', (req,res)=>{
   const filename = req.params.filename;
-  const imagePath = path.join(__dirname, '/images', filename);
+  const imagePath = path.join(__dirname, 'images', filename);
   res.sendFile(imagePath);
 })
 

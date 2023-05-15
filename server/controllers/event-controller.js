@@ -6,6 +6,7 @@ const User = db.user;
 const Event = db.event;
 const Category = db.category;
 const mongoose = require('mongoose');
+const cloudinary = require("../config/cloudinary");
 
 function checkBadWord(texto, badWords) {
   if (!texto) {
@@ -64,16 +65,29 @@ exports.createEvent = async (req, res) => {
 
     }
 
+    const eventPicture = req.file.filename;
+    // Subimos la imagen a Cloudinary y obtenemos su URL
+    const image = new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(req.file.path, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.secure_url);
+        }
+      });
+    });
+
+
     const newEvent = new Event({
       name: name.toLowerCase(),
       date: date,
       location: location,
-      picture: picture,
+      picture: await image, 
       author: author,
       numPlazas: numPlazas,
       description: description.toLowerCase(),
       price: price,
-
+      
     });
 
     const category = req.body.categories ? await Category.findOne({ type: req.body.categories }) : null;
@@ -137,11 +151,21 @@ exports.updateEvent = async (req, res) => {
     //comprueba que no sea negativo
     checkNegative(price, numPlazas);
 
+    const image = new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(req.file.path, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.secure_url);
+        }
+      });
+    });
+
     const updateEvent = {
       name: name,
       date: newDate,
       location: location,
-      picture: picture,
+      picture: await image,
       numPlazas: numPlazas,
       price: price,
       description: description,
@@ -498,5 +522,87 @@ exports.deleteUserComments = async (req, res) => {
     res.status(200).json({ message: 'Todos los comentarios del usuario han sido eliminados.' });
   } catch (err) {
     res.status(500).json({ message: 'Error al eliminar los comentarios del usuario.' });
+  }
+};
+
+exports.addValuation = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const {value, userId} = req.body; 
+    
+    // Busca el evento por su ID
+    const event = await Event.findById(eventId);
+    
+    if (!event) {
+      return res.status(404).send({ message: "Evento no encontrado" });
+    }
+    
+    // Verifica si el usuario creador ya ha valorado el evento
+    const hasValuation = event.valuations.some(valuation => valuation.author.toString() === userId);
+    
+    if (hasValuation) {
+      return res.status(400).send({ message: "El usuario ya ha valorado este evento" });
+    }
+    
+    // Crea una nueva valoración con el valor proporcionado en la solicitud
+    const newValuation = {
+      value: value, 
+      author: userId
+    };
+    
+    // Agrega la nueva valoración al arreglo de valoraciones del evento
+    event.valuations.push(newValuation);
+    
+    // Guarda los cambios en el evento
+    await event.save();
+    
+    res.send({ message: "Valoración añadida con éxito", newValuation });
+  } catch (err) {
+    res.status(500).send({ message: "Error al añadir la valoración", error: err });
+  }
+};
+
+exports.getEventValuations = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    
+    // Busca el evento por su ID e incluye el uusuario
+    const event = await Event.findById(eventId).populate('valuations.author', 'user');
+    
+    if (!event) {
+      return res.status(404).send({ message: "Evento no encontrado" });
+    }
+    
+    // Extrae todas las valoraciones del evento
+    const valuations = event.valuations;
+    
+    res.send({ valuations });
+  } catch (err) {
+    res.status(500).send({ message: "Error al obtener las valoraciones del evento", error: err });
+  }
+};
+
+
+exports.getEventValuationsByAuthor = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const {authorId} = req.body;
+    
+    // Busca el evento por su ID y las valoraciones del autor especificado
+    const event = await Event.findById(eventId).populate({
+      path: 'valuations',
+      match: { author: authorId }
+    });
+    
+    if (!event) {
+      return res.status(404).send({ message: "Evento no encontrado" });
+    }
+    
+    // Filtra las valoraciones
+    const valuations = event.valuations.filter(valuation => valuation.author.toString() === authorId);
+    
+    res.send({ valuations });
+  } catch (err) {
+    res.status(500).send({ message: "Error al obtener las valoraciones del evento por el autor", error: err });
   }
 };

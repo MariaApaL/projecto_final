@@ -124,27 +124,46 @@ export class EventService {
     return this.http.delete(url, options);
   }
   //devuelve los comentarios de un evento
-  getComments(eventId: any): Observable<any> {
+  getComments(eventId: string): Observable<any> {
     const url = `${this.url}/getComments/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(url, { headers: headers });
   }
 
   //elimina los comentarios de un usuario
-  deleteUserComments(userId: any): Observable<any> {
+  deleteUserComments(userId: string): Observable<any> {
     const url = `${this.url}/deleteUserComments/${userId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.delete(url, { headers: headers });
   }
 
   //elimina las plazas de un usaurio
-  deleteUserPlazas(userId: any): Observable<any> {
+  deleteUserPlazas(userId: string): Observable<any> {
     const url = `${this.url}/deleteUserPlazas/${userId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.delete(url,{ headers: headers });
   }
 
-  
+  //añadir valoraciones
+  addValorations(eventId: string, authorId: string, value: number): Observable<any> {
+    const url = `${this.url}/addValorations/${eventId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const body = { authorId, value };
+    return this.http.post(url, body, { headers: headers });
+  }
 
-
+  //devuelve las valoraciones de un evento
+  getEventValorations(eventId: string): Observable<any> {
+    const url = `${this.url}/getEventValorations/${eventId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
+  }
+  //devuelve las valoraciones de un evento por autor
+  getEventValuationsByAuthor(eventId:string, authorId: string): Observable<any> {
+    const url = `${this.url}/getEventValuationsByAuthor/${eventId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const body = { authorId };
+    const options = { headers: headers, body: body };
+    return this.http.get(url, options);
+  }
 }

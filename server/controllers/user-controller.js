@@ -1,6 +1,7 @@
 const config = require("../config/auth-config");
 const badWords = require("../config/badword")
 const db = require("../models");
+const cloudinary = require("../config/cloudinary");
 const User = db.user;
 const Role = db.role;
 const Report = db.report;
@@ -161,6 +162,7 @@ exports.updateUser = async (req, res) => {
     }
     }
 
+    
     //console.log(fieldsToUpdate);
     const upUser = fieldsToUpdate.hasOwnProperty("user") ? fieldsToUpdate.user.toLowerCase() : null;
     
@@ -192,6 +194,34 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+//Actualiza la foto de un usuario
+exports.updateUserPicture = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).send({ message: "Usuario no encontrado" });
+    }
+    
+    const picture = req.file; 
+    
+    if (!picture) {
+      return res.status(400).send({ message: "No se ha proporcionado ninguna imagen" });
+    }
+    
+    // Sube la imagen a Cloudinary
+    const uploadedImage = await cloudinary.uploader.upload(picture.path);
+    
+    // Actualiza el campo de imagen del usuario
+    user.picture = uploadedImage.secure_url;
+    await user.save();
+    
+    res.send({ message: "Imagen de usuario actualizada con éxito", picture: user.picture });
+  } catch (err) {
+    res.status(500).send({ message: "Error al actualizar la imagen de usuario", error: err });
+  }
+};
 
 
 //Elimina a un usuario por su id
@@ -309,78 +339,6 @@ exports.deleteFavorite = async (req, res) => {
     }
   }
 
-
-
-
-
-// exports.addValuation = async (req, res) => {
-//   const id = req.params.id;
-//   const valuation = req.body.valuation;
-//   const userId = req.body.userId;
-//   const now = new Date();
-
-//   try {
-//     const event = await Event.findById(id);
-
-//     // Comprobar si la fecha actual es posterior a la creación del evento
-//     if (now < event.createdAt) {
-//       return res.status(400).json({ message: 'No se puede añadir una valoración antes de la fecha de creación del evento.' });
-//     }
-
-//     // Comprobamos que el usuario ha asistido al evento
-//     if (!event.plazas.includes(userId)) {
-//       return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
-//     }
-//     event.valuations.push(valuation);
-//     await event.save();
-
-//     res.status(200).json({ message: 'Valoración añadida correctamente.' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error al añadir valoracion' });
-//   }
-// }
-
-// exports.getValuationsByUser = async (req, res, next) => {
-//   try {
-//     const events = await Event.find({ author: req.params.id }).populate('valuations');
-//     const valuations = events.reduce((acc, event) => {
-//       acc.push(...event.valuations);
-//       return acc;
-//     }, []);
-//     res.status(200).json(valuations);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-// exports.updateUserImg = async (req, res) => {
-//     try{
-
-//       const userId = req.params.id;
-
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).send({ message: "Usuario no encontrado" });
-    
-//     }
-//      const picture = req.body.picture;
-//       const updatedUser = {
-//       picture: picture
-//     };
-
-
-//     const newUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
-//     if (!newUser) {
-//       return res.status(404).send({ message: "Usuario no encontrado" });
-//     }
-
-//     res.send({ message: "Usuario actualizado con éxito", user });
-
-
-
-//     }catch(err){
-//         res.status(500).json({ message: err.message });
-//     }
-// };
 
 
 

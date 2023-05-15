@@ -1,4 +1,4 @@
-const { verifyEvent } = require("../middlewares");
+const { verifyEvent, upload } = require("../middlewares");
 const controller = require("../controllers/event-controller");
 
 module.exports = function (app) {
@@ -19,6 +19,7 @@ module.exports = function (app) {
     "/createEvent",
     [
       verifyEvent.checkIfEventExists,
+      upload.single('images')
 
     ],
     controller.createEvent
@@ -88,6 +89,12 @@ module.exports = function (app) {
 
   app.delete("/deleteUserComments/:id", controller.deleteUserComments);
 
+ //VALORACIONES
+ app.post("/addValuation/:id", controller.addValuation);
+
+ app.get("/getEventValuations/:id", controller.getEventValuations);
+
+ app.get("/getEventValuationsByAuthor/:id", controller.getEventValuationsByAuthor);
  
 
 
