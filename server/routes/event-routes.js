@@ -94,7 +94,7 @@ module.exports = function (app) {
 
  app.get("/getEventValuations/:id", controller.getEventValuations);
 
- app.get("/getEventValuationsByAuthor/:id", controller.getEventValuationsByAuthor);
+ app.get("/getEventValuationsByAuthor/:eventId/:authorId", controller.getEventValuationsByAuthor);
  
 
 

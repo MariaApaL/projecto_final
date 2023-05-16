@@ -89,22 +89,31 @@ export class CreateEventModalComponent implements OnInit {
     
     const name = this.form.value.eventname.toLowerCase();
     const date = this.form.value.date;
-  
     const description = this.form.value.description;
     const numPlazas = this.form.value.plazas;
     const price = this.form.value.price;
     const categories = [this.form.value.category.toLowerCase()];
-    console.log(categories)
     const location = this.autocomplete.input;
     const author = localStorage.getItem('userId');
+
+    const currentDate = new Date();
+    const minimumDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+    const eventDate = new Date(date);
+
+    if (eventDate < minimumDate) {
+      // La fecha del evento es menor a la fecha mínima permitida
+      this.presentAlert("Error al crear el evento", "La fecha debe ser al menos 24 horas a partir de la fecha actual");
+      return;
+    }
     
 
     this.eventService.createEvent(name,date,location,author,
       numPlazas,description,price,categories )
       .subscribe({
         next: (data) => {
-         
-          console.log(data)
+          
+          
+          
 
           this.presentAlert("Evento creado", "El evento se ha creado correctamente")
          this.closeModal();
@@ -115,7 +124,7 @@ export class CreateEventModalComponent implements OnInit {
         && (date=='' || date == undefined || date == null)){
         this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos")
         console.error(err);
-      }else{
+      }else  {
         this.presentAlert("Error al crear el evento",err.error.message )
         console.error(err);
       }

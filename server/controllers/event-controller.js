@@ -65,24 +65,25 @@ exports.createEvent = async (req, res) => {
 
     }
 
-    const eventPicture = req.file.filename;
-    // Subimos la imagen a Cloudinary y obtenemos su URL
-    const image = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(req.file.path, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result.secure_url);
-        }
-      });
-    });
+    // const eventPicture = req.file.filename;
+    // // Subimos la imagen a Cloudinary y obtenemos su URL
+    // const image = new Promise((resolve, reject) => {
+    //   cloudinary.uploader.upload(req.file.path, (err, result) => {
+    //     if (err) {
+    //       reject(err);
+    //     } else {
+    //       resolve(result.secure_url);
+    //     }
+    //   });
+    // });
 
 
     const newEvent = new Event({
       name: name.toLowerCase(),
       date: date,
       location: location,
-      picture: await image, 
+      picture: picture,
+      // picture: await image, 
       author: author,
       numPlazas: numPlazas,
       description: description.toLowerCase(),
@@ -201,7 +202,7 @@ exports.deleteEventsByAuthor = async (req, res) => {
     const deletedEvents = await Event.deleteMany({ author: id });
     res.status(200).json({ message: `Se han eliminado todos los  eventos` });
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({ message: 'Ha ocurrido un error al eliminar los eventos' });
   }
 };
@@ -279,7 +280,7 @@ exports.getEventDate = async (req, res) => {
   try {
     // Convertir la fecha a formato Date
     const newDate = moment(date, "DD-MM-YYYY").toDate();
-    console.log(newDate);
+    
 
     const foundEvents = await Event.find({ date: newDate });
 
@@ -349,7 +350,7 @@ exports.addParticipant = async (req, res) => {
 
     res.status(200).json({ message: 'Usuario añadido correctamente', event });
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({ message: 'Ha ocurrido un error al añadir al usuario' });
   }
 }
@@ -374,7 +375,7 @@ exports.deleteParticipant = async (req, res) => {
 
     res.status(200).json({ message: 'Plaza eliminada', event });
   } catch (error) {
-    console.error(error);
+   
     res.status(500).json({ message: 'Ha ocurrido un error al eliminar la plaza' });
   }
 }
@@ -392,7 +393,7 @@ exports.getParticipants = async (req, res) => {
 
     res.status(200).json(event.plazas);
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({ message: 'Ha ocurrido un error al obtener los participantes' });
   }
 }
@@ -431,11 +432,10 @@ exports.addComments = async (req, res) => {
     if (event.date > Date.now()) {
       return res.status(400).json({ message: 'No se pueden añadir comentarios antes de la fecha del evento' });
     }
-    console.log("hola");
+    
     // Comprobamos que el usuario ha asistido al evento
     if (!event.plazas.includes(authorId)) {
-      console.log(event.plazas.includes(authorId));
-      console.log(authorId);
+    
 
       return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
     }
@@ -457,7 +457,7 @@ exports.addComments = async (req, res) => {
 
     res.status(201).json({ message: 'Comentario añadido correctamente' });
   } catch (error) {
-    console.log(error);
+   
     res.status(500).json({ message: 'Error al añadir el comentario' });
   }
 };
@@ -474,7 +474,7 @@ exports.getComments = async (req, res) => {
     const comments = event.comments;
     res.status(200).json(comments);
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: 'Error al obtener los comentarios' });
   }
 };
@@ -482,7 +482,7 @@ exports.getComments = async (req, res) => {
 exports.deleteComment = async (req, res) => {
   const { eventId, commentId, authorId } = req.body;
 
-  console.log(authorId);
+  
   try {
     const event = await Event.findById(eventId);
     if (!event) {
@@ -497,7 +497,7 @@ exports.deleteComment = async (req, res) => {
     //para tipar el authorId
     const ObjectId = mongoose.Types.ObjectId;
     if (!comment.author.equals(new ObjectId(authorId))) {
-      console.log(comment.author.equals(new ObjectId(authorId)));
+      
       return res.status(403).json({ message: 'Solo el autor del comentario puede borrarlo' });
     }
 
@@ -506,7 +506,7 @@ exports.deleteComment = async (req, res) => {
 
     res.status(200).json({ message: 'Comentario borrado correctamente' });
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: 'Error al borrar el comentario' });
   }
 };
@@ -575,6 +575,10 @@ exports.getEventValuations = async (req, res) => {
     
     // Extrae todas las valoraciones del evento
     const valuations = event.valuations;
+    if(valuations.length === 0){
+      return res.status(404).send({ message: "No hay valoraciones para este evento" });
+    }
+
     
     res.send({ valuations });
   } catch (err) {
@@ -585,8 +589,8 @@ exports.getEventValuations = async (req, res) => {
 
 exports.getEventValuationsByAuthor = async (req, res) => {
   try {
-    const eventId = req.params.id;
-    const {authorId} = req.body;
+    const eventId = req.params.eventId;
+    const authorId = req.params.authorId;
     
     // Busca el evento por su ID y las valoraciones del autor especificado
     const event = await Event.findById(eventId).populate({
@@ -597,9 +601,9 @@ exports.getEventValuationsByAuthor = async (req, res) => {
     if (!event) {
       return res.status(404).send({ message: "Evento no encontrado" });
     }
-    
+
     // Filtra las valoraciones
-    const valuations = event.valuations.filter(valuation => valuation.author.toString() === authorId);
+    const valuations = event.valuations.filter(valuation => valuation.author && valuation.author.toString() === authorId);
     
     res.send({ valuations });
   } catch (err) {

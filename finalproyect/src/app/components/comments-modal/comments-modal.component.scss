@@ -1,0 +1,30 @@
+
+
+.valuation{
+    display:flex;
+    align-items:center;
+
+    ion-select{
+        font-size:20px;
+        color:black;
+    }
+    ion-icon{
+        font-size:20px;
+
+    }
+
+}
+
+.valuation-stars{
+    display:flex;
+    align-items:center;
+    width: auto;
+    height: auto;
+}
+
+
+.icon{
+    ion-icon{
+        font-size:25px;
+    }
+}

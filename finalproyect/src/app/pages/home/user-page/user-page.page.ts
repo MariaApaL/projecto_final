@@ -37,7 +37,8 @@ export class UserPagePage implements OnInit {
   isFavorite: boolean;
   //Donde guardo favoritos
   favorites: any[] = [];
-
+//para mostrar editar 
+ isDone:boolean;
 
   constructor(private modalCtrl: ModalController,
     private auth: AuthService,
@@ -79,9 +80,22 @@ export class UserPagePage implements OnInit {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
       next: async (data: EventsInterface) => {
         this.myEvents = await Object.values(data);
+        
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log("refresco eventos")
         this.eventCount = this.myEvents.length;
+
+        const currentDate = new Date();
+        this.myEvents.forEach(event => {
+          const eventDate = new Date(event.date);
+          if (eventDate < currentDate) {
+            this.isDone = true;
+            console.log(this.isDone)
+          } else {
+            this.isDone = false;
+            console.log(this.isDone)
+          }
+        });
 
         return this.myEvents;
       }

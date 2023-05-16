@@ -145,10 +145,10 @@ export class EventService {
   }
 
   //añadir valoraciones
-  addValorations(eventId: string, authorId: string, value: number): Observable<any> {
-    const url = `${this.url}/addValorations/${eventId}`;
+  addValuation(eventId: string, userId: string, value: number): Observable<any> {
+    const url = `${this.url}/addValuation/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { authorId, value };
+    const body = { userId, value };
     return this.http.post(url, body, { headers: headers });
   }
 
@@ -159,11 +159,10 @@ export class EventService {
     return this.http.get(url, { headers: headers });
   }
   //devuelve las valoraciones de un evento por autor
-  getEventValuationsByAuthor(eventId:string, authorId: string): Observable<any> {
-    const url = `${this.url}/getEventValuationsByAuthor/${eventId}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { authorId };
-    const options = { headers: headers, body: body };
-    return this.http.get(url, options);
+  getEventValuationsByAuthor(eventId:any, authorId: any): Observable<any> {
+    const url = `${this.url}/getEventValuationsByAuthor/${eventId}/${authorId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json'); 
+    // const options = { body: body , headers: headers };
+    return this.http.get(url, { headers: headers});
   }
 }

@@ -155,9 +155,9 @@ exports.updateUser = async (req, res) => {
 
     const fieldsToUpdate = {};
     for (const field in req.body) {
-      console.log("field:", field);
+      
       if (req.body.hasOwnProperty(field)) {
-        console.log(req.body.hasOwnProperty(field));
+        
         fieldsToUpdate[field] = req.body[field];
     }
     }
@@ -168,7 +168,7 @@ exports.updateUser = async (req, res) => {
     
     const upEmail = fieldsToUpdate.hasOwnProperty("email") ? fieldsToUpdate.email.toLowerCase() : null;
     const upName = fieldsToUpdate.hasOwnProperty("name") ? fieldsToUpdate.name.toLowerCase() : null;
-   console.log(upName);
+  
     const upBio = fieldsToUpdate.hasOwnProperty("bio") ? fieldsToUpdate.bio.toLowerCase() : null;
 
     //comprobamos que el nuevo nombre de usuario o el nuevo email no esten en uso
@@ -259,7 +259,7 @@ exports.getUserByEventId = async (req, res) => {
 
     const { id } = req.params;
     const event = await Event.findById(id);
-    console.log(event)
+   
     if (!event) {
       return res.status(404).json({ error: 'El evento no existe' });
     }

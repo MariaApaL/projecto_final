@@ -14,68 +14,83 @@ import { EventService } from 'src/app/services/event.service';
 })
 export class CommentsModalComponent implements OnInit {
 
-  constructor(private modalCtrl:ModalController, 
-    private eventService:EventService,
-    navParams: NavParams, 
+
+  constructor(private modalCtrl: ModalController,
+    private eventService: EventService,
+    navParams: NavParams,
     private auth: AuthService,
-    private alertCtrl: AlertController) { 
-      this.eventId = navParams.get('eventId')
+    private alertCtrl: AlertController) {
+    this.eventId = navParams.get('eventId')
 
-   }
+  }
+
+  selection = [
+    { value: 1, checked: false },
+    { value: 2, checked: false },
+    { value: 3, checked: false },
+    { value: 4, checked: false },
+    { value: 5, checked: false }
 
 
-   eventId: string;
-   userId = localStorage.getItem('userId');
-   comment: string;
-   disabledButton = true;
-   disabledText = false;
-   comments: CommentsInterface[] = [];
+  ]
+
+  eventId: string;
+  userId = localStorage.getItem('userId');
+  comment: string;
+  disabledButton = true;
+  selectedValue: number;
+  stars: number[];
+
+  comments: CommentsInterface[] = [];
   //  commentAuthor: string;
-   participants: any[] = [];
-   isParticipant: boolean = false;
-   commentAuthors: any ={};
-    eventDate: Date; 
-   
-   
+  participants: any[] = [];
+  isParticipant: boolean = false;
+  commentAuthors: any = {};
+  eventDate: Date;
+  isValued: boolean;
+
+
   ngOnInit() {
 
     this.getComments();
     this.getParticipants();
     this.getEvent();
-    
+    this.getEventValuationsByAuthor(this.eventId, this.userId);
+
   }
-  
-  
-  ionViewDidEnter(){
+
+
+  ionViewDidEnter() {
     this.getComments();
+    this.getEventValuationsByAuthor(this.eventId, this.userId);
   }
 
 
 
-  dismiss(){
+  dismiss() {
     this.modalCtrl.dismiss();
   }
 
   //obtenemos id de los creadores de los comentarios del evento
-  getComments(){
+  getComments() {
     this.eventService.getComments(this.eventId).subscribe(
       res => {
-        console.log(res);
+    
         this.comments = Object.values(res);
-        console.log('comment',this.comments);
-     //recorremos el array de comentarios y obtenemos el id del autor de cada comentario
+      
+        //recorremos el array de comentarios y obtenemos el id del autor de cada comentario
         const authorIds = this.comments.map(comment => comment.author);
         //recorremos el array de ids de autores y obtenemos el nombre de cada autor
         for (const authorId of authorIds) {
-          console.log("userId",authorId);
+         
           //obtenemos el nombre del autor del comentario
           this.auth.getUserById(authorId).subscribe({
-            next: async (res:UsersInterface) => {
+            next: async (res: UsersInterface) => {
               this.commentAuthors[authorId] = res.name; // Almacenamos el nombre del autor en el objeto commentAuthors
-              console.log(this.commentAuthors);
+              
             }
           });
-        }  
+        }
       }
     );
   }
@@ -84,15 +99,15 @@ export class CommentsModalComponent implements OnInit {
     this.eventService.getParticipants(this.eventId).subscribe(
       res => {
         this.participants = Object.values(res);
-        console.log("participants",res);
-  
+      
+
         // Busca si el userId está en la lista de participantes
         const foundParticipant = this.participants.find(participant => participant._id === this.userId);
         if (foundParticipant) {
-          console.log("El usuario está apuntado al evento");
+  
           this.isParticipant = true;
         } else {
-          console.log("El usuario no está apuntado al evento");
+      
           this.isParticipant = false;
         }
       }
@@ -100,78 +115,69 @@ export class CommentsModalComponent implements OnInit {
   }
 
   //añade comentarios
-  addComments(){ 
+  addComments() {
 
-    
-    this.eventService.addComments(this.eventId,this.userId,this.comment).subscribe(
+
+    this.eventService.addComments(this.eventId, this.userId, this.comment).subscribe(
       res => {
+        
+        this.addValorations(this.eventId, this.userId);
         this.ionViewDidEnter();
+        this.comment = '';
       }
     )
-    
+
   }
 
   //obtenemos la fecha del evento
-  getEvent(){
+  getEvent() {
     this.eventService.getEvent(this.eventId).subscribe({
-      next: (res:EventsInterface) => {
-       
+      next: (res: EventsInterface) => {
+
         this.eventDate = res.date;
-        console.log('fecha',this.eventDate);
-    }
+       
+      }
     });
   }
 
 
-  // onCommentChange(event: any) {
-  //   this.comment = event.target.value;
-  //  if ( this.comment.trim().length === 0 && !this.isParticipant && this.eventDate > new Date()) {
-  //   this.isDisabled = true;
-  //   }else if(this.comment.trim().length === 0 && this.isParticipant && this.eventDate < new Date()){
-  //     this.isDisabled = true;
-
-  //   }else{
-  //     this.isDisabled = false;
-  //   }
-  // }
   onCommentChange(event: any) {
     event.target.disabled = true;
-   
+
     this.comment = event.target.value;
 
     const eventDate = new Date(this.eventDate);
     const currentDate = new Date();
-  
+
     switch (true) {
       case !this.isParticipant:
-        console.log('entra en 1');
-        this.disabledButton=true;
-        this.disabledText=true;
+       
+        this.disabledButton = true;
+        event.target.disabled = true;
         this.presentAlert('No puedes comentar', 'Debes estar apuntado al evento para poder comentar');
         break;
       case this.comment === '' && this.isParticipant:
-        console.log('entra en 2');
+       
         this.disabledButton = true;
-        event.target.disabled = true;
+        event.target.disabled = false;
+
         break;
       case this.comment === '' && this.isParticipant && eventDate < currentDate:
-        console.log('entra en 3');
-        this.disabledButton= true;
-        this.disabledButton= false;
+      
+        this.disabledButton = true;
         event.target.disabled = false;
         break;
       case this.isParticipant && eventDate > currentDate:
-        console.log('entra en 4');
+        
         this.disabledButton = true;
-        this.disabledText = true;
         event.target.disabled = true;
         this.presentAlert('No puedes comentar', 'El evento aún no se ha realizado');
         break;
 
       default:
-        console.log('entra en 5');
+     
         this.disabledButton = false;
-        this.disabledText = false;
+
         event.target.disabled = false;
         break;
     }
@@ -189,4 +195,42 @@ export class CommentsModalComponent implements OnInit {
     const { role } = await alert.onDidDismiss();
   }
 
+
+  addStars() {
+    this.stars = Array(this.selectedValue).fill(0);
+  }
+
+  addValorations(eventId: string, userId: string) {
+    const finalValue = this.selectedValue;
+    this.eventService.addValuation(eventId, userId, finalValue).subscribe(
+      res => {
+        this.ionViewDidEnter();
+      }
+    )
+  }
+
+  getEventValuationsByAuthor(eventId:string, authorId: string){
+    console.log('event',eventId);
+    console.log('author',authorId);
+    this.eventService.getEventValuationsByAuthor(eventId,authorId).subscribe(
+      res => {
+        console.log(res);
+        console.log(res.valuations.length);
+        console.log(res.valuations);
+
+        if (res.valuations.length > 0) {
+          // Si el arreglo de valoraciones tiene al menos una valoración, el usuario ha valorado el evento
+          this.isValued = true;
+          console.log('value',this.isValued);
+        } else {
+          // Si el arreglo de valoraciones está vacío, el usuario no ha valorado el evento
+          this.isValued = false;
+          console.log('value',this.isValued);
+        }
+        
+      }
+
+      
+    )
+  }
 }

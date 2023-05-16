@@ -18,15 +18,35 @@
   </ion-list>
 
   <div class="text-area">
-    <ion-item>
+
+    <ion-card>
+      <ion-card-header>
+        <div class="valuation">
+          <ion-card-title>Valoración</ion-card-title>
+          <div class="valuation-stars" *ngIf="!isValued">
+          <ion-select [(ngModel)]="selectedValue" interface="popover" placeholder="Valora" (ionChange)="addStars()">
   
-      <ion-textarea  (ionChange)="onCommentChange($event)" placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
-       maxlength="240"></ion-textarea>
-      <ion-button  class="icon" [disabled]="disabledButton" (click)="addComments()">
-        <ion-icon name="chatbubble-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-    
+            <ion-select-option *ngFor="let item of selection" [value]="item.value">{{item.value}}</ion-select-option>
+          </ion-select>
+          <ion-icon color="primary" name="star" *ngFor="let _ of stars"></ion-icon>
+        </div>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+       
+        <ion-item>
+  
+          <ion-textarea  (ionChange)="onCommentChange($event)" placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
+           maxlength="240"></ion-textarea>
+          <ion-button  class="icon" [disabled]="disabledButton" (click)="addComments()">
+            <ion-icon name="chatbubble-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        
+
+      </ion-card-content>
+    </ion-card>
+   
   </div>
   <div class="comments">
     <p> Comentarios</p>
