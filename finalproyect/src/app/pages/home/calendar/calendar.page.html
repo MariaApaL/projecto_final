@@ -1,9 +1,47 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>calendar</ion-title>
+    <ion-title>{{ currentMonth }} {{currentYear}}</ion-title>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+<ion-button (click)="showAllEvents()">Todos</ion-button>
+  <div class="days">
+    <ion-row class="ion-margin-top">
+      <ion-label class="ion-margin-start heading">Días</ion-label>
+      <swiper-container [slidesPerView]="4">
+        <swiper-slide *ngFor="let day of days">
 
+
+
+          <ion-card class="day-card"
+            [ngClass]="{'selected': selectedDay === day }"
+            (click)="selectDate(day)">
+
+            <span>{{ getWeekDayName(day) }}</span>
+
+
+            <ion-item lines="none">
+              <ion-label> {{day}}</ion-label>
+            </ion-item>
+          </ion-card>
+
+        </swiper-slide>
+      </swiper-container>
+    </ion-row>
+  </div>
+
+  <div class="event-list">
+    <ion-list>
+      <div class="event" *ngFor="let event of filteredEvents">
+        <p>{{event.date | date:'dd MMM, yyyy HH:mm' }}</p>
+        <ion-card>
+          <ion-item>
+            <ion-label>{{ event.name }}</ion-label>
+          </ion-item>
+        </ion-card>
+      </div>
+    </ion-list>
+  </div>
 </ion-content>

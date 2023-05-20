@@ -19,14 +19,22 @@ export class EventService {
 
   //crea un evento
   createEvent(name: string, date: string, location: string,
-    author: string, numPlazas: number, description: string, price: number, categories: string[]): Observable<any> {
+    author: string, numPlazas: number, description: string, price: number, categories: string): Observable<any> {
 
     const URL = `${this.url}/createEvent`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { name, date, location, author, numPlazas, description, price, categories };
+    const body = { name, date, location, author, numPlazas, description, price, categories};
+
     return this.http.post(URL, body, { headers });
   }
 
+  uploadEventPhoto(eventId: string, picture:File): Observable<any> {
+    const URL = `${this.url}/uploadEventPhoto/${eventId}`;
+    const formData = new FormData();
+    formData.append('picture', picture);
+  
+    return this.http.post(URL, formData);
+  }  
 
   //devuelve todos los eventos
   getEvents(): Observable<any> {
@@ -141,7 +149,7 @@ export class EventService {
   deleteUserPlazas(userId: string): Observable<any> {
     const url = `${this.url}/deleteUserPlazas/${userId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.delete(url,{ headers: headers });
+    return this.http.delete(url, { headers: headers });
   }
 
   //añadir valoraciones
@@ -159,10 +167,10 @@ export class EventService {
     return this.http.get(url, { headers: headers });
   }
   //devuelve las valoraciones de un evento por autor
-  getEventValuationsByAuthor(eventId:any, authorId: any): Observable<any> {
+  getEventValuationsByAuthor(eventId: any, authorId: any): Observable<any> {
     const url = `${this.url}/getEventValuationsByAuthor/${eventId}/${authorId}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json'); 
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     // const options = { body: body , headers: headers };
-    return this.http.get(url, { headers: headers});
+    return this.http.get(url, { headers: headers });
   }
 }

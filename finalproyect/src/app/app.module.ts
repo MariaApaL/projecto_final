@@ -23,7 +23,6 @@ import { GoogleTagManagerModule } from 'angular-google-tag-manager';
   imports: [BrowserModule, 
     FormsModule,
      HttpClientModule,
-    CommonModule, 
     IonicModule.forRoot(),
     AppRoutingModule, 
     CommonModule, 

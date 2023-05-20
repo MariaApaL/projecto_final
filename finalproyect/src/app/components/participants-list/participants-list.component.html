@@ -9,14 +9,15 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let participant of participants">
-      <!-- <ion-avatar slot="start">
-        
-      </ion-avatar> -->
-      <ion-label>
-        <h2>{{participant.name}}</h2>
-        
-      </ion-label>
-    </ion-item>
+    <div class="participant-list" *ngFor="let participant of participants">
+      <ion-avatar class="avatar" (click)="openUser(participant._id)">
+        <img src="{{participant.picture}}">
+      </ion-avatar>
+    
+      <div class="info">
+        <h2 class="user">{{participant.user}}</h2>
+        <h3 class="name">{{participant.name}}</h3>
+      </div>
+    </div>
   </ion-list>
 </ion-content>

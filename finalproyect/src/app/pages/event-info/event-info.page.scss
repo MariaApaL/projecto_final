@@ -3,11 +3,14 @@
       .imagen{
         display: flex;
         align-items: center;
-        height: auto;
+        height: 100%;
         width: 100%;
+        padding:20px;
+
         img{
+
             width: 100%;
-            margin:20px;
+      
             height: 100%;
             border-radius: 20px !important;
         }

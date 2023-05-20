@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ModalController, NavController } from '@ionic/angular';
 import { th } from 'date-fns/locale';
 import { firstValueFrom } from 'rxjs';
@@ -20,8 +21,10 @@ export class EditProfilePage implements OnInit {
   name: string;
   bio: string;
   file: any;
+  image:any;
 
-
+//formulario
+  form:FormBuilder
   //para mostrar los datos del usuario
   currentUser: any = {};
 
@@ -29,7 +32,7 @@ export class EditProfilePage implements OnInit {
 
   constructor(private modalCtrl: ModalController,
     private auth: AuthService,
-    private navCrtl: NavController,
+    private navCrtl: NavController, private formBuilder: FormBuilder,
 
   ) { }
 
@@ -38,11 +41,14 @@ export class EditProfilePage implements OnInit {
     this.auth.getUser().subscribe((data) => {
       this.currentUser = data;
 
+      this.image = this.currentUser.picture;
       this.name = this.currentUser.name;
       this.bio = this.currentUser.bio;
     
 
     });
+
+    
 
   }
   
@@ -57,36 +63,19 @@ export class EditProfilePage implements OnInit {
     
 
   }
-  
-  
+  onImageChange(event:any) {
+    const file = event.target.files[0];
+    this.image = file;
+    console.log(file);
+  }
 
-  //  onUploadImage(event: Event) {
-   
-  //   const userId = this.auth.getId();
-  //   const file = (event.target as HTMLInputElement).files![0];
-  //   this.imgService.uploadUserImg(userId,file);
-   //Se sube la imagen
-    // await this.auth.updateUserPhoto(file)
-    //   .then(async () => {
-    //     console.log('Imagen subida');
-
-    //     //Actualizamos el timeStamp para que se actualice la imagen
-    //     this.timeStamp = new Date().getTime();
-
-    //     console.log(this.imageProfile + '?v=' + this.timeStamp);
-        
-    //     await firstValueFrom(this.auth.getUserProfile().pipe(take(1))).then(user => {
-    //       this.imageProfile = user.image;
-    //     });
-
-    //     //Limpia la seleccion del input file
-    //     const inputFile = document.getElementById('image') as HTMLInputElement;
-    //     inputFile.value = '';
-    //   })
-    //   .catch(error => {
-    //     console.log(`Error al subir la imagen: ${error}`);
-    //   });
-  // }
+uploadPicture(userId: string) {
+  this.auth.uploadUserPhoto(userId, this.image).subscribe({ 
+    next: (data) => {
+      console.log(data);
+    }
+  });
+}
 
   closeModal() {
     this.modalCtrl.dismiss();
@@ -96,14 +85,21 @@ export class EditProfilePage implements OnInit {
   saveChanges() {
     const userId = localStorage.getItem("userId");
     const updatedData = { name: this.name, bio: this.bio};
+
+    if(this.image!=null) {
+      this.uploadPicture(userId);
+    }
+
     this.auth.updateUser(userId, updatedData).subscribe({
       next: user => { 
-
+        
+       
         this.navCrtl.navigateBack('/home/user-page');
       },error: (err) => {
         console.log(err);
       }
     }); 
+    
     
   }
 

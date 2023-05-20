@@ -6,13 +6,13 @@ const eventSchema = new mongoose.Schema({
         required: [true, 'Por favor, escriba un nombre para el evento'],
         trim: true
     },
-    categories: [
+    category: 
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
 
         }
-    ],
+    ,
     date: {
         type: Date,
         required: [true, 'Por favor, introduzca la fecha del evento'],

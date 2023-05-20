@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController, NavController, NavParams } from '@ionic/angular';
 import { EventService } from 'src/app/services/event.service';
 
 @Component({
@@ -11,7 +11,8 @@ export class ParticipantsListComponent implements OnInit {
 
   constructor(private eventService:EventService,
     private modalCtrl:ModalController,
-    navParams: NavParams) { this.eventId = navParams.get('eventId'); }
+    navParams: NavParams,
+    private navCtrl:NavController) { this.eventId = navParams.get('eventId'); }
 
   ngOnInit() {
 
@@ -35,5 +36,10 @@ participants:any[]=[];
       }
     });
 
+  }
+
+  openUser(userId:string){
+    this.modalCtrl.dismiss();
+    this.navCtrl.navigateForward(`/otheruser-page/${userId}`);
   }
 }

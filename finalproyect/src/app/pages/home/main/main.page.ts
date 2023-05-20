@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AlertController, InfiniteScrollCustomEvent, NavController } from '@ionic/angular';
 import { EventsInterface } from 'src/app/interfaces/event';
 import { UsersInterface } from 'src/app/interfaces/user';
@@ -16,7 +16,8 @@ export class MainPage implements OnInit {
   constructor(private navCtrl: NavController,
     private eventService: EventService,
     private alertCtrl: AlertController,
-    private auth: AuthService) { 
+    private auth: AuthService,
+    private changeDetectorRef: ChangeDetectorRef) { 
 
       
     this.getEvents();
@@ -38,7 +39,7 @@ export class MainPage implements OnInit {
       { id: 5, name: 'Ocio' },
       { id: 6, name: 'Solidario' }
     ];
-
+    this.changeDetectorRef.detectChanges();
     
     
     console.log('ngOnInit');

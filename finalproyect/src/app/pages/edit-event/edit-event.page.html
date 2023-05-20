@@ -10,27 +10,88 @@
 </ion-header>
 <ion-content>
   <ion-list>
-    <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input [(ngModel)]="name" (ionChange)="onNameChange($event)" maxLenght="40"></ion-input>
+     <!-- SUBIR FOTOS -->
+     <ion-item>
+      <ion-label position="floating">Subir foto</ion-label>
+      <ion-input type="file" (change)="onImageChange($event)" accept="image/*"></ion-input>
     </ion-item>
+    <form [formGroup]="form">
+      
+   <!-- NOMBRE DEL EVENTO -->
+  <ion-item>
+    <ion-label position="floating">Nombre del evento</ion-label>
+    <ion-input formControlName="name" maxLength="40" type="text"></ion-input>
+  </ion-item>
+
+  <!-- CONTROL DE ERRORES -->
+ <app-error-message class="validator" [field]="form.controls.name" 
+ [valid]="true" message="Formato errorneo"></app-error-message>
+ <app-error-message class="validator" [field]="form.controls.name" [empty]="true"
+ message="Campo Obligatorio"></app-error-message>
+       
+
+  <!-- DESCRIPCIÓN DEL EVENTO -->
+  <ion-item>
+    <ion-label position="floating">Descripción</ion-label>
+    <ion-textarea maxLength="300" formControlName="description"></ion-textarea>
+  </ion-item>
+
+  <!-- CONTROL DE ERRORES -->
+  <app-error-message class="validator" [field]="form.controls.description" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+        <app-error-message class="validator" [field]="form.controls.description" [valid]="true" message="Formato errorneo"></app-error-message>
+       
+
+    <!-- NÚMERO DE PLAZAS -->
     <ion-item>
-      <ion-label position="floating">Descripción</ion-label>
-      <ion-input [(ngModel)]="description" (ionChange)="onDescriptionChange($event)" maxLenght="300"></ion-input>
+      <ion-label position="floating">Número de plazas</ion-label>
+      <ion-input formControlName="numPlazas" value="0" type="number" maxLength="3"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating">Número de Plazas</ion-label>
-      <ion-input [(ngModel)]="numPlazas" (ionChange)="onNumPlazasChange($event)"maxLenght="3" ></ion-input>
-    </ion-item>
+
+<!-- CONTROL DE ERRORES -->
+<app-error-message class="validator" [field]="form.controls.numPlazas" [empty]="true"
+message="Campo Obligatorio"></app-error-message>
+<app-error-message class="validator" [field]="form.controls.numPlazas" [valid]="true"
+message="Escriba un número correcto"></app-error-message>
+
+
+
+    <!-- PRECIO DEL EVENTO -->
     <ion-item>
       <ion-label position="floating">Precio</ion-label>
-      <ion-input [(ngModel)]="price" (ionChange)="onPriceChange($event)" maxLenght="3"></ion-input>
+      <ion-input formControlName="price" type="number" mmaxLength="3"></ion-input>
     </ion-item>
+
+    <!-- CONTROL DE ERRORES -->
+
+<app-error-message class="validator" [field]="form.controls.price" [valid]="true"
+message="Escriba un precio correcto"></app-error-message>
+<app-error-message class="validator" [field]="form.controls.price" [empty]="true"
+message="Campo Obligatorio (Introduzca 0 si es gratis )"></app-error-message>
+
+<ion-item class="date-item">
+  <ion-label>Fecha y Hora</ion-label>
+  <ion-datetime-button datetime="datetime"></ion-datetime-button>
+
+  <ion-modal [keepContentsMounted]="true">
+    <ng-template>
+      <ion-datetime locale="es-ES" formControlName="date" [(ngModel)]="date" id="datetime"
+        displayFormat="DD-MM-YYYY HH:mm"></ion-datetime>
+    </ng-template>
+  </ion-modal>
+</ion-item>
+
     <ion-item>
-      <ion-select placeholder="Elige una Categoría" [(ngModel)]="category" (ionChange)="onCategoryChange($event)">
-        <ion-select-option *ngFor="let category of categories" [value]="category.value">{{category.label}}</ion-select-option>
+      <ion-select placeholder="Elige una Categoría" formControlName="category">
+        <ion-select-option *ngFor="let category of categories" value={{category.value}}>{{category.label}}</ion-select-option>
       </ion-select>
     </ion-item>
+    
+   
+  </form>
+  
+
+
 
     <ion-item>
       <ion-label position="floating">Ubicación</ion-label>
@@ -49,17 +110,6 @@
       </ion-item>
   </ion-list>
     
-    <ion-item class="date-item">
-      <ion-label >Fecha</ion-label>
-      <ion-datetime-button datetime="datetime" ></ion-datetime-button>
-
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime locale="es-ES" 
-         [(ngModel)]="date" id="datetime"></ion-datetime>
-        </ng-template>
-      </ion-modal>
-      </ion-item>  
   
    
 

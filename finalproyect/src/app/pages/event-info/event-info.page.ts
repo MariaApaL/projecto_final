@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { EventService } from 'src/app/services/event.service';
@@ -61,11 +61,9 @@ export class EventInfoPage implements OnInit {
 
     private navCtrl: NavController,
     private auth: AuthService,
-    private modalCtrl: ModalController) {
-    this.route.paramMap.subscribe(params => {
-      this.eventId = params.get('id');
-      //Ya tenemo el id de la URL guardado en una variable 
-    });
+    private modalCtrl: ModalController,
+    private changeDetectorRef: ChangeDetectorRef) {
+   
 
 
 
@@ -76,28 +74,25 @@ export class EventInfoPage implements OnInit {
 
 
 
-  async ngOnInit() {
+  ngOnInit() {
 
-    await this.getEvent();
-    this.getUserEvent(this.eventId);
+    this.route.paramMap.subscribe(params => {
+      this.eventId =  params.get('id');
+      //Ya tenemo el id de la URL guardado en una variable 
+    });
+    
     
 
 
 
-
-
-
-
   }
 
 
-  ionViewDidEnter() {
-    // this.getEvent();
-
-    // this.getUserEvent(this.eventAuthor);
-
-
-
+  ionViewWillEnter() {
+  
+      this.getEvent();
+      this.getUserEvent(this.eventId);
+      this.getUser();
 
   }
   //llama al servicio para obtener los eventos
@@ -105,6 +100,7 @@ export class EventInfoPage implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe({
       next: async (data) => {
         this.event = await data;
+        console.log("event", this.event);
 
 
         // this.getUserEvent(this.eventId);
@@ -369,6 +365,7 @@ export class EventInfoPage implements OnInit {
           this.isFavorite = false;
           console.log("user", this.isFavorite);
         }
+        this.changeDetectorRef.detectChanges();
       }
     });
   }

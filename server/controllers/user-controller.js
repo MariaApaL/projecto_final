@@ -4,7 +4,6 @@ const db = require("../models");
 const cloudinary = require("../config/cloudinary");
 const User = db.user;
 const Role = db.role;
-const Report = db.report;
 const Event = db.event;
 
 let jwt = require("jsonwebtoken");
@@ -195,29 +194,25 @@ exports.updateUser = async (req, res) => {
 };
 
 //Actualiza la foto de un usuario
-exports.updateUserPicture = async (req, res) => {
+exports.uploadUserPhoto = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId);
-    
-    if (!user) {
-      return res.status(404).send({ message: "Usuario no encontrado" });
-    }
-    
-    const picture = req.file; 
-    
-    if (!picture) {
-      return res.status(400).send({ message: "No se ha proporcionado ninguna imagen" });
-    }
-    
-    // Sube la imagen a Cloudinary
-    const uploadedImage = await cloudinary.uploader.upload(picture.path);
-    
-    // Actualiza el campo de imagen del usuario
-    user.picture = uploadedImage.secure_url;
-    await user.save();
-    
-    res.send({ message: "Imagen de usuario actualizada con éxito", picture: user.picture });
+    const picture = req.file.filename;
+
+    // Subir la imagen a Cloudinary utilizando una promesa
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(req.file.path, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.secure_url);
+        }
+      });
+    });
+
+    // Actualizar el evento con la URL de la imagen subida a Cloudinary
+    const user = await User.findByIdAndUpdate(userId, { picture: uploadResult }, { new: true });
+    res.status(200).json({ message: 'Imagen subida correctamente', user});
   } catch (err) {
     res.status(500).send({ message: "Error al actualizar la imagen de usuario", error: err });
   }

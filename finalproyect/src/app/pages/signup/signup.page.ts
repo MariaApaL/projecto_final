@@ -26,10 +26,9 @@ export class SignupPage implements OnInit {
     private alertController: AlertController) { 
 
     this.form = new FormGroup({
-      user: new FormControl('',[Validators.required, Validators.maxLength(20)]),
-      name: new FormControl('',[Validators.required, Validators.maxLength(30)]),
+      user: new FormControl('',[Validators.required, Validators.maxLength(20), Validators.pattern(/^(?=.*[a-zA-Z]).+$/)]),
+      name: new FormControl('',[Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-Z]+$/)]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      // age: new FormControl('',[Validators.required, Validators.min(18), Validators.max(110)]),
       password: new FormControl('', [Validators.required, Validators.pattern(/^(?=(?:.*\d))(?=.*[A-Z])(?=.*[a-z])(?=.*[.,*!?¿¡/#$%&])\S{8,30}$/
       )]),
       rpassword: new FormControl('', [Validators.required])

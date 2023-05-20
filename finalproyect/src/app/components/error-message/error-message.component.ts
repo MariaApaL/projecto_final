@@ -42,7 +42,7 @@ export class ErrorMessageComponent implements OnInit {
 
   showEmptyError() {
 
-    if (this.field.touched && this.field.value == '') {
+    if (this.field.touched && (this.field.value === null || this.field.value === '')) {
       return true;
     } else {
       return false

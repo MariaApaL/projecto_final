@@ -19,16 +19,18 @@ https://www.behance.net/search/projects/?search=event+app-->
 <ion-content *ngIf="currentUser">
 
   <!-- USER PROFILE -->
-  <div class="profile-pic">
-    <img src={{currentUser.picture}} alt="user_avatar">
-
-  </div>
   <div class="profile">
+  <div class="profile-pic">
+    <ion-avatar class="avatar">     
+    <img src={{currentUser.picture}} alt="user_avatar">
+    </ion-avatar>
+  </div>
+  
     <div class="profile-stars" >
-      <ul>
-        <li><span>0/5</span> Calificación</li>
-        <li><span>{{eventCount}}</span> Eventos</li>
-      </ul>
+      
+      <p class="stars"><strong><span>0/5</span> </strong>Calificación</p> 
+    <p class="event-count"><strong><span>{{eventCount}}</span></strong> Eventos</p> 
+      
     </div>
 
     <div class="profile-bio">
@@ -54,7 +56,7 @@ https://www.behance.net/search/projects/?search=event+app-->
         <ion-icon name="checkmark-done-outline"></ion-icon>
       </ion-segment-button>
     </ion-segment>
-    <!-- FIN DEL SEGMENTO DE MEGUSTA Y MIS EVENTOS -->
+  
 
     <!--EVENTOS -->
     <div class="event-cards ion-margin" *ngIf="selectedSegment === 'my-events'">
@@ -62,7 +64,7 @@ https://www.behance.net/search/projects/?search=event+app-->
       <ion-card *ngFor="let event of myEvents" >
   
         <ion-card-header class="ion-no-padding" (click)="selectEvent(event._id)">
-          <img src="../../../../assets/pictures/hokahe.png" />
+          <img src="{{event.picture}}" />
         </ion-card-header>
   
         <ion-card-content>
@@ -87,7 +89,7 @@ https://www.behance.net/search/projects/?search=event+app-->
             <div class="event-buttons">
               <ion-button class="delete-button" slot="end" (click)="deleteEvent(event.name,userId)">
                 <ion-icon name="trash-outline" slot="icon-only" /></ion-button>
-              <ion-button  class="edit-button" slot="end" (click)="editEvent(event._id)">
+              <ion-button  *ngIf="!isFinished"class="edit-button" slot="end" (click)="editEvent(event._id)">
                 <ion-icon  name="pencil-outline" slot="icon-only" />
               </ion-button>
 
@@ -110,7 +112,7 @@ https://www.behance.net/search/projects/?search=event+app-->
       <ion-card *ngFor="let fav of myFavs" >
   
         <ion-card-header class="ion-no-padding" (click)="selectEvent(fav._id)">
-          <img src="../../../../assets/pictures/hokahe.png" />
+          <img src="{{fav.picture}}" />
         </ion-card-header>
   
         <ion-card-content>
@@ -133,7 +135,7 @@ https://www.behance.net/search/projects/?search=event+app-->
             <div class="fav-buttons">
               <ion-buttons>
                 <ion-button (click)="deleteFavorite(fav._id)">
-                  <ion-icon slot="icon-only" name="heart"></ion-icon>
+                  <ion-icon color="primary" slot="icon-only" name="heart"></ion-icon>
                 </ion-button>
               </ion-buttons>
             </div>
@@ -151,7 +153,7 @@ https://www.behance.net/search/projects/?search=event+app-->
       <ion-card  *ngFor="let join of joinedEvents" >
   
         <ion-card-header class="ion-no-padding" (click)="selectEvent(join._id)">
-          <img src="../../../../assets/pictures/hokahe.png" />
+          <img src="{{join.picture}}" />
         </ion-card-header>
   
         <ion-card-content>
@@ -178,6 +180,7 @@ https://www.behance.net/search/projects/?search=event+app-->
         </ion-card-content>
   
       </ion-card>
+  
   </div>
-  </div>
+</div>
 </ion-content>

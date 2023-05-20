@@ -134,6 +134,10 @@ export class AuthService {
     return this.http.get(url, { headers: headers });
   }
 
-
-
+  uploadUserPhoto(eventId: string, picture:File): Observable<any> {
+    const URL = `${this.url}/uploadUserPhoto/${eventId}`;
+    const formData = new FormData();
+    formData.append('picture', picture);
+    return this.http.post(URL, formData);
+  }  
 }

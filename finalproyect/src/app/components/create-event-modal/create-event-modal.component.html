@@ -15,17 +15,16 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<!-- https://www.youtube.com/watch?v=R5uK9hN-VB0 -->
+
 
 <ion-content>
-  <!-- https://www.youtube.com/watch?v=-Lv647Sqq3I 
-  https://www.youtube.com/watch?v=-rrDc7jb4fw -->
+
   <form id="form" [formGroup]="form">
   <!-- SUBIR FOTOS -->
-    <!-- <ion-item>
+    <ion-item>
     <ion-label position="floating">Subir foto</ion-label>
-    <ion-input type="file"></ion-input>
-  </ion-item> -->
+    <ion-input type="file" (change)="onImageChange($event)" accept="image/*"></ion-input>
+  </ion-item>
   <!-- NOMBRE DEL EVENTO -->
   <ion-item>
     <ion-label position="floating">Nombre del evento</ion-label>
@@ -41,7 +40,7 @@
    <!-- DESCRIPCIÓN DEL EVENTO -->
    <ion-item>
     <ion-label position="floating">Descripción</ion-label>
-    <ion-textarea maxLenght="300" formControlName="description"></ion-textarea>
+    <ion-textarea maxLength="300" formControlName="description"></ion-textarea>
   </ion-item>
 
   <!-- CONTROL DE ERRORES -->
@@ -53,7 +52,7 @@
     <!-- NÚMERO DE PLAZAS -->
     <ion-item>
       <ion-label position="floating">Número de plazas</ion-label>
-      <ion-input formControlName="plazas" value="0" type="number" maxLenght="3"></ion-input>
+      <ion-input formControlName="plazas" value="0" type="number" maxLength="3"></ion-input>
     </ion-item>
 
 <!-- CONTROL DE ERRORES -->
@@ -67,27 +66,28 @@ message="Escriba un número correcto"></app-error-message>
     <!-- PRECIO DEL EVENTO -->
     <ion-item>
       <ion-label position="floating">Precio</ion-label>
-      <ion-input formControlName="price" value="0" type="number" maxLenght="3" ></ion-input>
+      <ion-input formControlName="price" type="number" mmaxLength="3"></ion-input>
     </ion-item>
 
     <!-- CONTROL DE ERRORES -->
 
 <app-error-message class="validator" [field]="form.controls.price" [valid]="true"
 message="Escriba un precio correcto"></app-error-message>
+<app-error-message class="validator" [field]="form.controls.price" [empty]="true"
+message="Campo Obligatorio (Introduzca 0 si es gratis )"></app-error-message>
 
 
   <!-- FECHA DEL EVENTO  -->
   <ion-item class="date-item">
-    <ion-label >Fecha</ion-label>
+    <ion-label>Fecha</ion-label>
     <ion-datetime-button datetime="datetime"></ion-datetime-button>
-
+  
     <ion-modal [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime locale="es-ES" 
-        formControlName="date" [(ngModel)]="date" id="datetime"></ion-datetime>
+        <ion-datetime locale="es-ES" formControlName="date" [(ngModel)]="date" id="datetime" ></ion-datetime>
       </ng-template>
     </ion-modal>
-    </ion-item>  
+  </ion-item>
 
     <!-- CONTROL DE ERRORES -->
     <app-error-message class="validator" [field]="form.controls.date" [empty]="true"

@@ -23,13 +23,13 @@
 
     <div class="imagen">
 
-      <img src="../../../../assets/events/event1.svg" />
+      <img src="{{event?.picture}}" />
 
     </div>
     <div class="icons">
       <ion-buttons>
         <ion-button (click)="addFavorite()">
-          <ion-icon slot="icon-only" [name]="isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+          <ion-icon slot="icon-only" color="primary" [name]="isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons>

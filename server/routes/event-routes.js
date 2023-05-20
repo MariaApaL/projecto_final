@@ -19,12 +19,14 @@ module.exports = function (app) {
     "/createEvent",
     [
       verifyEvent.checkIfEventExists,
-      upload.single('images')
 
     ],
     controller.createEvent
   );
 
+  app.post('/uploadEventPhoto/:id', upload.single('picture') , controller.uploadEventPhoto);
+
+  
   // Ruta get para obtener todos los eventos de la base de datos
 
   app.get("/getEvents", controller.getEvents);
@@ -32,7 +34,9 @@ module.exports = function (app) {
   // Ruta get para obtener un evento por su id 
   app.get("/getEvent/:id", controller.getEvent);
 
-  // ruta POST para actualizar un event
+  // ruta PUT para actualizar un event
+
+
 
   app.put("/updateEvent/:id", controller.updateEvent);
 

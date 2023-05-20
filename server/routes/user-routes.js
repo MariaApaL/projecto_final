@@ -36,7 +36,8 @@ module.exports = function(app) {
   // upload.single('file'),
   app.put("/updateUser/:id", controller.updateUser);
 
-  app.put("updateUserPicture:/:id", upload.single('images'), controller.updateUserPicture);
+
+  app.post("/uploadUserPhoto/:id", upload.single('picture'), controller.uploadUserPhoto);
   // ruta DELETE para eliminar un usuario
 
   app.delete("/deleteUser", controller.deleteUser);

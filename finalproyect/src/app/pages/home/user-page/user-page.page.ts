@@ -51,8 +51,14 @@ export class UserPagePage implements OnInit {
   }
   ngOnInit() {
 
+    
+  }
+
+
+  ionViewWillEnter() {
+
     //Para poder recoger los datos del usuario y mostrarlos en la página
-     this.getUser();
+    this.getUser();
 
     //Para poder recoger los eventos del usuario y mostrarlos en la página
     this.findEventsByAuthorId(this.userId);
@@ -61,17 +67,6 @@ export class UserPagePage implements OnInit {
     // this.getFavoritesFromLocalStorage();
 
     this.getEventsJoined(this.userId);
-  }
-
-
-  ionViewDidEnter() {
-
-    //refrescamos la página 
-    this.getUser();
-    this.findEventsByAuthorId(this.userId);
-    this.getFavorites(this.userId);
-    this.getEventsJoined(this.userId);
-    // this.getFavoritesFromLocalStorage();
 
   }
 
@@ -113,24 +108,14 @@ export class UserPagePage implements OnInit {
       }
     });
   }
-  //Para mostrar los datos del usuario
-  // getUser() {
-  //   this.auth.getUser().subscribe({
-  //     next: async (data) => {
-  //       console.log("user",data);
-  //       this.currentUser = await data;
-  //       console.log(this.currentUser);
-  //       // this.ionViewDidEnter();
 
-  //     }
-  //   });
-  // }
   getUser() {
     this.auth.getUserById(this.userId).subscribe({
       next: async (data) => {
         console.log("user", data);
         this.currentUser = await data;
-        console.log(this.currentUser);
+        
+        console.log('pict',this.currentUser.picture);
         // this.ionViewDidEnter();
       }
     });
@@ -154,6 +139,7 @@ export class UserPagePage implements OnInit {
     });
   }
 
+    
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: BottomSheetModalComponent,
@@ -171,13 +157,6 @@ export class UserPagePage implements OnInit {
   segmentChanged(event) {
     this.selectedSegment = event.detail.value;
   }
-  // segmentChanged(event:any){
-  //   const chose = event.detail.value;
-
-  //   this.isFav = chose === 'my-favs';
-
-
-  // }
 
 
   //Para poder eliminar un evento
@@ -213,7 +192,7 @@ export class UserPagePage implements OnInit {
         }, {
           text: 'Sí',
           handler: () => {
-            this.ionViewDidEnter();
+            this.ionViewWillEnter();
             console.log('Confirm Okay');
           }
         }
@@ -222,32 +201,18 @@ export class UserPagePage implements OnInit {
 
     await alert.present();
   }
+
+
+
   //Para poder editar un evento
   editEvent(id: any) {
     if (this.selectedSegment == 'my-events') {
 
       this.navCtrl.navigateForward([`/edit-event/${id}`]);
-      this.ionViewDidEnter();
+      
 
     }
   }
-
-  // deleteFavorites(eventId: any) {
-  //   const event = this.myEvents.find(e => e._id === eventId);
-  //   this.auth.deleteFavorite(this.userId, eventId).subscribe({
-  //     next: (data) => {
-  //       console.log(data);
-  //       this.ionViewDidEnter();
-  //       localStorage.removeItem(`favorite_${eventId}`)
-  //     },
-  //     error: (err) => {
-  //       console.log(err);
-  //     }
-  //   });
-
-
-  // }
-
 
 
   //Navega a la página de información del evento
@@ -263,7 +228,7 @@ export class UserPagePage implements OnInit {
       next: async (data) => {
         const favorites: EventsInterface = await data.favorites;
 
-        this.ionViewDidEnter();
+        this.ionViewWillEnter();
       },
       error: (err) => {
         console.log(err);
@@ -271,6 +236,7 @@ export class UserPagePage implements OnInit {
     });
   }
 
+  
 
 
 }

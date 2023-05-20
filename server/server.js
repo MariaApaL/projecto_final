@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get("/", (req, res) => {
-  res.json({ message: "GOut App - Welcome." });
+  res.json({ message: "GoingOut App - Welcome." });
 });
 
 

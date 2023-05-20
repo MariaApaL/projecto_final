@@ -28,3 +28,53 @@
         font-size:25px;
     }
 }
+
+ion-avatar{
+    margin-right: 10px;
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+}
+
+
+.user-info{
+    display:flex;
+    align-items:center;
+    h2{
+        font-weight: bold;
+        font-size: 23px;
+        color: var(--ion-color-tertiary);
+    }
+}
+
+
+.result-stars{
+    display:flex;
+    align-items:center;
+ 
+  margin-right:10px;
+    p{
+        margin-left:20px;
+    }
+}
+
+.comment-info{
+    margin-right:30px;
+    justify-content: center;
+}
+
+
+.comments{
+    h1{
+        color: var(--ion-color-tertiary);
+        margin-left:20px;
+    }
+}
+
+
+.comment-text{
+    margin-top:5px;
+    font-size: 15px;
+    color: var(--ion-color-lettering);
+}
+

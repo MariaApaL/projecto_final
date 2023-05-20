@@ -3,7 +3,7 @@ import { UsersInterface } from "./user";
 export interface EventsInterface {
         _id:         string;
         name:        string;
-        categories:  any[];
+        category:  string;
         date:        Date;
         location:    string;
         price:       number;
@@ -16,4 +16,5 @@ export interface EventsInterface {
         createdAt:   Date;
         updatedAt:   Date;
         __v:         number;
+        picture:     string;
     }

@@ -1,4 +1,6 @@
-
+ion-label{
+    --color:var(--ion-color-primary);
+}
 
 ion-item{
     padding-right:20px;
@@ -13,10 +15,30 @@ ion-item{
     padding-right:15px;
 }
 
-ion-select {
-    padding-top:30px;
-    --placeholder-opacity: 1;
-    width: 100%;
-    justify-content: center;
-  }
+// ion-select {
+//     padding-top:30px;
+//     --placeholder-opacity: 1;
+//     width: 100%;
+//     justify-content: center;
+//   }
 
+  .validator{
+  
+    margin:0px;
+    color:red;
+   
+   }
+
+   ion-content{
+    --background-color: #fefefe;
+    ion-item ion-label {
+        color: var(--ion-color-secondary) !important;
+      
+      }
+    
+}
+
+ion-select{
+    --placeholder-color: var(--ion-color-secondary);
+    --placeholder-opacity:1;
+}

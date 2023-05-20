@@ -22,7 +22,7 @@
     <ion-card>
       <ion-card-header>
         <div class="valuation">
-          <ion-card-title>Valoración</ion-card-title>
+          <ion-card-title color="tertiary">Valoración</ion-card-title>
           <div class="valuation-stars" *ngIf="!isValued">
           <ion-select [(ngModel)]="selectedValue" interface="popover" placeholder="Valora" (ionChange)="addStars()">
   
@@ -49,12 +49,30 @@
    
   </div>
   <div class="comments">
-    <p> Comentarios</p>
+    <h1><strong> Comentarios</strong></h1>
     <ion-list>
-      <ion-item *ngFor="let comment of comments">
-        <p>{{ commentAuthors[comment.author] }}</p>
-        <p>{{ comment.text }}</p>
-      </ion-item>
+
+      <ion-card class="comments" *ngFor="let comment of comments">
+        <div class="user-info">
+          <ion-avatar *ngIf="commentUser">
+            <img src="{{ commentUser.picture }}">
+          </ion-avatar>
+          <h2 *ngIf="commentUser">{{ commentUser.user }}</h2>
+        </div>
+        <ion-card-content class="comment-info">
+        <div class="result-stars">
+          <ion-icon color="primary" name="star" *ngFor="let _ of resultStars"></ion-icon>
+          <p>{{ comment.date | date:'dd MMM, yyyy HH:mm' }}</p>
+        </div>
+     
+          
+          
+            <p class="comment-text">{{ comment.text }}</p>
+        
+        </ion-card-content>
+       
+      </ion-card>
+
     </ion-list>
   </div>
 

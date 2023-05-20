@@ -1,0 +1,41 @@
+
+ 
+  .day-card {
+    background-color: #dbbaed;
+    height: 80px;
+    width: 70px;
+    text-align: center;
+    color:black;
+
+    span{
+        
+        font-size: 15px;
+      
+        font-weight: bold;
+    }
+    ion-item{
+        text-align: center;
+    }
+    ion-label{
+        padding-top:10px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+  }
+
+
+  .selected {
+    background-color: var(--ion-color-primary);
+    // color: white;
+    span{
+        color: white;
+    }
+  }
+  
+  .current-day {
+    background-color:var(--ion-color-primary);
+    span{
+        color: white;
+    }
+    
+  }

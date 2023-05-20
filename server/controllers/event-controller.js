@@ -1,6 +1,6 @@
 
 const badWords = require("../config/badword")
-const moment = require('moment')
+const moment = require('moment');
 const db = require("../models");
 const User = db.user;
 const Event = db.event;
@@ -38,16 +38,14 @@ function validateDate(dateString) {
 
 exports.createEvent = async (req, res) => {
   try {
-    const { name, date, location, author, picture, numPlazas, description, price, } = req.body;
-
+    const { name, date, location, author, numPlazas, description, price, category } = req.body;
 
     // Comprobar si contiene palabras prohibidas
-
     if (checkBadWord(name, badWords) || checkBadWord(description, badWords)) {
-      return res.status(400).send({ message: "Error , utilice otro vocabulario" });
+      return res.status(400).send({ message: "Error, utilice otro vocabulario" });
     }
-    //comprueba que no sea negativo
 
+    // Comprueba que no sea negativo
     try {
       checkNegative(price, numPlazas);
     } catch (err) {
@@ -62,48 +60,58 @@ exports.createEvent = async (req, res) => {
     const existingEvent = await Event.findOne({ author: author, date: date });
     if (existingEvent) {
       return res.status(400).send({ message: "Error, ya tienes un evento en esa fecha" });
-
     }
-
-    // const eventPicture = req.file.filename;
-    // // Subimos la imagen a Cloudinary y obtenemos su URL
-    // const image = new Promise((resolve, reject) => {
-    //   cloudinary.uploader.upload(req.file.path, (err, result) => {
-    //     if (err) {
-    //       reject(err);
-    //     } else {
-    //       resolve(result.secure_url);
-    //     }
-    //   });
-    // });
-
 
     const newEvent = new Event({
       name: name.toLowerCase(),
       date: date,
       location: location,
-      picture: picture,
-      // picture: await image, 
       author: author,
       numPlazas: numPlazas,
       description: description.toLowerCase(),
       price: price,
-      
     });
 
-    const category = req.body.categories ? await Category.findOne({ type: req.body.categories }) : null;
     if (category) {
-      newEvent.categories = [category._id];
+     
+      const categoryObject = await Category.findOne({ type: category });
+      
+      if (categoryObject) {
+        newEvent.category = categoryObject._id;
+      }
     }
-    await newEvent.save();
 
+    await newEvent.save();
 
     res.send({ message: "¡Evento creado exitosamente!", event: newEvent });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
+};
 
+exports.uploadEventPhoto = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const picture = req.file.filename;
 
+    // Subir la imagen a Cloudinary utilizando una promesa
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(req.file.path, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.secure_url);
+        }
+      });
+    });
+
+    // Actualizar el evento con la URL de la imagen subida a Cloudinary
+    const event = await Event.findByIdAndUpdate(eventId, { picture: uploadResult }, { new: true });
+    res.status(200).json({ message: 'Imagen subida correctamente', event });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
 };
 
 exports.getEvents = async (req, res) => {
@@ -138,44 +146,38 @@ exports.getEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const { name, date, location, picture, price, numPlazas, description } = req.body;
-    const category = req.body.categories;
+    const { name, date, location, price, numPlazas, description, category } = req.body;
 
-    const foundCategories = await Category.find({ type: { $in: category } });
-    const categoryIds = foundCategories.map(c => c._id);
+    
 
-    const newDate = moment(date, "DD-MM-YYYY").toDate();
     // Comprobar si contiene palabras prohibidas
     if (checkBadWord(name, badWords) || checkBadWord(description, badWords)) {
-      return res.status(400).send({ message: "Error , utilice otro vocabulario" });
+      return res.status(400).send({ message: "Error, utilice otro vocabulario" });
     }
-    //comprueba que no sea negativo
-    checkNegative(price, numPlazas);
 
-    const image = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(req.file.path, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result.secure_url);
-        }
-      });
-    });
+    // Comprueba que no sea negativo
+    checkNegative(price, numPlazas);
 
     const updateEvent = {
       name: name,
-      date: newDate,
+      date: date,
       location: location,
-      picture: await image,
       numPlazas: numPlazas,
       price: price,
       description: description,
-      categories: categoryIds,
-
-
     };
 
-    const newEvent = await Event.findByIdAndUpdate(eventId, updateEvent, { new: true });
+    let newEvent;
+
+    if (category) {
+      const categoryObject = await Category.findOne({ type: category });
+
+      if (categoryObject) {
+        updateEvent.category = categoryObject._id;
+      }
+    }
+
+    newEvent = await Event.findByIdAndUpdate(eventId, updateEvent, { new: true });
     res.send({ message: "¡Evento actualizado exitosamente!", event: newEvent });
 
   } catch (err) {
@@ -428,22 +430,25 @@ exports.addComments = async (req, res) => {
       return res.status(404).json({ message: 'Evento no encontrado' });
     }
 
-    // Comprobamos que la fecha es despues
+    // Comprobamos que la fecha es después
     if (event.date > Date.now()) {
       return res.status(400).json({ message: 'No se pueden añadir comentarios antes de la fecha del evento' });
     }
-    
+
     // Comprobamos que el usuario ha asistido al evento
     if (!event.plazas.includes(authorId)) {
-    
-
       return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
     }
 
-    // Comprobamos que el usuario no ha comentado malas palabras
+    // Comprobamos si el usuario ya ha comentado el evento
+    const hasCommented = event.comments.some(comment => comment.author.toString() === authorId);
+    if (hasCommented) {
+      return res.status(400).json({ message: 'Ya has valorado este evento' });
+    }
 
+    // Comprobamos que el usuario no ha utilizado malas palabras
     if (checkBadWord(text, badWords)) {
-      return res.status(400).send({ message: "Error , contenido inapropiado" });
+      return res.status(400).send({ message: 'Error, contenido inapropiado' });
     }
 
     const comment = {
@@ -457,7 +462,6 @@ exports.addComments = async (req, res) => {
 
     res.status(201).json({ message: 'Comentario añadido correctamente' });
   } catch (error) {
-   
     res.status(500).json({ message: 'Error al añadir el comentario' });
   }
 };

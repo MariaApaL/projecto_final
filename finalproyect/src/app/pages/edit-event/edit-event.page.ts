@@ -1,7 +1,10 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { EventService } from 'src/app/services/event.service';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
+
 declare let google: any;
 
 @Component({
@@ -22,12 +25,46 @@ export class EditEventPage implements OnInit {
     { label: 'Relax', value: 'relax', checked: false },
 
   ]
- 
+
+    //datos del evento
+    name: string;
+    description: string;
+    date: Date;
+    location: string;
+    newLocation: string;
+    price: number;
+    numPlazas: number;
+    category: string;
+    image: any;
+    form: FormGroup;
+  
+  
+    //id del evento
+    eventId: string;
+  
+    //informacion del evento
+    eventData: any;
+  
+  //id del usuario
+    userId = localStorage.getItem('userId');
+  
+    //boton desactivado
+    disableButton = true;
+  
+    //propiedades del google maps autocomplete
+    autocomplete: { input: string; };
+    autocompleteItems: any[];
+    placeid: any;
+    GoogleAutocomplete: any;
+  
 
   constructor( public zone: NgZone,
     private route: ActivatedRoute, 
     private eventService: EventService, 
-    private navCtrl: NavController) { 
+    private navCtrl: NavController,
+    private  formBuilder: FormBuilder,
+    public alertController: AlertController
+  ) {
     this.route.paramMap.subscribe(params => {
       this.eventId = params.get('id');
       //Ya tenemo el id de la URL guardado en una variable 
@@ -36,109 +73,117 @@ export class EditEventPage implements OnInit {
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.autocomplete = { input: '' };
     this.autocompleteItems = [];
+
+    this.form = this.formBuilder.group({
+      name: ['', [ Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.minLength(10), Validators.maxLength(40)]],
+      description: ['', [ Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.maxLength(300)]],
+      numPlazas: ['', [ Validators.pattern(/^(?!0$)[1-9][0-9]{0,2}$/), Validators.maxLength(3)]],
+      price: ['', [Validators.pattern(/^(?!.*[.,]$)(?!^[-+])(?!^0[.,])(?!^0+$)\d{1,3}(?:\.\d{1,2})?$/), Validators.maxLength(3)]],
+      category: [''],
+      date: ['']
+    });
   }
 
-  //datos del evento
-  name: string;
-  description: string;
-  date: Date;
-  location: string;
-  newLocation: string;
-  price: number;
-  numPlazas: number;
-  category: string;
-
-
-  //id del evento
-  eventId: string;
-
-  //informacion del evento
-  eventData: any;
-
-//id del usuario
-  userId = localStorage.getItem('userId');
-
-  //boton desactivado
-  disableButton = true;
-
-  //propiedades del google maps autocomplete
-  autocomplete: { input: string; };
-  autocompleteItems: any[];
-  placeid: any;
-  GoogleAutocomplete: any;
 
 
   ngOnInit() {
     
+    this.subscribeToFormChanges();
    this.eventService.getEvent(this.eventId).subscribe({
       next: (data) => {
         this.eventData = data;
         console.log(this.eventData);
-        this.name = this.eventData.name;
-        this.description = this.eventData.description;
-        this.date = this.eventData.date;
-        this.location = this.eventData.location;
-        this.price = this.eventData.price;
-        this.numPlazas = this.eventData.numPlazas;
-        this.category = this.eventData.category;
+        this.form.patchValue({
+          name: this.eventData.name,
+          description: this.eventData.description,
+          numPlazas: this.eventData.numPlazas,
+          price: this.eventData.price,
+          category: this.eventData.category,
+          date: moment(this.eventData.date).format("YYYY-MM-DDTHH:mm")
+          
+          
+         
+        });
+   
+
       
       }
 
   });
   }
+
+
+  subscribeToFormChanges() {
+    this.form.valueChanges.subscribe(() => {
+      this.disableButton = false;
+    });
+  }
+
+
+
+  
   navigateback() {
     this.navCtrl.navigateBack('/home/user-page');
   }
 
 
-  onNameChange(event: any) {
-    this.name = event.target.value;
-    this.disableButton = false;
-  }
-
-
-  onDescriptionChange(event: any) {
-    this.description = event.target.value;
-    this.disableButton = false;
-  }
-
-
-  onNumPlazasChange(event: any) {
-    this.numPlazas = event.target.value;
-    this.disableButton = false;
-  }
-
-
-  onPriceChange(event: any) {
-    this.price = event.target.value;
-    this.disableButton = false;
-  }
-
-  onCategoryChange(event: any) {
-    this.category = event.target.value;
-    this.disableButton = false;
-  }
-
   onLocationChange(event: any) {
     this.location = this.autocomplete.input;
     this.newLocation = this.location;
      this.newLocation = event.target.value;
-     this.disableButton = false;
   }
 
 
   saveChanges() {
+    if (this.form.valid) {
+      const date = this.form.value.date;
+
+      const currentDate = new Date();
+      const minimumDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+      const maximumDate = new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+      const eventDate = new Date(date);
+  
+      if (eventDate < minimumDate) {
+        // La fecha del evento es menor a la fecha mínima permitida
+        this.presentAlert("Error al actualizar", "La fecha debe ser al menos 24 horas a partir de la fecha actual");
+        return;
+      }
+  
+      if (eventDate > maximumDate) {
+        // La fecha del evento es mayor a un año a partir de la fecha actual
+        this.presentAlert("Error al actualizar", "La fecha no puede ser mayor a un año a partir de la fecha actual");
+        return;
+      }
+
+    const updatedData = { name: this.form.value.name, description: this.form.value.description,
+      date: eventDate , location: this.newLocation,
+       price: this.form.value.price, numPlazas: this.form.value.numPlazas, category: this.form.value.category};
     
-    const updatedData = { name: this.name, description: this.description,
-      date: this.date, location: this.newLocation, price: this.price, numPlazas: this.numPlazas, category: this.category};
-    this.eventService.updateEvent(this.eventId,updatedData).subscribe({
+      if(this.image!=null) {
+        this.uploadPicture(this.eventId);
+      }
+
+      this.eventService.updateEvent(this.eventId,updatedData).subscribe({
       next: (data) => {
         console.log(data);
         this.navCtrl.navigateBack('/home/user-page');
       }
   });
+}else{
+  console.log('Form not valid');
+}
 }
 
+async presentAlert(header: string, message: string) {
+  const alert = await this.alertController.create({
+    cssClass: "",
+    header: header,
+    message: message,
+    buttons: ["OK"]
+  });
+  await alert.present();
+  const { role } = await alert.onDidDismiss();
+}
 
 UpdateSearchResults() {
   if (this.autocomplete.input == '') {
@@ -173,6 +218,24 @@ SelectSearchResult(item: any) {
   this.autocompleteItems = [];
 
 }
+
+
+onImageChange(event) {
+  const file = event.target.files[0];
+  this.image = file;
+  console.log(file);
+}
+
+uploadPicture(eventId: string) {
+this.eventService.uploadEventPhoto(eventId, this.image).subscribe({
+  next: (data) => {
+    console.log(data);
+  }
+});
+
+
+}
+
 }
 
 

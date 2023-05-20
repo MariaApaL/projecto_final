@@ -16,59 +16,75 @@ ion-header {
 ion-content {
 
   .profile-pic {
-
-    width: 150px;
-    height: auto;
-    margin-left: 30%;
-    margin-top: 10%;
-    border-radius: 1000px;
-    border: 1px solid hsl(0, 0%, 86%);
-
-
-    img {
-
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-
-    }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+  }
+  
+  .avatar {
+    width: 200px; /* Ajusta el tamaño según tus preferencias */
+    height: 200px; /* Ajusta el tamaño según tus preferencias */
+    border-radius: 50%; /* Hace que el avatar tenga forma de círculo */
+    overflow: hidden; /* Recorta cualquier parte de la imagen que se salga del círculo */
+    position: relative;
+  }
+  
+  .avatar::before {
+  
+   
+    padding-bottom: 100%; /* Crea un espacio cuadrado proporcional al tamaño del avatar */
+  }
+  
+  .avatar img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen dentro del círculo sin deformarla */
   }
 
   .profile {
     background: #fef1fe;
-
-    padding: 10px;
-    margin: 20px;
-
-    .profile-stars li {
-      font-size: 16px;
-      font-weight: 400;
-      margin-left: -20px;
-      padding-right: 50px;
-
-
-    }
-
-    .profile-stars li span {
-      font-weight: 600;
-      color: var(--ion-color-lettering)
-    }
-
-    .profile-stars ul {
+    height:55%;
+    .profile-stars {
       display: flex;
-      list-style: none;
-      margin-left: 30px;
-    }
-
-    .profile-bio {
-
-      h1,
-      p {
-        color: var(--ion-color-lettering)
+      align-items: center;
+      justify-content: center;
+      
+      .event-count{
+        margin-left: 20px;
       }
-
-      font-size: 20px;
+    }
+    
+    .profile-stars p {
+      margin: 10px 0;
+     
+    }
+    
+    .profile-stars span {
+      margin-right: 5px; /* Espacio entre el texto y el número */
+    }
+   
+    .profile-bio {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding-top:20px;
+    }
+    
+    .profile-bio h1,
+    .profile-bio p {
+      
+      margin: 0;
+    }
+    .profile-bio h1{
+      font-size:25px;
+      font-family: bold;
+    }
+    .profile-bio p{
+      font-size:20px;
     }
   }
 }
