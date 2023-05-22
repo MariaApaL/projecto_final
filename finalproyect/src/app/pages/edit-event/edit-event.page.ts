@@ -56,6 +56,7 @@ export class EditEventPage implements OnInit {
     autocompleteItems: any[];
     placeid: any;
     GoogleAutocomplete: any;
+  eventDate: any;
   
 
   constructor( public zone: NgZone,
@@ -92,17 +93,16 @@ export class EditEventPage implements OnInit {
    this.eventService.getEvent(this.eventId).subscribe({
       next: (data) => {
         this.eventData = data;
-        console.log(this.eventData);
+        this.eventDate = moment(this.eventData.date).format("YYYY-MM-DDTHH:mm")
+       
         this.form.patchValue({
           name: this.eventData.name,
           description: this.eventData.description,
           numPlazas: this.eventData.numPlazas,
           price: this.eventData.price,
           category: this.eventData.category,
-          date: moment(this.eventData.date).format("YYYY-MM-DDTHH:mm")
+          date: this.eventDate
           
-          
-         
         });
    
 
@@ -133,46 +133,55 @@ export class EditEventPage implements OnInit {
      this.newLocation = event.target.value;
   }
 
-
   saveChanges() {
     if (this.form.valid) {
-      const date = this.form.value.date;
-
-      const currentDate = new Date();
-      const minimumDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
-      const maximumDate = new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000);
-      const eventDate = new Date(date);
+      const formDate = this.form.value.date;
+      const eventDate = this.eventDate;
+      console.log(formDate);
+      console.log(eventDate);
   
-      if (eventDate < minimumDate) {
-        // La fecha del evento es menor a la fecha mínima permitida
-        this.presentAlert("Error al actualizar", "La fecha debe ser al menos 24 horas a partir de la fecha actual");
-        return;
+      if (formDate !== eventDate) {
+        const currentDate = new Date();
+        const minimumDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+        const maximumDate = new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+  
+        if (formDate < minimumDate) {
+          // La fecha del evento es menor a la fecha mínima permitida
+          this.presentAlert("Error al actualizar", "La fecha debe ser al menos 24 horas a partir de la fecha actual");
+          return;
+        }
+  
+        if (formDate > maximumDate) {
+          // La fecha del evento es mayor a un año a partir de la fecha actual
+          this.presentAlert("Error al actualizar", "La fecha no puede ser mayor a un año a partir de la fecha actual");
+          return;
+        }
       }
   
-      if (eventDate > maximumDate) {
-        // La fecha del evento es mayor a un año a partir de la fecha actual
-        this.presentAlert("Error al actualizar", "La fecha no puede ser mayor a un año a partir de la fecha actual");
-        return;
-      }
-
-    const updatedData = { name: this.form.value.name, description: this.form.value.description,
-      date: eventDate , location: this.newLocation,
-       price: this.form.value.price, numPlazas: this.form.value.numPlazas, category: this.form.value.category};
-    
-      if(this.image!=null) {
+      const updatedData = {
+        name: this.form.value.name,
+        description: this.form.value.description,
+        date: formDate,
+        location: this.newLocation,
+        price: this.form.value.price,
+        numPlazas: this.form.value.numPlazas,
+        category: this.form.value.category
+      };
+  
+      if (this.image != null) {
         this.uploadPicture(this.eventId);
       }
-
-      this.eventService.updateEvent(this.eventId,updatedData).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.navCtrl.navigateBack('/home/user-page');
-      }
-  });
-}else{
-  console.log('Form not valid');
-}
-}
+  
+      this.eventService.updateEvent(this.eventId, updatedData).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.navCtrl.navigateBack('/home/user-page');
+        }
+      });
+    } else {
+      console.log('Formulario no válido');
+    }
+  }
 
 async presentAlert(header: string, message: string) {
   const alert = await this.alertController.create({

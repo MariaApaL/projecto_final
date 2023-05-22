@@ -15,13 +15,20 @@ declare let google: any;
 })
 export class SearchPage implements OnInit {
 
+  //mapa google maps
   map: google.maps.Map;
+  //recoge la informacion de la ventana
   infoWindow: google.maps.InfoWindow;
   latitude: any;
   longitude: any;
+  //para el buscador
   GoogleAutocomplete: any;
+  //guardar eventos
   events: EventsInterface[];
+  //guardar eventos para filtrar
+  eventsFiltered: EventsInterface[];
 
+  //guardar el id del evento
   eventId: string;
 
   constructor(
@@ -36,6 +43,7 @@ export class SearchPage implements OnInit {
   
 
   async ngOnInit() {
+  
     const coordinates = await this.getCurrentPosition();
     this.initMap(coordinates);
     this.initAutocomplete();
@@ -43,14 +51,16 @@ export class SearchPage implements OnInit {
 
   }
 
+  //obtener la ubicación actual por capacitor
   async getCurrentPosition(): Promise<{ latitude: number; longitude: number }> {
     const position = await Geolocation.getCurrentPosition();
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    console.log('Ubicación actual:', latitude, longitude);
+  
     return { latitude, longitude };
   }
 
+  //inicializar el mapa
   initMap(coordinates: { latitude: number; longitude: number }) {
     const mapOptions = {
       center: { lat: coordinates.latitude, lng: coordinates.longitude },
@@ -59,16 +69,19 @@ export class SearchPage implements OnInit {
     };
 
     this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+    //marcador de la ubicación actual
     const marker = new google.maps.Marker({
       position: { lat: coordinates.latitude, lng: coordinates.longitude },
       map: this.map,
       title: 'Mi ubicación',
       icon: {
-        url: '../../../../assets/marker.png', // Ruta al archivo de imagen del marcador
-        scaledSize: new google.maps.Size(50, 50) // Tamaño del marcador
+        url: '../../../../assets/marker.png', 
+        scaledSize: new google.maps.Size(50, 50) 
       }
     });
 
+    //circulo de la ubicación actual
     const circle = new google.maps.Circle({
       strokeColor: '#4285F4',
       strokeOpacity: 0.8,
@@ -77,22 +90,25 @@ export class SearchPage implements OnInit {
       fillOpacity: 0.35,
       map: this.map,
       center: { lat: coordinates.latitude, lng: coordinates.longitude },
-      radius: 50 // Radio del círculo en metros
+      radius: 50 
     });
 
+    //botón para ir a la ubicación actual
     const myLocationButton = document.getElementById('myLocationButton');
     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(myLocationButton);
 
+    //evento para ir a la ubicación actual
     myLocationButton.addEventListener('click', () => {
       this.goToMyLocation();
     });
   }
 
 
+  //inicializar el buscador
   initAutocomplete() {
     const input = document.getElementById('search');
     const searchBox = new google.maps.places.SearchBox(input);
-
+    
     this.map.addListener('bounds_changed', () => {
       searchBox.setBounds(this.map.getBounds());
     });
@@ -119,6 +135,7 @@ export class SearchPage implements OnInit {
     });
   }
 
+  //ir a la ubicación actual
   goToMyLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -140,7 +157,12 @@ export class SearchPage implements OnInit {
     this.eventService.getEvents().subscribe({
       next: async (res: EventsInterface[]) => {
         this.events = res;
-        console.log(this.events);
+        this.eventsFiltered = this.events;
+    
+  
+        const currentDate = new Date();
+        this.eventsFiltered = this.events.filter(event => new Date(event.date) > currentDate);
+  
         this.showEventMarkers();
 
       },
@@ -153,7 +175,7 @@ export class SearchPage implements OnInit {
     const geocoder = new google.maps.Geocoder();
     const infowindow = new google.maps.InfoWindow();
 
-    for (const event of this.events) {
+    for (const event of this.eventsFiltered) {
       geocoder.geocode({ address: event.location }, (results, status) => {
         if (status === 'OK') {
           const location = results[0].geometry.location;

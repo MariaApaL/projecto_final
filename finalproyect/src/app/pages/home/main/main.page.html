@@ -17,11 +17,17 @@
 
     </div>
     <ion-item class="search" lines="none" class="ion-no-padding">
-      <ion-searchbar class="bar"></ion-searchbar>
-      <ion-button slot='end'>
+      <ion-searchbar class="bar" [(ngModel)]="searchQuery"></ion-searchbar>
+      <ion-button slot='end'  id="popover-button" >
         <ion-icon name="options-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
+      </ion-button> 
+ 
+    <ion-select [(ngModel)]="selectedOption"  interface="popover"  (ionChange)="filterByOption(selectedOption)">
+      <ion-select-option *ngFor="let option of options" value="{{option.value}}">{{option.label}}</ion-select-option>
+     
+    </ion-select>
+  </ion-item>
+   
 
 
 
@@ -33,10 +39,18 @@
       <swiper-container class="ion-margin" [slidesPerView]="2" [spaceBetween]="15">
         <swiper-slide *ngFor="let category of categories">
 
-          <ion-card>
-            <ion-item lines="none">
-              <ion-label class="ion-text-wrap">{{category?.name}}</ion-label>
-            </ion-item>
+          <ion-card  (click)="filterByCategory(category.id)">
+            <ion-card-content>
+            <ion-avatar>
+              <img src="{{category?.icon}}" />
+            </ion-avatar>
+          
+
+              <p>{{category?.name}}</p>
+            </ion-card-content>
+              
+            
+        
           </ion-card>
 
         </swiper-slide>
@@ -46,15 +60,14 @@
 
   <div class="title">
     <h2>Todos los Eventos </h2>
-
-    <p>See all</p>
   </div>
 
-  <div class="event-cards ion-margin">
+  <div class="event-cards ion-margin" >
 
 
+    <div class="event-info" *ngFor="let event of allEvents | filterpipe: searchQuery : filteredCategory : selectedOption">
 
-    <ion-card *ngFor="let event of myEvents" >
+    <ion-card >
 
       <ion-card-header class="ion-no-padding">
         <img src="{{event.picture}}" />
@@ -85,10 +98,10 @@
       </ion-card-content>
 
     </ion-card>
-
-    <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+  </div>
+    <!-- <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+    </ion-infinite-scroll> -->
     <!-- </ng-template> -->
     <!-- <swiper [config]="eventConfig" > -->
 

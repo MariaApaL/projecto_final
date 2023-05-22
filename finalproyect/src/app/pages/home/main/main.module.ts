@@ -7,16 +7,18 @@ import { IonicModule } from '@ionic/angular';
 import { MainPageRoutingModule } from './main-routing.module';
 
 import { MainPage } from './main.page';
-import { ComponentsModule } from "../../../components/components.module";
+
+import { FilterpipePipe } from 'src/app/pipes/filterpipe.pipe';
 
 
 @NgModule({
-    declarations: [MainPage],
+    declarations: [MainPage, FilterpipePipe],
     imports: [
         CommonModule,
         FormsModule,
         IonicModule,
         MainPageRoutingModule,
+       
 
     
  

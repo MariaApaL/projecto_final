@@ -38,7 +38,7 @@
   
           <ion-textarea  (ionChange)="onCommentChange($event)" placeholder="Escribe tu comentario"  [(ngModel)]="comment" 
            maxlength="240"></ion-textarea>
-          <ion-button  class="icon" [disabled]="disabledButton" (click)="addComments()">
+          <ion-button  class="icon" [disabled]="disabledButton" (click)="addValuation()">
             <ion-icon name="chatbubble-outline"></ion-icon>
           </ion-button>
         </ion-item>
@@ -49,25 +49,25 @@
    
   </div>
   <div class="comments">
-    <h1><strong> Comentarios</strong></h1>
+    <h1><strong> Valoraciones </strong></h1>
     <ion-list>
 
-      <ion-card class="comments" *ngFor="let comment of comments">
-        <div class="user-info">
-          <ion-avatar *ngIf="commentUser">
-            <img src="{{ commentUser.picture }}">
+      <ion-card class="comments" *ngFor="let valuation of valuations">
+        <div class="user-info"  *ngIf="valuation.author && valuation.author.picture">
+          <ion-avatar>
+            <img src="{{ valuation.author?.picture }}">
           </ion-avatar>
-          <h2 *ngIf="commentUser">{{ commentUser.user }}</h2>
+          <h2 >{{ valuation.author.user}}</h2>
         </div>
         <ion-card-content class="comment-info">
         <div class="result-stars">
-          <ion-icon color="primary" name="star" *ngFor="let _ of resultStars"></ion-icon>
-          <p>{{ comment.date | date:'dd MMM, yyyy HH:mm' }}</p>
+          <ion-icon color="primary" name="star" *ngFor="let _ of generateStars(valuation.value)"></ion-icon>
+          <p>{{ valuation.date | date:'dd MMM, yyyy HH:mm' }}</p>
         </div>
      
           
           
-            <p class="comment-text">{{ comment.text }}</p>
+            <p class="comment-text">{{ valuation.text }}</p>
         
         </ion-card-content>
        

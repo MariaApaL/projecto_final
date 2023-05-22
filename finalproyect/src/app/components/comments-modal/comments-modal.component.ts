@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, NavParams } from '@ionic/angular';
 import { error } from 'console';
 import { is } from 'date-fns/locale';
-import { CommentsInterface } from 'src/app/interfaces/comments';
+
 import { EventsInterface } from 'src/app/interfaces/event';
 import { UsersInterface } from 'src/app/interfaces/user';
+import { ValuationsInterface } from 'src/app/interfaces/valuation';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
 
@@ -42,30 +43,35 @@ export class CommentsModalComponent implements OnInit {
   selectedValue: number;
   stars: number[];
 
-  comments: CommentsInterface[] = [];
+  valuations: ValuationsInterface[] = [];
   //  commentAuthor: string;
   participants: any[] = [];
   isParticipant: boolean = false;
+
   commentAuthors: any = {};
   eventDate: Date;
   isValued: boolean;
-  commentUser: UsersInterface;
+ 
   value:number;
   resultStars:number[];
 
 
   async ngOnInit() {
 
-    this.getComments();
+    
     this.getParticipants();
     this.getEvent();
     this.getEventValuationsByAuthor(this.eventId, this.userId);
+    this.getValuations();
+    if(this.selectedValue==0 || this.selectedValue==null){
+      this.disabledButton=true;
+    }
 
   }
 
 
   ionViewDidEnter() {
-    this.getComments();
+    this.getValuations();
     this.getEventValuationsByAuthor(this.eventId, this.userId);
   }
 
@@ -76,31 +82,20 @@ export class CommentsModalComponent implements OnInit {
   }
 
   //obtenemos id de los creadores de los comentarios del evento
-  getComments() {
-    this.eventService.getComments(this.eventId).subscribe(
+  getValuations() {
+    this.eventService.getEventValuations(this.eventId).subscribe(
       res => {
 
-        this.comments = Object.values(res);
-        console.log('comments', this.comments)
+        this.valuations = res.valuations;
+      
 
-        //recorremos el array de comentarios y obtenemos el id del autor de cada comentario
-        const authorIds = this.comments.map(comment => comment.author);
-        //recorremos el array de ids de autores y obtenemos el nombre de cada autor
-        for (const authorId of authorIds) {
 
-          //obtenemos el nombre del autor del comentario
-          this.auth.getUserById(authorId).subscribe({
-            next: (res: UsersInterface) => {
-
-              this.commentUser = res;
-              // this.commentAuthors[authorId] = res.user; 
-
-            }
           });
         }
-      }
-    );
-  }
+    
+  
+
+
 
   getParticipants() {
     this.eventService.getParticipants(this.eventId).subscribe(
@@ -122,13 +117,12 @@ export class CommentsModalComponent implements OnInit {
   }
 
   //añade comentarios
-  addComments() {
+  addValuation() {
+    const finalValue = this.selectedValue;
 
 
-    this.eventService.addComments(this.eventId, this.userId, this.comment).subscribe(
+    this.eventService.addValuation(this.eventId, this.userId,finalValue, this.comment).subscribe(
       res => {
-
-        this.addValorations(this.eventId, this.userId);
         this.ionViewDidEnter();
         this.comment = '';
       },
@@ -185,6 +179,11 @@ export class CommentsModalComponent implements OnInit {
         event.target.disabled = true;
         this.presentAlert('No puedes comentar', 'El evento aún no se ha realizado');
         break;
+      
+        case this.isParticipant && eventDate < currentDate && this.isValued:
+          this.disabledButton = true;
+          event.target.disabled = true;
+          break;
 
       default:
 
@@ -212,29 +211,18 @@ export class CommentsModalComponent implements OnInit {
     this.stars = Array(this.selectedValue).fill(0);
   }
 
-  addValorations(eventId: string, userId: string) {
-    const finalValue = this.selectedValue;
-    this.eventService.addValuation(eventId, userId, finalValue).subscribe(
-      res => {
-        this.ionViewDidEnter();
-      }
-    )
+  //obtener las estrellas de las valoraciones de un evento
+  generateStars(value: number): any[] {
+    return Array(value).fill(0);
   }
 
-  getRange(value:number) {
-    this.resultStars = Array(value).fill(0);
-  }
   getEventValuationsByAuthor(eventId: string, authorId: string) {
     this.eventService.getEventValuationsByAuthor(eventId, authorId).subscribe(
       res => {
         if (res.valuations.length > 0) {
           // Si valoraciones tiene al menos una valoración, el usuario ha valorado el evento
-          this.isValued = true;
-          const firstValuation = res.valuations[0];
-          this.value = firstValuation.value;
-          console.log('value', this.value);
-  
-          this.getRange(this.value); // Llamar a getRange() cuando se obtenga el valor
+          this.isValued = true;  
+      
         } else {
           // Si valoraciones está vacío, el usuario no ha valorado el evento
           this.isValued = false;

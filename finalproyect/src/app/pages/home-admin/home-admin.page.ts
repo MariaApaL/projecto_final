@@ -27,7 +27,6 @@ export class HomeAdminPage implements OnInit {
     private reportService: ReportService) { }
 
   options = [
-    { label: 'Panel de Admin', redirectTo: '' },
     { label: "Estadísticas" },
     { label: "Privacidad" },
   ];
@@ -52,9 +51,6 @@ export class HomeAdminPage implements OnInit {
 
   chooseOptions(item: any) {
     switch (item.label) {
-      case 'Panel de Admin':
-        this.navCtrl.navigateRoot('/home-admin');
-        break;
       case 'Privacidad':
         this.openPrivateModal(item);
         break;

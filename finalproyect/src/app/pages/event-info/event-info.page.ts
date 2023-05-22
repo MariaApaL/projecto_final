@@ -55,6 +55,10 @@ export class EventInfoPage implements OnInit {
   //para mostrar el botón de reportes
   isMine: boolean = false;
 
+  //para ver si es admin
+  isAdmin: boolean = false;
+
+
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
@@ -93,8 +97,10 @@ export class EventInfoPage implements OnInit {
       this.getEvent();
       this.getUserEvent(this.eventId);
       this.getUser();
+      this.getRol();
 
   }
+
   //llama al servicio para obtener los eventos
   async getEvent() {
     this.eventService.getEvent(this.eventId).subscribe({
@@ -215,7 +221,7 @@ export class EventInfoPage implements OnInit {
     this.checkParticipants();
   }
 
-
+//Para controlar el boton de unirse
   checkParticipants() {
     this.eventDate = new Date(this.event.date);
     let now = new Date();
@@ -244,6 +250,10 @@ export class EventInfoPage implements OnInit {
         this.disabledButton = false;
         break;
 
+      case this.isAdmin:
+        this.disabledButton = false;
+        break;
+
       default:
         this.disabledButton = false;
         break;
@@ -260,8 +270,7 @@ export class EventInfoPage implements OnInit {
         this.participants = event.plazas.length;
 
         this.checkParticipants();
-        // Actualiza si el evento está lleno o no
-        // }
+      
       }
     });
   }
@@ -369,5 +378,19 @@ export class EventInfoPage implements OnInit {
       }
     });
   }
+
+
+  getRol(){
+    const rol = localStorage.getItem('userRole');
+    if(rol == 'ROLE_ADMIN'){
+      this.isAdmin = true;
+
+  }else{
+    this.isAdmin = false;
+  }
+
+}
+
+
 
 }

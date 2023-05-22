@@ -116,35 +116,6 @@ export class EventService {
     return this.http.get(url, { headers: headers });
   }
 
-  //Añade un comentario a un evento
-  addComments(eventId: string, authorId: string, text: string): Observable<any> {
-    const url = `${this.url}/addComments`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { eventId, authorId, text };
-    return this.http.post(url, body, { headers: headers });
-  }
-  //elimina un comentario de un evento
-  deleteComment(eventId: string, commentId: string, authorId: string): Observable<any> {
-    const body = { commentId, authorId };
-    const url = `${this.url}/deleteComment/${eventId}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const options = { headers: headers, body: body };
-    return this.http.delete(url, options);
-  }
-  //devuelve los comentarios de un evento
-  getComments(eventId: string): Observable<any> {
-    const url = `${this.url}/getComments/${eventId}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.get(url, { headers: headers });
-  }
-
-  //elimina los comentarios de un usuario
-  deleteUserComments(userId: string): Observable<any> {
-    const url = `${this.url}/deleteUserComments/${userId}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.delete(url, { headers: headers });
-  }
-
   //elimina las plazas de un usaurio
   deleteUserPlazas(userId: string): Observable<any> {
     const url = `${this.url}/deleteUserPlazas/${userId}`;
@@ -153,16 +124,16 @@ export class EventService {
   }
 
   //añadir valoraciones
-  addValuation(eventId: string, userId: string, value: number): Observable<any> {
+  addValuation(eventId: string, userId: string, value: number, text:string): Observable<any> {
     const url = `${this.url}/addValuation/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { userId, value };
+    const body = { userId, value, text };
     return this.http.post(url, body, { headers: headers });
   }
 
   //devuelve las valoraciones de un evento
-  getEventValorations(eventId: string): Observable<any> {
-    const url = `${this.url}/getEventValorations/${eventId}`;
+  getEventValuations(eventId: string): Observable<any> {
+    const url = `${this.url}/getEventValuations/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(url, { headers: headers });
   }
@@ -172,5 +143,11 @@ export class EventService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     // const options = { body: body , headers: headers };
     return this.http.get(url, { headers: headers });
+  }
+
+  deleteUserValuations(userId: string): Observable<any> {
+    const url = `${this.url}/deleteUserValuations/${userId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.delete(url, { headers: headers });
   }
 }

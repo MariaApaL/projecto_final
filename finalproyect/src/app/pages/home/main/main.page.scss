@@ -12,6 +12,25 @@ ion-header {
   }
 }
 
+.categories{
+  ion-card{
+    display:flex;
+    align-items: center;
+
+    ion-card-content p{
+      
+        font-size:16px;
+        font-family: bold;
+        --color:var(--ion-color-tertiary)
+    
+      
+
+    }
+   
+  }
+  
+}
+
 .default-left-padding {
   padding-left: 26px;
 }
@@ -22,7 +41,7 @@ ion-header {
 
 ion-content {
 
-  --background: #fcf1f1;
+  // --background: #fcf1f1;
 
   .banner {
     position: relative;

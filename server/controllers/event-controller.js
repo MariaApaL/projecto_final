@@ -420,108 +420,15 @@ exports.deleteUserPlazas = async (req, res) => {
   }
 };
 
-exports.addComments = async (req, res) => {
-  const { eventId, authorId, text } = req.body;
 
-  try {
-    // Comprobamos que el evento exista
-    const event = await Event.findById(eventId);
-    if (!event) {
-      return res.status(404).json({ message: 'Evento no encontrado' });
-    }
-
-    // Comprobamos que la fecha es después
-    if (event.date > Date.now()) {
-      return res.status(400).json({ message: 'No se pueden añadir comentarios antes de la fecha del evento' });
-    }
-
-    // Comprobamos que el usuario ha asistido al evento
-    if (!event.plazas.includes(authorId)) {
-      return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
-    }
-
-    // Comprobamos si el usuario ya ha comentado el evento
-    const hasCommented = event.comments.some(comment => comment.author.toString() === authorId);
-    if (hasCommented) {
-      return res.status(400).json({ message: 'Ya has valorado este evento' });
-    }
-
-    // Comprobamos que el usuario no ha utilizado malas palabras
-    if (checkBadWord(text, badWords)) {
-      return res.status(400).send({ message: 'Error, contenido inapropiado' });
-    }
-
-    const comment = {
-      author: authorId,
-      text,
-      date: Date.now()
-    };
-
-    event.comments.push(comment);
-    await event.save();
-
-    res.status(201).json({ message: 'Comentario añadido correctamente' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al añadir el comentario' });
-  }
-};
-
-exports.getComments = async (req, res) => {
-  const eventId = req.params.id;
-
-  try {
-    const event = await Event.findById(eventId);
-    if (!event) {
-      return res.status(404).json({ message: 'Evento no encontrado' });
-    }
-
-    const comments = event.comments;
-    res.status(200).json(comments);
-  } catch (error) {
-    
-    res.status(500).json({ message: 'Error al obtener los comentarios' });
-  }
-};
-
-exports.deleteComment = async (req, res) => {
-  const { eventId, commentId, authorId } = req.body;
-
-  
-  try {
-    const event = await Event.findById(eventId);
-    if (!event) {
-      return res.status(404).json({ message: 'Evento no encontrado' });
-    }
-
-    const comment = event.comments.find(comment => comment._id.toString() === commentId);
-    if (!comment) {
-      return res.status(404).json({ message: 'Comentario no encontrado' });
-    }
-
-    //para tipar el authorId
-    const ObjectId = mongoose.Types.ObjectId;
-    if (!comment.author.equals(new ObjectId(authorId))) {
-      
-      return res.status(403).json({ message: 'Solo el autor del comentario puede borrarlo' });
-    }
-
-    event.comments = event.comments.filter(comment => comment._id.toString() !== commentId);
-    await event.save();
-
-    res.status(200).json({ message: 'Comentario borrado correctamente' });
-  } catch (error) {
-    
-    res.status(500).json({ message: 'Error al borrar el comentario' });
-  }
-};
 
 //Borra todos los comentarios de un usuario
-exports.deleteUserComments = async (req, res) => {
+exports.deleteUserValuations = async (req, res) => {
   try {
     const userId = req.params.id;
     await Event.updateMany(
-      { 'comments.author': userId },
-      { $pull: { comments: { author: userId } } }
+      { 'valuations.author': userId },
+      { $pull: { valuations: { author: userId } } }
     );
     res.status(200).json({ message: 'Todos los comentarios del usuario han sido eliminados.' });
   } catch (err) {
@@ -532,7 +439,7 @@ exports.deleteUserComments = async (req, res) => {
 exports.addValuation = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const {value, userId} = req.body; 
+    const {value, userId, text} = req.body; 
     
     // Busca el evento por su ID
     const event = await Event.findById(eventId);
@@ -541,17 +448,33 @@ exports.addValuation = async (req, res) => {
       return res.status(404).send({ message: "Evento no encontrado" });
     }
     
+     // Comprobamos que la fecha es después
+     if (event.date > Date.now()) {
+      return res.status(400).json({ message: 'No se pueden añadir comentarios antes de la fecha del evento' });
+    }
+
+    // Comprobamos que el usuario ha asistido al evento
+    if (!event.plazas.includes(userId)) {
+      return res.status(403).json({ message: 'El autor del comentario no ha asistido al evento' });
+    }
+
     // Verifica si el usuario creador ya ha valorado el evento
     const hasValuation = event.valuations.some(valuation => valuation.author.toString() === userId);
     
     if (hasValuation) {
       return res.status(400).send({ message: "El usuario ya ha valorado este evento" });
     }
+
+    if (checkBadWord(text, badWords)) {
+      return res.status(400).send({ message: 'Error, contenido inapropiado' });
+    }
     
     // Crea una nueva valoración con el valor proporcionado en la solicitud
     const newValuation = {
       value: value, 
-      author: userId
+      author: userId,
+      date: Date.now(),
+      text
     };
     
     // Agrega la nueva valoración al arreglo de valoraciones del evento
@@ -570,8 +493,11 @@ exports.getEventValuations = async (req, res) => {
   try {
     const eventId = req.params.id;
     
-    // Busca el evento por su ID e incluye el uusuario
-    const event = await Event.findById(eventId).populate('valuations.author', 'user');
+    // Busca el evento por su ID e incluye el usuario y el campo picture
+    const event = await Event.findById(eventId).populate({
+      path: 'valuations.author',
+      select: 'user picture' // Incluye los campos 'user' y 'picture' del autor
+    });
     
     if (!event) {
       return res.status(404).send({ message: "Evento no encontrado" });
@@ -582,14 +508,12 @@ exports.getEventValuations = async (req, res) => {
     if(valuations.length === 0){
       return res.status(404).send({ message: "No hay valoraciones para este evento" });
     }
-
     
     res.send({ valuations });
   } catch (err) {
     res.status(500).send({ message: "Error al obtener las valoraciones del evento", error: err });
   }
 };
-
 
 exports.getEventValuationsByAuthor = async (req, res) => {
   try {
@@ -614,3 +538,4 @@ exports.getEventValuationsByAuthor = async (req, res) => {
     res.status(500).send({ message: "Error al obtener las valoraciones del evento por el autor", error: err });
   }
 };
+

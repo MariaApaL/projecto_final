@@ -6,12 +6,12 @@ const eventSchema = new mongoose.Schema({
         required: [true, 'Por favor, escriba un nombre para el evento'],
         trim: true
     },
-    category: 
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Category',
+    category:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
 
-        }
+    }
     ,
     date: {
         type: Date,
@@ -50,14 +50,20 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-   
 
-    comments: [
+    valuations: [
         {
+            value: {
+                type: Number,
+                required: false,
+                default: 0,
+                min: 1,
+                max: 5
+
+            },
             author: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-                required: true
+                ref: 'User'
             },
             date: {
                 type: Date,
@@ -68,22 +74,6 @@ const eventSchema = new mongoose.Schema({
                 type: String,
                 required: true
             }
-        }
-    ],
-    valuations: [
-        {
-           value:{
-            type: Number,
-            required: false,
-            default: 0,
-            min: 1,
-            max: 5
-
-           } ,
-           author:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-           }
         }
     ]
 }, {

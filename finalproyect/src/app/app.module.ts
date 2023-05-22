@@ -18,6 +18,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { GoogleTagManagerModule } from 'angular-google-tag-manager';
 
 
+
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, 
@@ -29,6 +30,7 @@ import { GoogleTagManagerModule } from 'angular-google-tag-manager';
     provideFirebaseApp(() => initializeApp(environment.firebase)), 
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()), 
+  
     GoogleTagManagerModule.forRoot({ id: 'GTM-TNPDZ77' })],
     
   providers: [DatePipe, Geolocation, NativeGeocoder, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

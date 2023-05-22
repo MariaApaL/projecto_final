@@ -89,7 +89,7 @@ export class PrivacyModalComponent implements OnInit {
   }
 
   deleteAllComments(id:string){
-   this.eventService.deleteUserComments(id).subscribe({
+   this.eventService.deleteUserValuations(id).subscribe({
       next: comments => { 
         console.log("comentarios eliminados");
       }

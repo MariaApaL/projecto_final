@@ -83,15 +83,6 @@ module.exports = function (app) {
 
   app.delete("/deleteUserPlazas/:id", controller.deleteUserPlazas);
 
-  //COMMENTS
-
-  app.post('/addComments/', controller.addComments);
-
-  app.get("/getComments/:id", controller.getComments);
-
-  app.delete("/deleteComment/", controller.deleteComment);
-
-  app.delete("/deleteUserComments/:id", controller.deleteUserComments);
 
  //VALORACIONES
  app.post("/addValuation/:id", controller.addValuation);
@@ -100,6 +91,6 @@ module.exports = function (app) {
 
  app.get("/getEventValuationsByAuthor/:eventId/:authorId", controller.getEventValuationsByAuthor);
  
-
+app.delete("/deleteUserValuations/:id", controller.deleteUserValuations);
 
 };

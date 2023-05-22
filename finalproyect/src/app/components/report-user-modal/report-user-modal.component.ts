@@ -49,31 +49,27 @@ export class ReportUserModalComponent implements OnInit {
 
   getUserByReportCount() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
-      if(this.count=='moreThan10'){
-        
-        this.filteredUsers = res.filter(user => user.reports.length >= 6  && user.reports.length < 30);
+      if (this.count == 'moreThan10') {
+        this.filteredUsers = res.filter(user => user.reports.length >= 6 && user.reports.length < 30 && !user.deleted);
         console.log(this.filteredUsers);
-
-        //Filtra el id del evento de cada reporte y quita duplicados 
+  
+        // Filtra el id del evento de cada reporte y quita duplicados 
         this.filteredEvents = this.filtrarEventos(res);
-    
+  
         this.filteredReports = this.filtrarReport(res);
-        //filtra por el tipo de reporte y elimina duplicados
+        // Filtra por el tipo de reporte y elimina duplicados
         console.log(this.filteredReports);
-
-      }else if(this.count=='moreThan30'){
-        this.filteredUsers = res.filter(user => user.reports.length >= 30 && user.reports.length < 50);
+      } else if (this.count == 'moreThan30') {
+        this.filteredUsers = res.filter(user => user.reports.length >= 30 && user.reports.length < 50 && !user.deleted);
         console.log(this.filteredUsers);
         this.filteredEvents = this.filtrarEventos(res);
         this.filteredReports = this.filtrarReport(res);
-
-      }else{
-        this.filteredUsers = res.filter(user => user.reports.length >= 50);
+      } else {
+        this.filteredUsers = res.filter(user => user.reports.length >= 50 && !user.deleted);
         console.log(this.filteredUsers);
         this.filteredEvents = this.filtrarEventos(res);
         this.filteredReports = this.filtrarReport(res);
       }
-     
     });
   }
 
@@ -92,6 +88,9 @@ export class ReportUserModalComponent implements OnInit {
     });
   }
 
+  updateFilteredEvents(deletedEventId: string) {
+    this.filteredEvents = this.filteredEvents.filter(event => event !== deletedEventId);
+  }
 
   goEventInfo(event:string){
     this.navCtrl.navigateForward(`/event-info/${event}`);
@@ -109,7 +108,8 @@ export class ReportUserModalComponent implements OnInit {
     this.eventService.deleteByEventId(eventId).subscribe((res)=>{
       console.log(res);
       this.reportService.deleteReportsByEventId(eventId).subscribe(); 
-      this.ionViewDidEnter();
+      this.updateFilteredEvents(eventId);
+
     }
     );
 }
@@ -140,7 +140,7 @@ deleteAllEvents(id:string){
 }
 
 deleteAllComments(id:string){
- this.eventService.deleteUserComments(id).subscribe({
+ this.eventService.deleteUserValuations(id).subscribe({
     next: comments => { 
       console.log("comentarios eliminados");
     }

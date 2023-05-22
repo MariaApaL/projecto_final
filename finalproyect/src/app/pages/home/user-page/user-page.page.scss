@@ -192,6 +192,29 @@ ion-segment {
 
 }
 
+.participants{
+
+  position: absolute;
+    bottom: 10px;
+    right: 0;
+
+    display: flex;
+    // justify-content: flex-end;
+
+    p {
+      padding-top: 5px;
+      padding-left: 5px;
+      color: var(--ion-color-lettering);
+      font-size: 15px;
+    }
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-tertiary);
+    }
+
+}
+
 .buttons {
   display: flex;
   justify-content: space-between;
