@@ -90,6 +90,7 @@ module.exports = function (app) {
  app.get("/getEventValuations/:id", controller.getEventValuations);
 
  app.get("/getEventValuationsByAuthor/:eventId/:authorId", controller.getEventValuationsByAuthor);
+ app.get("/getValuationsByAuthor/:authorId", controller.getValuationsByAuthor);
  
 app.delete("/deleteUserValuations/:id", controller.deleteUserValuations);
 

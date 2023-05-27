@@ -45,7 +45,7 @@ ion-content {
 
   .profile {
     background: #fef1fe;
-    height:55%;
+    height:50%;
     .profile-stars {
       display: flex;
       align-items: center;
@@ -146,12 +146,20 @@ ion-segment {
     margin-left: 0;
     margin-top: 0;
 
+   
     ion-card-header {
-      img {
-        width: 100%;
+      .img-container {
+        width: 100%; 
+        height: 200px; 
+        overflow: hidden; 
+      }
+      
+      .event-image {
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
       }
     }
-
     ion-card-content {
       padding: 20px;
 

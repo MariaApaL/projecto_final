@@ -2,6 +2,10 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
+import { ChangePasswordComponent } from '../change-password/change-password.component';
+import { ChangeUserComponent } from '../change-user/change-user.component';
+import { ChangeEmailComponent } from '../change-email/change-email.component';
+import { PoliticsComponent } from '../politics/politics.component';
 
 @Component({
   selector: 'app-privacy-modal',
@@ -14,6 +18,8 @@ export class PrivacyModalComponent implements OnInit {
   //recogemos el item que nos mandan desde el bottom-sheet-modal
   @Input() item: any;
   
+  admin = localStorage.getItem("userRole");
+  isAdmin= false;
   constructor(
     private modalCtrl: ModalController,
     private auth: AuthService,
@@ -21,17 +27,72 @@ export class PrivacyModalComponent implements OnInit {
     private navCtrl:NavController,
     private eventService:EventService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if(this.admin === "ROLE_ADMIN"){
+      this.isAdmin = true;
+    }
+  }
 
   options = [
     { icon: "lock-open-outline", label: 'Cambiar Contraseña', redirectTo: '' },
     { icon: "mail-outline", label: 'Cambiar Email', redirectTo: '' },
     { icon: "person-outline", label: 'Cambiar Usuario', redirectTo: '' },
+    {icon: "document-text-outline", label: 'Términos y Condiciones', redirectTo: ''}
   ];
   
+
+  chooseOptions(item:any) {
+    if (item.label === 'Cambiar Contraseña') {
+      this.openChangePasswordModal(item);
+    }else if(item.label === 'Cambiar Email'){
+      
+      this.openChangeEmailModal(item);
+    }else if(item.label === 'Cambiar Usuario'){
+      this.openChangeUserModal(item);
+     
+    }else{
+      this.openTermsModal(item);
+    }
+  }
   closeModal() {
     this.modalCtrl.dismiss();
   }
+
+  openChangePasswordModal(item:any){  
+    this.modalCtrl.create({
+      component: ChangePasswordComponent,
+      componentProps: {
+        item: item
+      }
+    }).then(modal => modal.present());
+  }
+  
+  openChangeUserModal(item:any){
+    this.modalCtrl.create({
+      component: ChangeUserComponent,
+      componentProps: {
+        item: item
+      }
+    }).then(modal => modal.present());
+  }
+   
+  openChangeEmailModal(item:any){
+    this.modalCtrl.create({
+      component: ChangeEmailComponent,
+      componentProps: {
+        item: item
+      }
+    }).then(modal => modal.present());
+  }
+  
+
+  openTermsModal(item:any){
+    this.modalCtrl.create({
+      component: PoliticsComponent,
+    }).then(modal => modal.present());
+  }
+  
+
 
    //Función para mostrar una alerta solo cuando el usuario quiere borrar la cuenta
    delete(){

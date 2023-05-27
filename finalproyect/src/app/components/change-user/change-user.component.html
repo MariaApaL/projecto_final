@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar Usuario</ion-title>
+    <ion-buttons (click)="closeModal()" class="close-button"  slot="start">
+      <ion-button >
+        <ion-icon  class="close-icon"  name="close-outline" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <p>El email, al igual que el usuario, son valores únicos por cada cuenta. Al cambiarlos
+    corres el riesgo de que luego no puedas volver a usar los anteriores en caso de que
+    quieras cambiarlos de nuevo.
+  </p>
+  <form [formGroup]="form" >
+    
+
+
+    <ion-item>
+      <ion-label position="floating">Nuevo Usuario</ion-label>
+      <ion-input type="text" formControlName="user" name="user"></ion-input>
+     
+    </ion-item>
+    <app-error-message class="validator" [field]="form.controls.user" [empty]="true"
+            message="Campo Obligatorio"></app-error-message>
+    <app-error-message class="validator" [field]="form.controls.user" [valid]="true" message="Formato errorneo"></app-error-message>
+      
+
+
+  
+  <ion-button [disabled]="!this.form.valid" class="ion-margin-top update" color="tertiary" (click)="update()" expand="block">Actualizar</ion-button>
+
+</form>
+
+
+</ion-content>

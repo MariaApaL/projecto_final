@@ -57,6 +57,10 @@ export class EventInfoPage implements OnInit {
 
   //para ver si es admin
   isAdmin: boolean = false;
+  //array de categorias
+  categories: { id: string; name: string; icon: string; checked: boolean; }[];
+  //para recoger el id de la categoria
+  category: string;
 
 
   constructor(
@@ -78,6 +82,7 @@ export class EventInfoPage implements OnInit {
 
 
 
+
   ngOnInit() {
 
     this.route.paramMap.subscribe(params => {
@@ -85,6 +90,15 @@ export class EventInfoPage implements OnInit {
       //Ya tenemo el id de la URL guardado en una variable 
     });
     
+    this.categories = [
+      { id:'645e653feb328b8b3c629b09', name: 'Cultura' , icon:'../../assets/categories/creative.png',checked: false},
+      { id:'645e653feb328b8b3c629b0a', name: 'Deportes', icon:'../../assets/categories/physical.png',checked: false },
+      { id: '645e653feb328b8b3c629b0b' , name: 'Gastronomía',icon:'../../assets/categories/rice-bowl.png',checked: false },
+      { id: '645e653feb328b8b3c629b0d', name: 'Relax',icon:'../../assets/categories/facial-treatment.png',checked: false },
+      { id: '645e653feb328b8b3c629b0c', name: 'Ocio', icon:'../../assets/categories/garlands.png',checked: false },
+      { id: '645e653feb328b8b3c629b0e', name: 'Solidario',icon:'../../assets/categories/peace.png',checked: false }
+    ];
+
     
 
 
@@ -123,7 +137,7 @@ export class EventInfoPage implements OnInit {
         }
 
 
-
+        this.category= this.event.category;
         this.eventName = this.capitalizeWords(this.event.name);
         
         this.checkParticipants();
@@ -146,13 +160,19 @@ export class EventInfoPage implements OnInit {
   }
 
 
+  
+  getCategoryIcon(categoryId: string): string {
+    const category = this.categories.find(category => category.id === categoryId);
+    return category ? category.icon : '';
+  }
+
   capitalizeWords(eventName: string) {
     return eventName.replace(/\b\w/g, l => l.toUpperCase());
   }
 
 
   navigateBack() {
-
+    
     this.navCtrl.back();
   }
 

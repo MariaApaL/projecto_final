@@ -1,5 +1,6 @@
 const config = require("../config/auth-config");
-const badWords = require("../config/badword")
+const badWords = require("../config/badword");
+const transporter = require('../config/nodemailer');
 const db = require("../models");
 const cloudinary = require("../config/cloudinary");
 const User = db.user;
@@ -154,11 +155,14 @@ exports.updateUser = async (req, res) => {
 
     const fieldsToUpdate = {};
     for (const field in req.body) {
-      
       if (req.body.hasOwnProperty(field)) {
-        
-        fieldsToUpdate[field] = req.body[field];
-    }
+        if (field === "password") {
+          const hashedPassword = await bcrypt.hash(req.body[field], 8);
+          fieldsToUpdate[field] = hashedPassword;
+        } else {
+          fieldsToUpdate[field] = req.body[field];
+        }
+      }
     }
 
     
@@ -334,6 +338,73 @@ exports.deleteFavorite = async (req, res) => {
     }
   }
 
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Busca al usuario por el email
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return res.status(404).send({ message: 'Usuario no encontrado' });
+    }
+
+    // Genera un nuevo token de contraseña
+    const token = jwt.sign({ id: user._id }, config.secret, {
+      expiresIn: '1h', 
+    });
+
+    // Actualiza la contraseña del usuario con el token generado
+    const hashedToken = await bcrypt.hash(token, 8);
+    user.password = hashedToken;
+    await user.save();
+
+    // Envía el correo electrónico de restablecimiento de contraseña
+    const mailOptions = {
+      from: 'noreply.goingout@gmail.com',
+      to: email,
+      subject: 'Restablecimiento de contraseña',
+      html: `
+      <html>
+        <head>
+          <style>
+            h1 {
+            
+              font-size: 24px;
+              font-weight: 600;
+              color: #000;
+            }
+            
+          </style>
+        </head>
+        <body>
+          <h1>Hola ${user.name},</h1>
+          <p>Se ha solicitado el restablecimiento de contraseña para tu cuenta.</p>
+          <p>Utiliza este token para iniciar sesión: ${token}</p>
+          <p>Recuerda que este token es válido por 1 hora, por lo que no olvides cambiar tu contraseña.</p>
+          <p>Si no has solicitado el restablecimiento de contraseña, puedes ignorar este correo electrónico.</p>
+          <p>Saludos,</p>
+          <p>Equipo de GoingOut</p>
+        </body>
+      </html>
+    `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error al enviar el correo electrónico:', error);
+        return res.status(500).send({ message: 'Ocurrió un error al enviar el correo electrónico' });
+      } else {
+        console.log('Correo electrónico enviado correctamente:', info.response);
+        return res.status(200).send({ message: 'Correo electrónico de restablecimiento de contraseña enviado' });
+      }
+    });
+  } catch (err) {
+    console.log('Error al restablecer la contraseña:', err);
+    res.status(500).send({ message: 'Ocurrió un error al restablecer la contraseña' });
+  }
+};
 
 
 

@@ -23,6 +23,7 @@ export class CreateEventModalComponent implements OnInit {
   placeid: any;
   GoogleAutocomplete: any;
   image: any;
+  imagePreview: string;
 
   categories =[
     { label: 'Cultura', value: 'cultura', checked: false },
@@ -58,23 +59,33 @@ export class CreateEventModalComponent implements OnInit {
       date: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.maxLength(300)]),
       plazas: new FormControl('', [Validators.required, Validators.pattern(/^(?!0$)[1-9][0-9]{0,2}$/),Validators.maxLength(3)]),
-      price: new FormControl('', [ Validators.required, Validators.pattern(/^(?!.*[.,]$)(?!^[-+])(?!^0[.,])(?!^0+$)\d{1,3}(?:\.\d{1,2})?$/),Validators.maxLength(3)]),
-      category: new FormControl('', [Validators.required])
+      price: new FormControl(0, 
+      [Validators.required,
+      Validators.pattern(/^\d{1,3}(\.\d{1,2})?$/),
+      Validators.maxLength(3),
+      Validators.min(0),]),
+      category: new FormControl('')
     })
+  
   
   }
 
 
+  get f() {
+    return this.form.controls;
+  }
   
   
   createEvent() {
-    if (this.form.valid) {
+   
+    console.log(this.form.value.price);
+    if (this.form.valid ) {
       const name = this.form.value.eventname.toLowerCase();
       const date = this.form.value.date;
       const description = this.form.value.description;
       const numPlazas = this.form.value.plazas;
       const price = this.form.value.price;
-      const category = this.form.value.category.toLowerCase();
+      const category = this.form.value.category;
       console.log(category);
       const location = this.autocomplete.input;
       const author = localStorage.getItem('userId');
@@ -122,11 +133,9 @@ export class CreateEventModalComponent implements OnInit {
             }
           }
         });
-    } else {
-      this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos");
-    }
+  
   }
-
+  }
 
 
 async presentAlert(header: string, message: string) {
@@ -139,6 +148,8 @@ async presentAlert(header: string, message: string) {
   await alert.present();
   const { role } = await alert.onDidDismiss();
 }
+
+
 
   UpdateSearchResults() {
     if (this.autocomplete.input == '') {
@@ -178,11 +189,24 @@ async presentAlert(header: string, message: string) {
     this.modal.dismiss();
   }
 
-  onImageChange(event) {
-    const file = event.target.files[0];
-    this.image = file;
-    console.log(file);
-  }
+  
+ 
+
+onImageChange(event: any) {
+  const file = event.target.files[0];
+  this.image = file;
+
+  // Código para generar una vista previa de la imagen seleccionada
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.imagePreview = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+}
+
+openFileInput() {
+  document.getElementById('fileInput').click();
+}
 
 uploadPicture(eventId: string) {
   this.eventService.uploadEventPhoto(eventId, this.image).subscribe({

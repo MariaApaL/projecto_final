@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, ModalController, NavController } from '@ionic/angular';
+import { PoliticsComponent } from 'src/app/components/politics/politics.component';
 import { AuthService } from 'src/app/services/auth.service';
 
 
@@ -18,12 +19,14 @@ export class SignupPage implements OnInit {
  //Para el icono del ojo en la contraseña
   hide = false;
 
+  isChecked = false;
   
   
   constructor(private router: Router,
     private auth:AuthService,
     private navCtrl: NavController,
-    private alertController: AlertController) { 
+    private alertController: AlertController,
+    private modalController: ModalController) { 
 
     this.form = new FormGroup({
       user: new FormControl('',[Validators.required, Validators.maxLength(20), Validators.pattern(/^(?=.*[a-zA-Z]).+$/)]),
@@ -45,11 +48,19 @@ export class SignupPage implements OnInit {
 
   ngOnInit() {
     
-    console.log(this.form.controls.email.touched);
+   
      
   }
 
  
+  async openModal() {
+    const modal = await this.modalController.create({
+      component: PoliticsComponent,
+   
+    });
+  
+    await modal.present();
+  }
 
   // Método para el icono del ojo en la contraseña
   passwordOn() {

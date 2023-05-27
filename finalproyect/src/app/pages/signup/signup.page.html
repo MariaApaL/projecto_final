@@ -91,18 +91,22 @@
           message="Campo Obligario"></app-error-message>
         <app-error-message class="validator" [field]="form.controls.password" [fieldExtra]="form.controls.rpassword" [samepass]="true"
           message="No coinciden"></app-error-message>
-          
+
+        </form>   
+       <ion-item class="check-box" lines="none">
+        <ion-label >Términos y Condiciones</ion-label>
+        <ion-checkbox [(ngModel)]="isChecked"></ion-checkbox>
+       
+      </ion-item >
+      <ion-item class="terms" lines="none"><p (click)="openModal()">Ver términos</p></ion-item>
+     
   
-          <ion-button class="submit ion-padding" [disabled]="!this.form.valid" expand="block" (click)="onRegister()">Registrar</ion-button>
+          <ion-button class="submit ion-padding" [disabled]="!this.form.valid || !isChecked" expand="block" (click)="onRegister()">Registrar</ion-button>
 
-          <!-- <ion-list lines="none">
-            <ion-item>
-             <span>Recordarme siempre</span>
-             <ion-toggle slot="end" color="" [checked]="true"></ion-toggle>
-           </ion-item>
-           </ion-list> -->
-
-      </form>
+  
+     
+      
+    
     </div>
   </div>
 </ion-content>

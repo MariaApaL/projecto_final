@@ -28,7 +28,8 @@ export class EditProfilePage implements OnInit {
   //para mostrar los datos del usuario
   currentUser: any = {};
 
-  //datos para hacer el update
+  //datos para hacer el update foto
+  imagePreview: string;
 
   constructor(private modalCtrl: ModalController,
     private auth: AuthService,
@@ -41,7 +42,7 @@ export class EditProfilePage implements OnInit {
     this.auth.getUser().subscribe((data) => {
       this.currentUser = data;
 
-      this.image = this.currentUser.picture;
+      this.imagePreview = this.currentUser.picture;
       this.name = this.currentUser.name;
       this.bio = this.currentUser.bio;
     
@@ -63,11 +64,37 @@ export class EditProfilePage implements OnInit {
     
 
   }
-  onImageChange(event:any) {
-    const file = event.target.files[0];
-    this.image = file;
-    console.log(file);
-  }
+
+
+// onImageChange(event: any) {
+//   const file = event.target.files[0];
+//   this.image = file;
+//   this.previewImage();
+// }
+
+// previewImage() {
+//   const reader = new FileReader();
+//   reader.onload = () => {
+//     this.imagePreview = reader.result as string;
+//   };
+//   reader.readAsDataURL(this.image);
+// }
+
+onImageChange(event: any) {
+  const file = event.target.files[0];
+  this.image = file;
+
+  // Código para generar una vista previa de la imagen seleccionada
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.imagePreview = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+}
+
+openFileInput() {
+  document.getElementById('fileInput').click();
+}
 
 uploadPicture(userId: string) {
   this.auth.uploadUserPhoto(userId, this.image).subscribe({ 

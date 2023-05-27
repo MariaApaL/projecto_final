@@ -1,15 +1,17 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
+  totalEvents: any;
 
   constructor(private http: HttpClient) { }
 
 
+  _refreshNeeded$ = new Subject<void>();
 
   private url = 'http://localhost:3300';
   // private url = 'https://finalproject-gout.herokuapp.com';
@@ -19,13 +21,16 @@ export class EventService {
 
   //crea un evento
   createEvent(name: string, date: string, location: string,
-    author: string, numPlazas: number, description: string, price: number, categories: string): Observable<any> {
+    author: string, numPlazas: number, description: string, price: number, category: string): Observable<any> {
 
     const URL = `${this.url}/createEvent`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { name, date, location, author, numPlazas, description, price, categories};
+    const body = { name, date, location, author, numPlazas, description, price, category};
 
-    return this.http.post(URL, body, { headers });
+    return this.http.post(URL, body, { headers }).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));;
   }
 
   uploadEventPhoto(eventId: string, picture:File): Observable<any> {
@@ -33,16 +38,31 @@ export class EventService {
     const formData = new FormData();
     formData.append('picture', picture);
   
-    return this.http.post(URL, formData);
+    return this.http.post(URL, formData).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));;
   }  
 
   //devuelve todos los eventos
-  getEvents(): Observable<any> {
+  // getEvents(): Observable<any> {
+  //   const URL = `${this.url}/getEvents`;
+  //   const headers = new HttpHeaders().set('Content-Type', 'application/json');
+  //   return this.http.get(URL, { headers });
+  // }
+
+  getEvents(startFrom: number = 0): Observable<any> {
     const URL = `${this.url}/getEvents`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.get(URL, { headers });
+    const params = new HttpParams().set('startFrom', startFrom.toString());
+  
+    return this.http.get(URL, { headers, params }).pipe(
+      tap((response) => {
+        this.totalEvents = response.totalEvents; // Ajusta esto según la estructura de tu respuesta
+      })
+    );
   }
-
+  
   //devuelve un evento por id
   getEvent(id: string): Observable<any> {
     const URL = `${this.url}/getEvent/${id}`;
@@ -53,7 +73,10 @@ export class EventService {
   //actualiza un evento
   updateEvent(id: string, dataToUpdate: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.put(`${this.url}/updateEvent/${id}`, dataToUpdate, { headers });
+    return this.http.put(`${this.url}/updateEvent/${id}`, dataToUpdate, { headers }).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));;
   }
 
   //devuelve los eventos de un autor
@@ -90,7 +113,10 @@ export class EventService {
     const url = `${this.url}/addParticipant/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const body = { userId };
-    return this.http.post(url, body, { headers: headers });
+    return this.http.post(url, body, { headers: headers }).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));;
   }
 
   //devuelve los participantes de un evento
@@ -139,11 +165,13 @@ export class EventService {
   }
   //devuelve las valoraciones de un evento por autor
   getEventValuationsByAuthor(eventId: any, authorId: any): Observable<any> {
-    const url = `${this.url}/getEventValuationsByAuthor/${eventId}/${authorId}`;
+    const url = `${this.url}/getEventValuationsByAuthor/${authorId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     // const options = { body: body , headers: headers };
     return this.http.get(url, { headers: headers });
   }
+
+ 
 
   deleteUserValuations(userId: string): Observable<any> {
     const url = `${this.url}/deleteUserValuations/${userId}`;

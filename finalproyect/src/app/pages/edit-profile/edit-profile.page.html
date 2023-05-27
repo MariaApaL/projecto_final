@@ -10,13 +10,19 @@
 </ion-header>
 <ion-content>
   <ion-list>
-    <ion-item>
-      <ion-label position="floating">Avatar</ion-label>
-      <ion-input type="file" (change)="onImageChange($event)" accept="image/*"></ion-input>
-    </ion-item>
+
+    <div class="avatar-container" (click)="openFileInput()">
+      <input type="file" id="fileInput" style="display: none" (change)="onImageChange($event)" accept="image/*">
+      <ion-avatar class="avatar">
+        <img [src]="imagePreview" />
+      </ion-avatar>
+      <div class="edit-icon">
+        <ion-icon name="create-outline"></ion-icon>
+      </div>
+    </div>
     <ion-item>
       <ion-label position="floating">Nombre</ion-label>
-      <ion-input [(ngModel)]="name" (ionChange)="onNameChange($event)" maxLenght="30"></ion-input>
+      <ion-input [(ngModel)]="name" (ionChange)="onNameChange($event)" maxLenght="20"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Biografía</ion-label>

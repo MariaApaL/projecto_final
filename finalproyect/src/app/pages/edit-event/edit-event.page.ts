@@ -5,6 +5,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
+
 declare let google: any;
 
 @Component({
@@ -38,6 +39,7 @@ export class EditEventPage implements OnInit {
     image: any;
     form: FormGroup;
   
+    imagePreview: string; 
   
     //id del evento
     eventId: string;
@@ -93,7 +95,9 @@ export class EditEventPage implements OnInit {
    this.eventService.getEvent(this.eventId).subscribe({
       next: (data) => {
         this.eventData = data;
-        this.eventDate = moment(this.eventData.date).format("YYYY-MM-DDTHH:mm")
+        this.eventDate = moment(this.eventData.date).format("YYYY-MM-DDTHH:mm");
+        this.imagePreview = this.eventData.picture;
+    
        
         this.form.patchValue({
           name: this.eventData.name,
@@ -134,7 +138,7 @@ export class EditEventPage implements OnInit {
   }
 
   saveChanges() {
-    if (this.form.valid) {
+  
       const formDate = this.form.value.date;
       const eventDate = this.eventDate;
       console.log(formDate);
@@ -178,9 +182,7 @@ export class EditEventPage implements OnInit {
           this.navCtrl.navigateBack('/home/user-page');
         }
       });
-    } else {
-      console.log('Formulario no válido');
-    }
+
   }
 
 async presentAlert(header: string, message: string) {
@@ -228,21 +230,52 @@ SelectSearchResult(item: any) {
 
 }
 
+// onImageChange(event: any) {
+//   const file = event.target.files[0];
+//   this.image = file;
 
-onImageChange(event) {
+//   // Código para generar una vista previa de la imagen seleccionada
+//   const reader = new FileReader();
+//   reader.onload = () => {
+//     this.imagePreview = reader.result as string;
+//   };
+//   reader.readAsDataURL(file);
+// }
+
+// openFileInput() {
+//   document.getElementById('fileInput').click();
+// }
+
+// uploadPicture(eventId: string) {
+// this.eventService.uploadEventPhoto(eventId, this.image).subscribe({
+//   next: (data) => {
+//     console.log(data);
+//   }
+// });
+// }
+
+onImageChange(event: any) {
   const file = event.target.files[0];
   this.image = file;
-  console.log(file);
+
+  // Código para generar una vista previa de la imagen seleccionada
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.imagePreview = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+}
+
+openFileInput() {
+  document.getElementById('fileInput').click();
 }
 
 uploadPicture(eventId: string) {
-this.eventService.uploadEventPhoto(eventId, this.image).subscribe({
-  next: (data) => {
-    console.log(data);
-  }
-});
-
-
+  this.eventService.uploadEventPhoto(eventId, this.image).subscribe({ 
+    next: (data) => {
+      console.log(data);
+    }
+  });
 }
 
 }

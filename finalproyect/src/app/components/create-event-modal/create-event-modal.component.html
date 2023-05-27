@@ -4,11 +4,8 @@
     <ion-title>
       Nuevo Evento
     </ion-title>
-    <ion-buttons (click)="createEvent()" class="check-button"  slot="end">
-      <ion-icon  class="check-icon" name="checkmark-circle-outline" ></ion-icon>
-    </ion-buttons>
     <ion-buttons (click)="closeModal()" class="close-button"  slot="start">
-      <ion-button [disabled]="!this.form.valid" >
+      <ion-button >
         <ion-icon  class="close-icon"  name="close-outline" ></ion-icon>
       </ion-button>
     
@@ -21,10 +18,21 @@
 
   <form id="form" [formGroup]="form">
   <!-- SUBIR FOTOS -->
-    <ion-item>
-    <ion-label position="floating">Subir foto</ion-label>
-    <ion-input type="file" (change)="onImageChange($event)" accept="image/*"></ion-input>
-  </ion-item>
+
+  <div class="img-container" *ngIf="imagePreview">
+    <img [src]="imagePreview" alt="Preview de la imagen">
+  </div>
+ <input id="fileInput" type="file" style="display: none" (change)="onImageChange($event)" accept="image/*">
+
+<ion-item class="picture">
+  <ion-label fixed>Subir foto</ion-label>
+  <input type="file" (change)="onImageChange($event)" accept="image/*" style="display: none">
+  <ion-button slot="end" color="tertiary" (click)="openFileInput()">
+    <ion-icon name="cloud-upload-outline"></ion-icon>
+  </ion-button>
+</ion-item>
+
+
   <!-- NOMBRE DEL EVENTO -->
   <ion-item>
     <ion-label position="floating">Nombre del evento</ion-label>
@@ -66,15 +74,16 @@ message="Escriba un número correcto"></app-error-message>
     <!-- PRECIO DEL EVENTO -->
     <ion-item>
       <ion-label position="floating">Precio</ion-label>
-      <ion-input formControlName="price" type="number" mmaxLength="3"></ion-input>
+      <ion-input formControlName="price" type="number" maxLength="3"></ion-input>
     </ion-item>
 
     <!-- CONTROL DE ERRORES -->
+    <div class="price-error"*ngIf="f.price.touched && f.price.errors">
+      <div class="validator"*ngIf="f.price.errors.required">Campo Obligatorio</div>
+      <div class="validator"*ngIf="f.price.errors.pattern">Escriba un número válido (máximo 3 dígitos y 2 decimales).</div>
+      <div class="validator"*ngIf="f.price.errors.min">Escriba un número válido</div>
+    </div>
 
-<app-error-message class="validator" [field]="form.controls.price" [valid]="true"
-message="Escriba un precio correcto"></app-error-message>
-<app-error-message class="validator" [field]="form.controls.price" [empty]="true"
-message="Campo Obligatorio (Introduzca 0 si es gratis )"></app-error-message>
 
 
   <!-- FECHA DEL EVENTO  -->
@@ -92,18 +101,16 @@ message="Campo Obligatorio (Introduzca 0 si es gratis )"></app-error-message>
     <!-- CONTROL DE ERRORES -->
     <app-error-message class="validator" [field]="form.controls.date" [empty]="true"
 message="Campo Obligatorio"></app-error-message>
+<!-- CATEGORIA DE EVENTO -->
 
 <ion-item>
-  <ion-label position="floating">Categoría</ion-label>
-  <ion-select formControlName="category">
-    <ion-select-option *ngFor="let category of categories" value="{{category.value}}">{{category.label}}</ion-select-option>
+  <ion-select placeholder="Elige una Categoría" formControlName="category">
+    <ion-select-option *ngFor="let category of categories" value={{category.value}}>{{category.label}}</ion-select-option>
   </ion-select>
 </ion-item>
-<app-error-message class="validator" [field]="form.controls.date" [empty]="true"
-message="Campo Obligatorio"></app-error-message>
 
   </form> 
-<!-- CATEGORIA DE EVENTO -->
+
   
 
 
@@ -121,6 +128,6 @@ message="Campo Obligatorio"></app-error-message>
         </ion-item>
     </ion-list>
  
-   
+    <ion-button class="confirm-button" color="tertiary" expand="block" (click)="createEvent()" class="ion-padding"> Confirmar </ion-button> 
   
 </ion-content>

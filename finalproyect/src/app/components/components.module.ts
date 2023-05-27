@@ -14,6 +14,11 @@ import { ParticipantsListComponent } from './participants-list/participants-list
 import { CommentsModalComponent } from './comments-modal/comments-modal.component';
 import { ReportModalComponent } from './report-modal/report-modal.component';
 import { ReportUserModalComponent } from './report-user-modal/report-user-modal.component';
+import { PoliticsComponent } from './politics/politics.component';
+import { SuccessComponent } from './success/success.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ChangeUserComponent } from './change-user/change-user.component';
+import { ChangeEmailComponent } from './change-email/change-email.component';
 
 
 
@@ -34,7 +39,12 @@ import { ReportUserModalComponent } from './report-user-modal/report-user-modal.
     ParticipantsListComponent,
     CommentsModalComponent,
     ReportModalComponent,
-    ReportUserModalComponent
+    ReportUserModalComponent,
+    PoliticsComponent,
+    SuccessComponent,
+    ChangePasswordComponent,
+    ChangeUserComponent,
+    ChangeEmailComponent
    
   
   ],
@@ -59,6 +69,11 @@ import { ReportUserModalComponent } from './report-user-modal/report-user-modal.
     ReportUserModalComponent,
     CommentsModalComponent,
     ReportModalComponent,
+    PoliticsComponent,
+    SuccessComponent,
+    ChangePasswordComponent,
+    ChangeUserComponent,
+    ChangeEmailComponent
  
 
     

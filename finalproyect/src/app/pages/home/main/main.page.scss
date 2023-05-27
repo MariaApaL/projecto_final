@@ -12,24 +12,45 @@ ion-header {
   }
 }
 
+.heading{
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--ion-color-lettering);
+  padding-left:10px;
+}
 .categories{
-  ion-card{
-    display:flex;
+  ion-card {
+    display: flex;
     align-items: center;
-
-    ion-card-content p{
-      
-        font-size:16px;
-        font-family: bold;
-        --color:var(--ion-color-tertiary)
+    justify-content: center;
+    box-shadow: 0px 4px 12px 2px #f09a78; /* Centrar horizontalmente */
     
+    ion-card-content {
       
-
+      ion-avatar {
+        width: 70px;
+        height: 70px;
+        img {
+          width: 100px; /* Tamaño deseado para la imagen */
+        }
+      }
+      
+      p {
+        font-size: 20px;
+        font-weight: bold; /* Texto en negrita */
+        color: var(--ion-color-tertiary);
+      }
     }
-   
   }
   
 }
+
+.selected-category {
+  border: 2px solid rgb(61, 8, 110); 
+  box-shadow: 0px 4px 12px 2px #19073e; 
+
+}
+
 
 .default-left-padding {
   padding-left: 26px;
@@ -74,16 +95,18 @@ ion-content {
   ion-searchbar.bar {
     --color: var(--ion-color-lettering);
     --background: transparent;
-    --placeholder-font-style: 'MyFont', sans-serif;
+    --icon-color: var(--ion-color-primary);
+    --border-radius: 10px;
     ----placeholder-font-weight: bold;
+    
   }
-
+ 
 
   .title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 42px 26px 16px 26px;
+    padding: 10px 26px 16px 26px;
 
     h2 {
       margin: 0;
@@ -111,8 +134,16 @@ ion-content {
       margin-top: 0;
 
       ion-card-header {
-        img {
-          width: 100%;
+        .img-container {
+          width: 100%; 
+          height: 200px; 
+          overflow: hidden; 
+        }
+        
+        .event-image {
+          width: 100%; 
+          height: 100%; 
+          object-fit: cover; 
         }
       }
 
@@ -182,3 +213,9 @@ ion-content {
     }
   }
 }
+
+ion-select{
+  --placeholder-color: var(--ion-color-secondary);
+  --placeholder-opacity:1;
+}
+

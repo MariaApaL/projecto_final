@@ -1,11 +1,9 @@
 ion-header {
-  --background: #fefefe;
-
-  ion-toolbar {
-    --background: #fefefe;
-  }
-
+  --background: #fef1ee;
 }
+  ion-toolbar {
+    --background: #fef1ee;
+  }
 
 .config-icon {
   font-size: 30px;
@@ -44,7 +42,7 @@ ion-content {
   }
 
   .profile {
-    background: #fef1fe;
+    background: #fef1ee;
     height:55%;
     .profile-stars {
       display: flex;
@@ -272,4 +270,19 @@ ion-segment {
 
   }
 
+}
+
+
+ion-card-header {
+  .img-container {
+    width: 100%; /* Establece el ancho deseado para el contenedor de la imagen */
+    height: 200px; /* Establece la altura deseada para el contenedor de la imagen */
+    overflow: hidden; /* Oculta cualquier contenido que exceda las dimensiones del contenedor */
+  }
+  
+  .event-image {
+    width: 100%; /* Establece un ancho del 100% para que la imagen ocupe todo el espacio disponible dentro del contenedor */
+    height: 100%; /* Establece una altura del 100% para que la imagen ocupe todo el espacio disponible dentro del contenedor */
+    object-fit: cover; /* Hace que la imagen se ajuste dentro del contenedor sin deformarse, recortando si es necesario */
+  }
 }

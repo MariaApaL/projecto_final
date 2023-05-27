@@ -48,5 +48,35 @@ ion-button{
     
 }
 
-
-
+.avatar-container {
+    position: relative;
+    margin-left:90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  
+  .avatar-container .avatar {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .avatar-container .edit-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color:#ffffff;
+    border-radius: 50%;
+    padding: 4px;
+  }
+  
+  .avatar-container .edit-icon ion-icon {
+    font-size: 25px;
+    color:var(--ion-color-primary);
+    font-weight: bold;
+  }

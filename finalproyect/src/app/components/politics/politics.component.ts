@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-politics',
@@ -7,8 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PoliticsComponent implements OnInit {
 
-  constructor() { }
+  constructor(public modal: ModalController) { }
 
   ngOnInit() {}
+
+  closeModal(){
+    this.modal.dismiss();
+  }
+
 
 }

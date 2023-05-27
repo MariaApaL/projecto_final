@@ -62,7 +62,8 @@ module.exports = function(app) {
   //Eliminar de favoritos.
   app.delete("/deleteFavorite/:id", controller.deleteFavorite);
 
- 
+ //resetear contraseña
+ app.post("/forgotPassword", controller.forgotPassword);
 
 
 };

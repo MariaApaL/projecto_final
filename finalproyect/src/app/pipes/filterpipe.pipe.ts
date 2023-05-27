@@ -36,10 +36,10 @@ export class FilterpipePipe implements PipeTransform {
         case 'menor-mayor-precio':
           filteredItems = filteredItems.sort((a, b) => a.price - b.price);
           break;
-        case 'fecha-reciente':
+        case 'fecha-lejana':
           filteredItems = filteredItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           break;
-        case 'fecha-lejana':
+        case 'fecha-reciente':
           filteredItems = filteredItems.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
           break;
         case 'numero-participantes':

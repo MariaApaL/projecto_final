@@ -9,6 +9,8 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  _refreshNeeded$ = new Subject<void>();
+
   // Se define la URL base para las solicitudes HTTP y
   //  se establece un encabezado para el tipo de contenido de "application/json".
      private url = 'http://localhost:3300';
@@ -53,7 +55,10 @@ export class AuthService {
   // toma el ID de usuario y un objeto de datos de usuario para actualizar y devuelve un objeto Observable que envía una solicitud HTTP PUT a la URL de actualización de usuario con los datos de usuario proporcionados en el cuerpo de la solicitud.
   updateUser(id: any, dataToUpdate: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.put(`${this.url}/updateUser/${id}`, dataToUpdate, { headers });
+    return this.http.put(`${this.url}/updateUser/${id}`, dataToUpdate, { headers }).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));
   }
 
   // devuelve un valor booleano que indica si el usuario ha iniciado sesión o no.
@@ -85,6 +90,7 @@ export class AuthService {
     const url = `${this.url}/getUserById/${id}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.get(url, { headers: headers });
+
   }
   
   // Obtener el usuario mediante el token 
@@ -138,6 +144,28 @@ export class AuthService {
     const URL = `${this.url}/uploadUserPhoto/${eventId}`;
     const formData = new FormData();
     formData.append('picture', picture);
-    return this.http.post(URL, formData);
+    return this.http.post(URL, formData).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));
   }  
+
+
+
+   //devuelve las valoraciones de un usuario
+   getValuationsByAuthor(userId: string): Observable<any> {
+    const url = `${this.url}/getValuationsByAuthor/${userId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(url, { headers: headers });
+  }
+
+  //resetar contraseña
+  forgotPassword(email: string): Observable<any> {
+    const url = `${this.url}/forgotPassword`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const body = { email };
+    return this.http.post(url, body, { headers: headers });
+  }
+
+
 }

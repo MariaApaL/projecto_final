@@ -7,6 +7,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  
   <div class="banner">
     <img src="../../../../assets/pictures/banner.png" />
 
@@ -18,13 +19,9 @@
     </div>
     <ion-item class="search" lines="none" class="ion-no-padding">
       <ion-searchbar class="bar" [(ngModel)]="searchQuery"></ion-searchbar>
-      <ion-button slot='end'  id="popover-button" >
-        <ion-icon name="options-outline"></ion-icon>
-      </ion-button> 
- 
-    <ion-select [(ngModel)]="selectedOption"  interface="popover"  (ionChange)="filterByOption(selectedOption)">
+
+    <ion-select [(ngModel)]="selectedOption"  interface="popover"  >
       <ion-select-option *ngFor="let option of options" value="{{option.value}}">{{option.label}}</ion-select-option>
-     
     </ion-select>
   </ion-item>
    
@@ -35,11 +32,11 @@
   <!-- ionic dialog modal -->
   <div class="categories">
     <ion-row class="ion-margin-top">
-      <ion-label class="ion-margin-start heading">Categories</ion-label>
+      <ion-label class="ion-margin-start heading">Categorias</ion-label>
       <swiper-container class="ion-margin" [slidesPerView]="2" [spaceBetween]="15">
         <swiper-slide *ngFor="let category of categories">
 
-          <ion-card  (click)="filterByCategory(category.id)">
+          <ion-card [ngClass]="{'selected-category': filteredCategory === category.id}" (click)="filterByCategory(category.id)">
             <ion-card-content>
             <ion-avatar>
               <img src="{{category?.icon}}" />
@@ -65,12 +62,14 @@
   <div class="event-cards ion-margin" >
 
 
-    <div class="event-info" *ngFor="let event of allEvents | filterpipe: searchQuery : filteredCategory : selectedOption">
+    <div class="event-info" *ngFor="let event of displayedEvents | filterpipe: searchQuery : filteredCategory : selectedOption">
 
     <ion-card >
 
       <ion-card-header class="ion-no-padding">
-        <img src="{{event.picture}}" />
+        <div class="img-container">
+        <img class="event-image" src="{{event.picture}}" />
+      </div>
       </ion-card-header>
 
       <ion-card-content>
@@ -86,29 +85,24 @@
 
         </div>
 
+   
+<!--       
             <div class="members">
               <ion-icon name="person"></ion-icon>
               <p class="plazas"> <strong>{{event.plazas.length}}</strong>/{{event.numPlazas}}</p>
-          </div>
-
-      
-
+            </div>
+       -->
+    
 
 
       </ion-card-content>
 
     </ion-card>
   </div>
-    <!-- <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll> -->
-    <!-- </ng-template> -->
-    <!-- <swiper [config]="eventConfig" > -->
 
-    <!-- </swiper>  -->
+  <ion-infinite-scroll (ionInfinite)="loadMoreEvents($event)" (ionInfiniteThreshold)="loadMoreEventsThreshold = $event">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más eventos..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
   </div>
-
-
-
 
 </ion-content>

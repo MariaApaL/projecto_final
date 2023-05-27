@@ -24,7 +24,7 @@
 
     <div class="profile-stars">
 
-      <p class="stars"><strong><span>0/5</span> </strong>Calificación</p>
+      <p class="stars"><strong><span>{{value}}/5</span> </strong>Calificación</p>
       <p class="event-count"><strong><span>{{eventCount}}</span></strong> Eventos</p>
 
     </div>
@@ -51,10 +51,12 @@
 
 
 
-    <ion-card *ngFor="let event of createdEvents">
+    <ion-card *ngFor="let event of displayedEvents">
 
       <ion-card-header class="ion-no-padding" (click)="selectEvent(event._id)">
-        <img src="{{event.picture}}" />
+        <div class="img-container">
+          <img class="event-image" src="{{event.picture}}" />
+        </div>
       </ion-card-header>
 
       <ion-card-content>
@@ -83,4 +85,9 @@
       </ion-card-content>
     </ion-card>
   </div>
+ 
+    
+  <ion-infinite-scroll (ionInfinite)="loadMoreEvents($event)" (ionInfiniteThreshold)="loadMoreEventsThreshold = $event">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más eventos..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>

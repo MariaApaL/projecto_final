@@ -1,9 +1,12 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar *ngIf="category">
     <ion-title class="profile-title">{{eventName}}</ion-title>
     <ion-buttons class="close-button" slot="start">
       <ion-icon class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
     </ion-buttons>
+    <ion-avatar slot="end" *ngIf="getCategoryIcon(category)">
+      <img [src]="getCategoryIcon(category)" />
+    </ion-avatar>
     <ion-buttons  slot="end">
       <ion-button *ngIf="!isMine&&!isAdmin" (click)="openReportModal()">
         <ion-icon name="ellipsis-vertical-outline"></ion-icon>
@@ -21,9 +24,9 @@
 
   <div class="section">
 
-    <div class="imagen">
+    <div class="img-container">
 
-      <img src="{{event?.picture}}" />
+      <img class="event-image" src="{{event?.picture}}" />
 
     </div>
     <div class="icons">

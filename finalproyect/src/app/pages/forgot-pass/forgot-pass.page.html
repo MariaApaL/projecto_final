@@ -1,25 +1,28 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="/login">
+
+      </ion-back-button>
     </ion-buttons>
-    <ion-title>Reset Your Password</ion-title>
+    <ion-title>Resetear Contraseña</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <form>
-    <ion-item lines="full">
+  <p class="ion-padding">
+    Por favor, incresa tu email para recibir un correo para resetear tu contraseña.
+  </p>
+  <form [formGroup]="form">
+    <ion-item >
       <ion-label position="floating">Email</ion-label>
-      <ion-input type="email" required></ion-input>
+      <ion-input formControlName="email"  name="email" type="email"></ion-input>
     </ion-item>
+    <app-error-message class="validator" [field]="form.controls.email" [valid]="true" message="Formato errorneo"></app-error-message>
     <ion-row>
       <ion-col>
-        <ion-button type="submit" color="danger" expand="block">Send</ion-button>
+        <ion-button class="submit ion-padding" color="tertiary" expand="block" (click)="resertPassword()">Enviar</ion-button>
       </ion-col>
     </ion-row>
-    <small>
-      Please provide the username or email address that you used when you signed
-      up for your Evernote account.
-    </small>
+  
   </form>
 </ion-content>

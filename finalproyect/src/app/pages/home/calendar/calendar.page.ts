@@ -99,17 +99,37 @@ export class CalendarPage implements OnInit {
     });
   }
 
+  deselectDate() {
+    this.selectedDay = null; // Establecer el valor de selectedDay como null para deseleccionar el día
+    this.showAllEvents(); // Mostrar todos los eventos mayores o iguales a la fecha de hoy
+  }
+  
   showAllEvents() {
-    this.selectedDay = null; // Establecer el valor de selectedDay como null
+    // const today = new Date(); // Obtener la fecha de hoy
+    // today.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00
+  
+    // this.filteredEvents = this.events.filter((event: EventsInterface) => {
+    //   const eventDate = new Date(event.date);
+    //   eventDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00 del evento
+  
+    //   return eventDate >= today; // Mostrar solo los eventos que son iguales o mayores a la fecha de hoy
+    // });
+    const today = new Date(); // Obtener la fecha de hoy
+    today.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00
+  
     this.filteredEvents = this.events.filter((event: EventsInterface) => {
       const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00 del evento
+  
+      const currentMonth = this.currentDate.getMonth();
+      const eventMonth = eventDate.getMonth();
+  
       return (
-        eventDate.getMonth() === this.currentDate.getMonth() &&
-        eventDate.getFullYear() === this.currentDate.getFullYear()
+        eventDate >= today && // Mostrar solo los eventos que son iguales o mayores a la fecha de hoy
+        eventMonth === currentMonth // Mostrar solo los eventos del mes actual
       );
     });
   }
-
 
 
 selectDate(selectedDate: number) {

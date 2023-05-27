@@ -5,6 +5,7 @@ import { UsersInterface } from 'src/app/interfaces/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
 import { FilterpipePipe } from 'src/app/pipes/filterpipe.pipe';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { FilterpipePipe } from 'src/app/pipes/filterpipe.pipe';
   styleUrls: ['./main.page.scss'],
 })
 export class MainPage implements OnInit {
+  hasMoreEvents: boolean;
   
   
 
@@ -25,20 +27,37 @@ export class MainPage implements OnInit {
 
   
     }
+ // Para el infinite scroll
+displayedEvents: any[] = []; // Eventos que se muestran actualmente en la página
+loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
 
-  scrollEvents = 8;
+// Para el filtro de categorias
   categories: any[] = [];
+  // Para recoger los eventos
   myEvents: EventsInterface[] = [];
+  // Para recoger el id del usuario
   userId = localStorage.getItem('userId');
+  // Para recoger el id del autor del evento
   userAuthor: string;
-  selectedCategory: any = null;
+  // Para recoger la categoria seleccionada
+  selectedCategory: string = null;
+  // Para filtrar eventos
   filteredEvents: EventsInterface[];
+  // Para filtrar categorias
   filteredCategory: string = null;
+  // Para recoger los eventos
   allEvents: EventsInterface[];
+  // Para la searchbar
   searchQuery: string = '';
+  // Para el filtrado
   selectedOption: string;
+  // Para el filtrado
   options: any[];
-
+  // Para el infinity scrroll
+  loadingMoreEvents = false;
+  // Para actualizar
+  suscription: Subscription;
+ 
 
   ngOnInit() {
     this.categories = [
@@ -55,7 +74,8 @@ export class MainPage implements OnInit {
       {value: 'menor-mayor-precio', label: 'Precio - a +', checked: false}, 
       {value: 'fecha-reciente', label: 'Más recientes', checked: false}, 
       {value: 'fecha-lejana', label: 'Más lejanas',checked: false},
-      { value: 'numero-participantes', label: 'Núm. participantes',checked: false}
+      { value: 'numero-participantes', label: 'Núm. participantes',checked: false},
+    
     ];
     
     console.log('ngOnInit');
@@ -67,7 +87,13 @@ export class MainPage implements OnInit {
 
   ionViewWillEnter() {
 
+    
+
     this.getEvents();
+    this.suscription= this.eventService._refreshNeeded$.subscribe(() => {
+      this.getEvents();
+
+    });
 
   }
 
@@ -76,56 +102,62 @@ export class MainPage implements OnInit {
     this.eventService.getEvents().subscribe({
       next: async (data) => {
         this.myEvents = await Object.values(data);
-        this.allEvents = this.myEvents;
-        console.log(this.myEvents);
-  
         const currentDate = new Date();
         this.allEvents = this.myEvents.filter(event => new Date(event.date) > currentDate);
-  
-        this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
+        this.allEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        this.displayedEvents = this.allEvents.slice(0, 5);
+        console.log(this.displayedEvents);
       }
     });
+  }
+  
+  loadMoreEvents(event: any) {
+    // Simula una carga asincrónica con un retraso de 1 segundo
+    setTimeout(() => {
+      const startIndex = this.displayedEvents.length;
+      const endIndex = startIndex + 5;
+      console.log("0",endIndex);
+  
+      
+        const moreEvents = this.allEvents.slice(startIndex, endIndex);
+        console.log("1", moreEvents);
+        this.displayedEvents = this.displayedEvents.concat(moreEvents);
+        console.log("2", this.displayedEvents);
+  
+        event.target.complete();
+  
+      
+      
+    }, 1000);
+  }
+    
+    getCategoryIcon(categoryId: string): string {
+      const category = this.categories.find(category => category.id === categoryId);
+      return category ? category.icon : '';
     }
-
 
     filterByCategory(category: string) {
       // Comprueba si la categoría seleccionada es igual a la categoría actualmente filtrada
-      if (this.filteredCategory === category) {
-        // Si es igual, muestra todos los eventos nuevamente
-        this.filteredCategory = null;
-        this.myEvents = this.allEvents;
-      } else {
-        // Si es diferente, filtra los eventos por la categoría seleccionada
-        this.filteredCategory = category;
-        this.myEvents = this.allEvents.filter(event => event.category === category);
-      }
+  if (this.filteredCategory === category) {
+    // Si es igual, muestra todos los eventos nuevamente
+    this.filteredCategory = null;
+    this.myEvents = this.allEvents;
+  } else {
+    // Si es diferente, filtra los eventos por la categoría seleccionada
+    this.filteredCategory = category;
+    this.myEvents = this.allEvents.filter(event => event.category === category);
+  }
     }
 
-    filterByOption(option: string) {
-      if(this.selectedOption === option){
-        
-      
-        // this.myEvents = this.allEvents;
-      }else{
-        this.selectedOption = option;
-      }
-      
-    }
+  
+
 
   //Navega a la página de información del evento
   selectEvent(id: string) {
- 
+    localStorage.removeItem('previousUrl');
     this.navCtrl.navigateForward(`/event-info/${id}`);
-    
+    localStorage.setItem('previousUrl', location.href);
   }
-
-  // onIonInfinite(ev) {
-  //   this.getEvents();
-  //   setTimeout(() => {
-  //     (ev as InfiniteScrollCustomEvent).target.complete();
-  //   }, 500);
-  // }
-
   
 
 

@@ -1,12 +1,12 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>{{ currentMonth }} {{currentYear}}</ion-title>
+    <ion-title >{{ currentMonth }} {{currentYear}}</ion-title>
 
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-<ion-button (click)="showAllEvents()">Todos</ion-button>
+<!-- <ion-button (click)="showAllEvents()">Todos</ion-button> -->
   <div class="days">
     <ion-row class="ion-margin-top">
       <ion-label class="ion-margin-start heading">Días</ion-label>
@@ -14,10 +14,12 @@
         <swiper-slide *ngFor="let day of days">
 
 
-
           <ion-card class="day-card"
-            [ngClass]="{'selected': selectedDay === day }"
-            (click)="selectDate(day)">
+          [ngClass]="{'selected': selectedDay === day }"
+          (click)="selectedDay === day ? deselectDate() : selectDate(day)">
+          <!-- <ion-card class="day-card"
+             [ngClass]="{'selected': selectedDay === day }"
+            (click)="selectDate(day)">  -->
 
             <span>{{ getWeekDayName(day) }}</span>
 
@@ -31,17 +33,19 @@
       </swiper-container>
     </ion-row>
   </div>
-
-  <div class="event-list">
-    <ion-list>
-      <div class="event" *ngFor="let event of filteredEvents">
-        <p>{{event.date | date:'dd MMM, yyyy HH:mm' }}</p>
-        <ion-card>
-          <ion-item>
+  <ion-label class="ion-margin-start heading">Eventos</ion-label>
+  <div class="event-list" *ngFor="let event of filteredEvents">
+    <div class="date">{{event.date | date:'dd MMM, yyyy HH:mm' }}</div>  
+    <ion-card class="event-card">
+      <ion-list>
+        
+        <div class="event" > 
+            <img [src]="event.picture" />
+          <ion-item lines="none">
             <ion-label>{{ event.name }}</ion-label>
           </ion-item>
-        </ion-card>
-      </div>
-    </ion-list>
+        </div>
+      </ion-list>
+    </ion-card>
   </div>
 </ion-content>

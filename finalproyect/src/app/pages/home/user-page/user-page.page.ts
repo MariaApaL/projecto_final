@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, InfiniteScrollCustomEvent, ModalController, NavController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BottomSheetModalComponent } from 'src/app/components/bottom-sheet-modal/bottom-sheet-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { EventService } from 'src/app/services/event.service';
@@ -37,6 +37,22 @@ export class UserPagePage implements OnInit {
   isFavorite: boolean;
   //Donde guardo favoritos
   favorites: any[] = [];
+  //para las valoraciones
+  value: any;
+  //para la imagen
+  picture: string;
+
+  //para recoger datos 
+  suscription: Subscription;
+  eventSuscription: Subscription;
+
+  //para el infinite scroll de los eventos creados, favs y apuntados
+  allJoined: EventsInterface[] = [];
+  allCreated: EventsInterface[] = [];
+  allFavs: EventsInterface[] = [];
+  displayedCreated: EventsInterface[] = [];
+  displayedJoined: EventsInterface[] = [];
+  displayedFavs: EventsInterface[] = [];
 
 
 
@@ -47,11 +63,11 @@ export class UserPagePage implements OnInit {
     private navCtrl: NavController) {
 
 
-
   }
   ngOnInit() {
 
-    
+
+
   }
 
 
@@ -60,6 +76,19 @@ export class UserPagePage implements OnInit {
     //Para poder recoger los datos del usuario y mostrarlos en la página
     this.getUser();
 
+    this.suscription= this.auth._refreshNeeded$.subscribe(() => {
+      this.getUser();
+
+    });
+
+    this.eventSuscription= this.eventService._refreshNeeded$.subscribe(() => {
+      this.findEventsByAuthorId(this.userId);
+      this.getFavorites(this.userId);
+      this.getEventsJoined(this.userId);
+      this.getValorations(this.userId);
+    });
+    
+    
     //Para poder recoger los eventos del usuario y mostrarlos en la página
     this.findEventsByAuthorId(this.userId);
     //recoger favoritos
@@ -67,13 +96,14 @@ export class UserPagePage implements OnInit {
     // this.getFavoritesFromLocalStorage();
 
     this.getEventsJoined(this.userId);
+    this.getValorations(this.userId);
 
   }
 
   isEventDateValid(date: string): boolean {
     const eventDate = new Date(date);
     const currentDate = new Date();
-  
+
     return eventDate >= currentDate;
   }
 
@@ -82,12 +112,14 @@ export class UserPagePage implements OnInit {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
       next: async (data: EventsInterface) => {
         this.myEvents = await Object.values(data);
-        
+        this.allCreated = this.myEvents;
+
         this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         console.log("refresco eventos")
         this.eventCount = this.myEvents.length;
+        this.displayedCreated = this.allCreated.slice(0, 5);
 
-       
+
 
         return this.myEvents;
       }
@@ -98,22 +130,86 @@ export class UserPagePage implements OnInit {
     this.eventService.getEventsByParticipantId(userId).subscribe({
       next: (data: EventsInterface) => {
         this.joinedEvents = Object.values(data);
+        this.allJoined = this.joinedEvents;
         ;
         this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         console.log(this.joinedEvents)
+        this.displayedJoined = this.allJoined.slice(0, 5);
         return this.joinedEvents;
       }
     });
   }
 
+
+  loadJoined(event: any) {
+    // Simula una carga asincrónica con un retraso de 1 segundo
+    setTimeout(() => {
+      const startIndex = this.displayedJoined.length;
+      const endIndex = startIndex + 5;
+      console.log("0", endIndex);
+
+
+      const moreEvents = this.allJoined.slice(startIndex, endIndex);
+      console.log("1", moreEvents);
+      this.displayedJoined = this.displayedJoined.concat(moreEvents);
+      console.log("2", this.displayedJoined);
+
+      event.target.complete();
+
+
+
+    }, 1000);
+  }
+
+
+  loadFavs(event: any) {
+    // Simula una carga asincrónica con un retraso de 1 segundo
+    setTimeout(() => {
+      const startIndex = this.displayedFavs.length;
+      const endIndex = startIndex + 5;
+      console.log("0", endIndex);
+
+
+      const moreEvents = this.allFavs.slice(startIndex, endIndex);
+      console.log("1", moreEvents);
+      this.displayedFavs = this.displayedFavs.concat(moreEvents);
+      console.log("2", this.displayedFavs);
+
+      event.target.complete();
+
+
+
+    }, 1000);
+  }
+
+  loadEvents(event: any) {
+    // Simula una carga asincrónica con un retraso de 1 segundo
+    setTimeout(() => {
+      const startIndex = this.displayedCreated.length;
+      const endIndex = startIndex + 5;
+      console.log("0", endIndex);
+
+
+      const moreEvents = this.allCreated.slice(startIndex, endIndex);
+      console.log("1", moreEvents);
+      this.displayedCreated = this.displayedCreated.concat(moreEvents);
+      console.log("2", this.displayedCreated);
+
+      event.target.complete();
+
+
+
+    }, 1000);
+  }
   getUser() {
     this.auth.getUserById(this.userId).subscribe({
       next: async (data) => {
         console.log("user", data);
         this.currentUser = await data;
-        
-        console.log('pict',this.currentUser.picture);
-        // this.ionViewDidEnter();
+        this.picture = this.currentUser.picture;
+
+
+
       }
     });
 
@@ -125,18 +221,20 @@ export class UserPagePage implements OnInit {
       next: (data) => {
         console.log(data);
         this.myFavs = Object.values(data);
+        this.allFavs = this.myFavs;
         this.myFavs = data.map(event => ({
           ...event,
           favorite: localStorage.getItem(`favorite_${event._id}`) === 'true'
         }));
 
         this.myFavs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.displayedFavs = this.allFavs.slice(0, 5);
         return this.myFavs
       }
     });
   }
 
-    
+
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: BottomSheetModalComponent,
@@ -206,7 +304,7 @@ export class UserPagePage implements OnInit {
     if (this.selectedSegment == 'my-events') {
 
       this.navCtrl.navigateForward([`/edit-event/${id}`]);
-      
+
 
     }
   }
@@ -233,8 +331,23 @@ export class UserPagePage implements OnInit {
     });
   }
 
-  
+  async getValorations(userId: string) {
 
+    this.auth.getValuationsByAuthor(userId).subscribe({
+      next: async (data) => {
+        const valuations = await data;
+
+        const values = valuations.valuations; // Acceder al array de valores
+        const valuesArray = values.map(valuation => valuation.value); // Obtener un nuevo array con los valores de "value"
+
+        const sum = valuesArray.reduce((total, value) => total + value, 0); // Sumar los valores
+        const average = valuesArray.length > 0 ? sum / valuesArray.length : 0; // Calcular el promedio o establecerlo como 0 si el array está vacío
+
+        console.log("Valores:", valuesArray);
+        console.log("Suma:", sum);
+        this.value = isNaN(average) ? 0 : average.toFixed(1)// Verificar si el promedio es NaN y mostrar 0 en su lugar
+      }
+    });
+  }
 
 }
-

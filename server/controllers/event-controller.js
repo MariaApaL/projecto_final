@@ -72,14 +72,15 @@ exports.createEvent = async (req, res) => {
       price: price,
     });
 
+  
     if (category) {
-     
       const categoryObject = await Category.findOne({ type: category });
-      
+
       if (categoryObject) {
         newEvent.category = categoryObject._id;
       }
     }
+
 
     await newEvent.save();
 
@@ -92,7 +93,7 @@ exports.createEvent = async (req, res) => {
 exports.uploadEventPhoto = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const picture = req.file.filename;
+   
 
     // Subir la imagen a Cloudinary utilizando una promesa
     const uploadResult = await new Promise((resolve, reject) => {
@@ -539,3 +540,18 @@ exports.getEventValuationsByAuthor = async (req, res) => {
   }
 };
 
+exports.getValuationsByAuthor = async (req, res) => {
+  try {
+    const authorId = req.params.authorId;
+    
+    // Busca todos los eventos del autor
+    const events = await Event.find({ author: authorId });
+    
+    // Obtiene todas las valoraciones de los eventos del autor
+    const valuations = events.flatMap(event => event.valuations);
+    
+    res.send({ valuations });
+  } catch (err) {
+    res.status(500).send({ message: "Error al obtener las valoraciones del autor", error: err });
+  }
+};
