@@ -13,6 +13,7 @@ db.role = require("./role-model");
 db.category = require("./category-model");
 db.event = require("./event-model");
 db.report = require("./report-model")
+db.message = require("./message-model")
 
 db.ROLES = ["user", "admin"];
 db.CATEGORIES = [ "cultura" , "deportes", "gastronomia", "ocio" , "solidario", 'relax'];

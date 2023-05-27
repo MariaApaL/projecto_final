@@ -1,0 +1,24 @@
+
+
+
+
+  ion-input{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding:10px;
+    // --border-radius: 30px;
+    // --border-color:black;
+    // --background: #000000;
+    
+    background: rgba(250,250,250,1);
+    border: solid 1px rgb(0, 0, 0);
+    margin-bottom: 16px;
+    height: 50px;
+    border-radius: 20px;
+    // padding-left: 16px;
+    --padding-bottom: 10px;
+    --padding-end: 10px;
+    --padding-start: 20px;
+    --padding-top: 10px;
+  }

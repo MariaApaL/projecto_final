@@ -52,7 +52,12 @@ const routes: Routes = [
   {
     path: 'otheruser-page/:id',
     loadChildren: () => import('./pages/otheruser-page/otheruser-page.module').then( m => m.OtheruserPagePageModule)
+  },
+  {
+    path: 'chat/:id',
+    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
   }
+
 
 
 

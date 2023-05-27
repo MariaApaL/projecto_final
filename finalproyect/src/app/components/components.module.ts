@@ -19,6 +19,7 @@ import { SuccessComponent } from './success/success.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ChangeUserComponent } from './change-user/change-user.component';
 import { ChangeEmailComponent } from './change-email/change-email.component';
+import { ChatListComponent } from './chat-list/chat-list.component';
 
 
 
@@ -44,7 +45,8 @@ import { ChangeEmailComponent } from './change-email/change-email.component';
     SuccessComponent,
     ChangePasswordComponent,
     ChangeUserComponent,
-    ChangeEmailComponent
+    ChangeEmailComponent,
+    ChatListComponent
    
   
   ],
@@ -73,7 +75,8 @@ import { ChangeEmailComponent } from './change-email/change-email.component';
     SuccessComponent,
     ChangePasswordComponent,
     ChangeUserComponent,
-    ChangeEmailComponent
+    ChangeEmailComponent,
+    ChatListComponent
  
 
     

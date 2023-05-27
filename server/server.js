@@ -50,6 +50,7 @@ require('./routes/event-routes')(app);
 require('./routes/category-routes')(app);
 require('./routes/report-routes')(app);
 require('./routes/statistic-routes')(app);
+require('./routes/message-routes')(app);
 // require('./routes/img-routes')(app);
 
 

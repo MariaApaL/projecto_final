@@ -102,6 +102,9 @@ findEventsByAuthorId(authorId: any) {
       }, 1000);
     }
      
+    openConver(){
+      this.navCtrl.navigateForward(`/chat/${this.profileUserId}`);
+    }
 
 
     goBack(){

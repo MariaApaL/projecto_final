@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar *ngIf="receiver">
+    <ion-avatar>
+      <img src={{receiver.picture}} alt="user_avatar">
+    </ion-avatar>
+    <ion-title>{{receiver.user}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="content-wrapper">
+
+  </div>
+  <div class="text-bubble">
+     <ion-button slot="end" (click)="sendMessage()"><ion-icon name="send"></ion-icon></ion-button>
+  <ion-input  (ionChange)="onCommentChange($event)"  placeholder="Escribe tu mensaje aquí">  
+   
+  </ion-input></div>
+
+
+ 
+</ion-content>
