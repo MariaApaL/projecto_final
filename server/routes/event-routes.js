@@ -86,10 +86,11 @@ module.exports = function (app) {
 
  //VALORACIONES
  app.post("/addValuation/:id", controller.addValuation);
-
+//Obtener valoraciones de un evento
  app.get("/getEventValuations/:id", controller.getEventValuations);
-
+//Obtener valoraciones de un evento de un usuario
  app.get("/getEventValuationsByAuthor/:eventId/:authorId", controller.getEventValuationsByAuthor);
+ //Obtener valoraciones de un usuario (las que le han puesto a sus eventos)
  app.get("/getValuationsByAuthor/:authorId", controller.getValuationsByAuthor);
  
 app.delete("/deleteUserValuations/:id", controller.deleteUserValuations);

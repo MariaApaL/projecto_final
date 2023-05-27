@@ -13,8 +13,8 @@ export class EventService {
 
   _refreshNeeded$ = new Subject<void>();
 
-  private url = 'http://localhost:3300';
-  // private url = 'https://finalproject-gout.herokuapp.com';
+  // private url = 'http://localhost:3300';
+  private url = 'https://finalproject-gout.herokuapp.com';
 
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 

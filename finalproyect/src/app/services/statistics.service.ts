@@ -11,8 +11,8 @@ export class StatisticsService {
 
   // Se define la URL base para las solicitudes HTTP y
   //  se establece un encabezado para el tipo de contenido de "application/json".
-  private url = 'http://localhost:3300';
-  // private url = 'https://finalproject-gout.herokuapp.com';
+  // private url = 'http://localhost:3300';
+  private url = 'https://finalproject-gout.herokuapp.com';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
   //el promedio de eventos por usuario
