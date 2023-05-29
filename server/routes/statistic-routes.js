@@ -13,9 +13,6 @@ module.exports = function(app) {
 // ruta GET para obtener el promedio de eventos por usuario
 app.get("/getUsersAvgEventCount", controller.getUsersAvgEventCount);
 
-// ruta GET para obtener el numero de usuarios reportados
-app.get("/getBlockedUsers", controller.getBlockedUsers);
-
 // ruta GET para obtener el promedio de reportes por usuario
 app.get("/getAverageReportsPerUser", controller.getAverageReportsPerUser);
 

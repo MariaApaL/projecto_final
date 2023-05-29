@@ -253,6 +253,7 @@ exports.getUser = async (req, res) => {
   }
 };
 
+//Encuentra el usuario que ha creado un evento
 exports.getUserByEventId = async (req, res) => {
   try {
 

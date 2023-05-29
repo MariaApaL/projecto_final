@@ -34,10 +34,7 @@ const userSchema = new mongoose.Schema({
         required: false
 
     },
-    blocked: {
-        type: Boolean,
-        default: false
-    },
+
     deleted: {
         type: Boolean,
         default: false

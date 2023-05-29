@@ -66,18 +66,6 @@ exports.getUsersAvgEventCount = async (req, res) => {
   }
 }
 
-exports.getBlockedUsers = async (req, res) => {
-  try {
-    const users = await User.find({ blocked: true });
-    res.json(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
-
-
 exports.getAverageReportsPerUser = async (req, res) => {
   try {
     const users = await User.find({});
