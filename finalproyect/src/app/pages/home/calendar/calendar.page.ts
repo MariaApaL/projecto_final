@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-
+import { ViewChild } from '@angular/core';
+import { IonSlides } from '@ionic/angular';
+import Swiper from 'swiper';
 import { EventsInterface } from 'src/app/interfaces/event';
 import { EventService } from 'src/app/services/event.service';
 
@@ -13,6 +15,7 @@ export class CalendarPage implements OnInit {
 
   
 
+  @ViewChild(IonSlides, { static: false }) swiper: IonSlides;
   //Para almacenar la fecha actual
   currentDate = new Date();
   //Para almacenar el mes actual
@@ -36,8 +39,8 @@ export class CalendarPage implements OnInit {
    //Para almacenar el dia seleccionado
   selectedDay: number; 
 
-  initialSlideIndex: number;
-
+  currentDayIndex: number;
+ 
 
 
 
@@ -54,14 +57,36 @@ export class CalendarPage implements OnInit {
       this.currentDate.toLocaleString('es-ES', { month: 'long' })
     );
     this.days = this.getDays(this.currentDate);
-    console.log("hola");
+    
     this.getEvents();
     this.currentDay = this.currentDate.getDate();
-    this.initialSlideIndex = this.getInitialSlide();
-    console.log('initialSlideIndex', this.initialSlideIndex);
+    this.currentDayIndex = this.days.indexOf(this.currentDay);
+    // const swiper = new Swiper('#mySwiper', {
+    //   slidesPerView: 4,
+    //   centeredSlides: true,
+    //   initialSlide: this.currentDayIndex
+    // });
+   
+    const swiper = new Swiper('#mySwiper', {
+      slidesPerView: 4,
+      centeredSlides: true,
+      initialSlide: this.currentDayIndex,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      }
+    });
+   
+ 
 
   }
 
+  setInitialSlide() {
+    const currentDayIndex = this.days.indexOf(this.currentDay);
+console.log(currentDayIndex);
+    this.swiper.slideTo(currentDayIndex);
+  }
+  
   capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
@@ -146,21 +171,7 @@ export class CalendarPage implements OnInit {
     }
   }
 
-  getInitialSlide(): number {
-    console.log("HOLA");
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-  
-    const currentDayIndex = this.days.findIndex(day => {
-      const date = new Date(currentYear, currentMonth, day);
-      return date.getDate() === currentDay;
-    });
-  
-    
-    return Math.floor(currentDayIndex / 4);
-  }
+
 
   isCurrentDay(day: number): boolean {
     const currentDate = new Date();
