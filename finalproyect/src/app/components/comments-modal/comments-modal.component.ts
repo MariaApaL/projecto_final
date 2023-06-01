@@ -125,6 +125,7 @@ export class CommentsModalComponent implements OnInit {
       res => {
         this.ionViewDidEnter();
         this.comment = '';
+        this.stars = [];
       },
       error => {
         console.error(error);

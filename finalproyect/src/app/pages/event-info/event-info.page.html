@@ -2,7 +2,8 @@
   <ion-toolbar *ngIf="category">
     <ion-title class="profile-title">{{eventName}}</ion-title>
     <ion-buttons class="close-button" slot="start">
-      <ion-icon class="close-icon" name="close-outline" (click)="navigateBack()"></ion-icon>
+      <ion-icon color="tertiary" class="close-icon" (click)="navigateBack()"name="arrow-back-outline"></ion-icon>
+      
     </ion-buttons>
     <ion-avatar slot="end" *ngIf="getCategoryIcon(category)">
       <img [src]="getCategoryIcon(category)" />
@@ -75,13 +76,6 @@
     </div>
 
 
-    <!-- <div class="join">
-      <ion-button [disabled]="isFull" 
-      expand="block" class="ion-margin" 
-      (click)="joinOrLeaveEvent(eventId)" class="join-button">
-        {{ isJoined ? 'Cancelar' : 'Unirse' }}
-      </ion-button>
-    </div> -->
 
     <div class="join">
       <ion-button *ngIf="!isMine&&!isAdmin" [disabled]="disabledButton" expand="block" class="ion-margin" (click)="joinOrLeaveEvent()"
@@ -89,10 +83,7 @@
         {{isJoined ? "Cancelar" : "Unirse"}}
       </ion-button>
 
-      <!-- <ion-button *ngIf="isJoined" [disabled]="isFull" expand="block" class="ion-margin" (click)="joinOrLeaveEvent(eventId)"
-        class="join-button">
-        Cancelar
-      </ion-button> -->
+
     </div>
 
   </div>

@@ -158,8 +158,11 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
     this.navCtrl.navigateForward(`/event-info/${id}`);
     localStorage.setItem('previousUrl', location.href);
   }
-  
-
-
+  handleRefresh(event) {
+    setTimeout(() => {
+      this.getEvents();
+      event.target.complete();
+    }, 2000);
+  }
 
 }
