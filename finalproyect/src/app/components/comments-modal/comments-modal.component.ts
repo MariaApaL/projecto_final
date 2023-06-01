@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController, NavParams } from '@ionic/angular';
+import { AlertController, ModalController, NavController, NavParams } from '@ionic/angular';
 import { error } from 'console';
 import { is } from 'date-fns/locale';
+import { Subscription } from 'rxjs';
 
 import { EventsInterface } from 'src/app/interfaces/event';
 import { UsersInterface } from 'src/app/interfaces/user';
@@ -21,7 +22,8 @@ export class CommentsModalComponent implements OnInit {
     private eventService: EventService,
     navParams: NavParams,
     private auth: AuthService,
-    private alertCtrl: AlertController) {
+    private alertCtrl: AlertController,
+    private navCtrl: NavController) {
     this.eventId = navParams.get('eventId')
 
   }
@@ -36,20 +38,32 @@ export class CommentsModalComponent implements OnInit {
 
   ]
 
+    //para recoger datos 
+    subscription: Subscription;
+  //Guarda el id del evento
   eventId: string;
+  //id usuario actual
   userId = localStorage.getItem('userId');
+  //guardamos comentario
   comment: string;
+  //para el boton de enviar
   disabledButton = true;
+  //para el boton de valorar
   selectedValue: number;
+  //para las estrellas
   stars: number[];
-
+//Para mostrar las valoraciones
   valuations: ValuationsInterface[] = [];
   //  commentAuthor: string;
   participants: any[] = [];
+  //para comprobar si el usuario es participante
   isParticipant: boolean = false;
 
+  //guarda los autoes de los comentarios
   commentAuthors: any = {};
+  //la fecha del comentario
   eventDate: Date;
+  //para comprobar si el usuario ha valorado
   isValued: boolean;
  
   value:number;
@@ -58,21 +72,26 @@ export class CommentsModalComponent implements OnInit {
 
   async ngOnInit() {
 
-    
-    this.getParticipants();
-    this.getEvent();
-    this.getEventValuationsByAuthor(this.eventId, this.userId);
-    this.getValuations();
-    if(this.selectedValue==0 || this.selectedValue==null){
-      this.disabledButton=true;
-    }
+  
+    // this.getEventValuationsByAuthor(this.eventId, this.userId);
+    // this.getValuations();
+   
 
   }
 
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.getValuations();
     this.getEventValuationsByAuthor(this.eventId, this.userId);
+    this.getParticipants();
+    this.getEvent();
+
+  
+  
+     
+    if(this.selectedValue==0 || this.selectedValue==null){
+      this.disabledButton=true;
+    }
   }
 
 
@@ -94,9 +113,6 @@ export class CommentsModalComponent implements OnInit {
         }
     
   
-
-
-
   getParticipants() {
     this.eventService.getParticipants(this.eventId).subscribe(
       res => {
@@ -123,7 +139,7 @@ export class CommentsModalComponent implements OnInit {
 
     this.eventService.addValuation(this.eventId, this.userId,finalValue, this.comment).subscribe(
       res => {
-        this.ionViewDidEnter();
+        this.ionViewWillEnter();
         this.comment = '';
         this.stars = [];
       },
@@ -232,11 +248,22 @@ export class CommentsModalComponent implements OnInit {
     );
   }
 
-  delete(userId:string, valuationId:string){
+  delete(userId: string, valuationId: string) {
     this.eventService.deleteUserValuation(userId, valuationId).subscribe({
       next: (res: any) => {
-        this.ionViewDidEnter();
+        this.valuations = this.valuations.filter(valuation => valuation._id !== valuationId); // Eliminar la valoración de la lista
       }
     });
+  }
+
+    goToProfile(id:string) {
+      console.log(id);
+      if (id == this.userId) {
+        this.modalCtrl.dismiss();
+        this.navCtrl.navigateForward(`/home/user-page`);
+      } else {
+        this.modalCtrl.dismiss();
+        this.navCtrl.navigateForward(`/otheruser-page/${id}`);
+      }
     }
   }

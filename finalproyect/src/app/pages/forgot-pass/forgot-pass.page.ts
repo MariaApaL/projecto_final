@@ -23,17 +23,17 @@ export class ForgotPassPage implements OnInit {
   ngOnInit() {
 
   }
-
+//Para resetear la contraseña
   resertPassword(){
     const email = this.form.value.email.toLowerCase();
     this.auth.forgotPassword(email).subscribe({
         next: (data) => {
-          console.log(data);
+      
           this.navCtl.navigateBack('/login');
 
         },
         error: (err) => {
-          console.log(err);
+        
           this.presentAlert("Error", "No se ha podido enviar el email de recuperación de contraseña");
         }
       });

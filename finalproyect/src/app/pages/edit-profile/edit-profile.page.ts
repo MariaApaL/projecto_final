@@ -53,33 +53,20 @@ export class EditProfilePage implements OnInit {
 
   }
   
-
+//recoge el nombre
   onNameChange(event:any) {
     this.name = event.target.value;
     
   }
   
+  //recoge la biografia
   onBioChange(event:any) {
     this.bio = event.target.value;
     
 
   }
 
-
-// onImageChange(event: any) {
-//   const file = event.target.files[0];
-//   this.image = file;
-//   this.previewImage();
-// }
-
-// previewImage() {
-//   const reader = new FileReader();
-//   reader.onload = () => {
-//     this.imagePreview = reader.result as string;
-//   };
-//   reader.readAsDataURL(this.image);
-// }
-
+//recoge la imagen que se ha seleccionado
 onImageChange(event: any) {
   const file = event.target.files[0];
   this.image = file;
@@ -92,16 +79,14 @@ onImageChange(event: any) {
   reader.readAsDataURL(file);
 }
 
+//abre el explorador de archivos
 openFileInput() {
   document.getElementById('fileInput').click();
 }
 
+//sube la imagen al servidor
 uploadPicture(userId: string) {
-  this.auth.uploadUserPhoto(userId, this.image).subscribe({ 
-    next: (data) => {
-      console.log(data);
-    }
-  });
+  this.auth.uploadUserPhoto(userId, this.image).subscribe();
 }
 
   closeModal() {
@@ -109,6 +94,7 @@ uploadPicture(userId: string) {
   }
 
   
+  //actualiza los datos del usuario
   saveChanges() {
     const userId = localStorage.getItem("userId");
     const updatedData = { name: this.name, bio: this.bio};
@@ -123,7 +109,7 @@ uploadPicture(userId: string) {
        
         this.navCrtl.navigateBack('/home/user-page');
       },error: (err) => {
-        console.log(err);
+        
       }
     }); 
     

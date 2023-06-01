@@ -61,12 +61,7 @@ export class CalendarPage implements OnInit {
     this.getEvents();
     this.currentDay = this.currentDate.getDate();
     this.currentDayIndex = this.days.indexOf(this.currentDay);
-    // const swiper = new Swiper('#mySwiper', {
-    //   slidesPerView: 4,
-    //   centeredSlides: true,
-    //   initialSlide: this.currentDayIndex
-    // });
-   
+
     const swiper = new Swiper('#mySwiper', {
       slidesPerView: 4,
       centeredSlides: true,
@@ -81,16 +76,13 @@ export class CalendarPage implements OnInit {
 
   }
 
-  setInitialSlide() {
-    const currentDayIndex = this.days.indexOf(this.currentDay);
-console.log(currentDayIndex);
-    this.swiper.slideTo(currentDayIndex);
-  }
-  
+
+// Para poner la primera letra del mes en mayuscula  
   capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  //obtiene los dias del mes actual
 
   getDays(date: Date): number[] {
     const year = date.getFullYear();
@@ -100,14 +92,10 @@ console.log(currentDayIndex);
     const daysArray = Array.from({ length: numDays }, (_, i) => i + 1);
   
     return daysArray;
-    // if (date.getMonth() === this.currentDate.getMonth()) {
-    //   return daysArray.filter((day) => day >= currentDay);
-    // } else {
-    //   return daysArray;
-    // }
+
   }
 
-
+// obtiene los nombrs de los dias de la semana
   getWeekDayName(day: number): string {
     const weekDays = [  'Dom','Lun', 'Mar', 'Miér', 'Juev', 'Vie', 'Sáb'];
     const date = new Date(this.currentYear, this.currentDate.getMonth(), day);
@@ -115,7 +103,8 @@ console.log(currentDayIndex);
     return weekDays[weekDayNumber];
   }
 
- 
+ // obtiene los eventos donde el usuario participa y los filtra para solo mostrar
+ // los eventos que sean posterior a la fecha actual
   getEvents() {
     this.eventService.getEventsByParticipantId(this.userId).subscribe((res: EventsInterface[]) => {
       if (res) {
@@ -134,10 +123,10 @@ console.log(currentDayIndex);
         this.filteredEvents = [];
       }
   
-      console.log('events', this.events);
+   
     });
   }
-
+// para que cmabie el color del día cuando se seleccione y que muestre los eventos de ese día
   selectDate(selectedDate: number) {
     if (this.selectedDay === selectedDate && selectedDate !== this.currentDay) {
       this.selectedDay = null;
@@ -149,12 +138,15 @@ console.log(currentDayIndex);
     this.filterEventsBySelectedDay();
   }
 
+  // para deseleccionar el día y mostrar todos los eventos
 
   deselectDate() {
-    this.selectedDay = null; // Establecer el valor de selectedDay como null para deseleccionar el día
-    this.showAllEvents(); // Mostrar todos los eventos disponibles
+    this.selectedDay = null; 
+    this.showAllEvents(); 
   }
   
+
+  // para filtrar los eventos por el día seleccionado
   filterEventsBySelectedDay() {
     if (this.selectedDay === null) {
       this.showAllEvents();
@@ -166,13 +158,19 @@ console.log(currentDayIndex);
         eventDate.setHours(0, 0, 0, 0);
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
+        this.filteredEvents.forEach((event: EventsInterface) => {
+          event.name = this.capitalizeWords(event.name);
+          console.log(event.name);
+        }
+       );
+      
         return eventDate.getTime() === selectedDateObj.getTime() && eventDate >= currentDate;
       });
     }
   }
 
 
-
+// para que el día actual se muestre de color diferente
   isCurrentDay(day: number): boolean {
     const currentDate = new Date();
     return (
@@ -182,6 +180,7 @@ console.log(currentDayIndex);
     );
   }
   
+  //Para mostrar todos los eventos
   showAllEvents() {
 
     const today = new Date(); // Obtener la fecha de hoy
@@ -193,7 +192,12 @@ console.log(currentDayIndex);
   
       const currentMonth = this.currentDate.getMonth();
       const eventMonth = eventDate.getMonth();
-  
+      this.filteredEvents.forEach((event: EventsInterface) => {
+        event.name = this.capitalizeWords(event.name);
+        console.log(event.name);
+      }
+     );
+    
       return (
         eventDate >= today && // Mostrar solo los eventos que son iguales o mayores a la fecha de hoy
         eventMonth === currentMonth // Mostrar solo los eventos del mes actual
@@ -201,7 +205,9 @@ console.log(currentDayIndex);
     });
   }
 
-
+  capitalizeWords(str: string):string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
 
 goToInfo(id: string) {

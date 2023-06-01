@@ -166,7 +166,7 @@ exports.updateUser = async (req, res) => {
     }
 
     
-    //console.log(fieldsToUpdate);
+  
     const upUser = fieldsToUpdate.hasOwnProperty("user") ? fieldsToUpdate.user.toLowerCase() : null;
     
     const upEmail = fieldsToUpdate.hasOwnProperty("email") ? fieldsToUpdate.email.toLowerCase() : null;
@@ -277,6 +277,7 @@ exports.getUserByEventId = async (req, res) => {
 };
 
 
+//Añade un evento a los favoritos de un usuario
 exports.setFavorite = async (req, res) => {
   try {
     const { id } = req.params;
@@ -295,7 +296,7 @@ exports.setFavorite = async (req, res) => {
   }
 }
 
-
+//Elimina un evento de los favoritos de un usuario
 exports.deleteFavorite = async (req, res) => {
   try {
   const { id } = req.params;
@@ -322,6 +323,7 @@ exports.deleteFavorite = async (req, res) => {
   }
 
 
+  //Obtiene los favoritos de un usuario
   exports.getFavorites = async (req, res) => {
     try {
       const { id } = req.params;
@@ -340,6 +342,7 @@ exports.deleteFavorite = async (req, res) => {
   }
 
 
+  //Para el reseteo de contraseña mandando un email con nodemailer
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -394,15 +397,15 @@ exports.forgotPassword = async (req, res) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.log('Error al enviar el correo electrónico:', error);
+        
         return res.status(500).send({ message: 'Ocurrió un error al enviar el correo electrónico' });
       } else {
-        console.log('Correo electrónico enviado correctamente:', info.response);
+       
         return res.status(200).send({ message: 'Correo electrónico de restablecimiento de contraseña enviado' });
       }
     });
   } catch (err) {
-    console.log('Error al restablecer la contraseña:', err);
+   
     res.status(500).send({ message: 'Ocurrió un error al restablecer la contraseña' });
   }
 };

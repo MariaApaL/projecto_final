@@ -18,7 +18,9 @@ export class PrivacyModalComponent implements OnInit {
   //recogemos el item que nos mandan desde el bottom-sheet-modal
   @Input() item: any;
   
+  //variable para guardar el rol del usuario
   admin = localStorage.getItem("userRole");
+  //variable para saber si el usuario es admin o no
   isAdmin= false;
   constructor(
     private modalCtrl: ModalController,
@@ -33,6 +35,7 @@ export class PrivacyModalComponent implements OnInit {
     }
   }
 
+  //array de opciones para el bottom-sheet
   options = [
     { icon: "lock-open-outline", label: 'Cambiar Contraseña', redirectTo: '' },
     { icon: "mail-outline", label: 'Cambiar Email', redirectTo: '' },
@@ -41,6 +44,7 @@ export class PrivacyModalComponent implements OnInit {
   ];
   
 
+  //Función para mostrar un model dependiendo de la opción que elija el usuario
   chooseOptions(item:any) {
     if (item.label === 'Cambiar Contraseña') {
       this.openChangePasswordModal(item);
@@ -54,10 +58,13 @@ export class PrivacyModalComponent implements OnInit {
       this.openTermsModal(item);
     }
   }
+
+  //Función para cerrar el modal
   closeModal() {
     this.modalCtrl.dismiss();
   }
 
+  //Función para abrir modal de cambiar contraseña
   openChangePasswordModal(item:any){  
     this.modalCtrl.create({
       component: ChangePasswordComponent,
@@ -67,6 +74,7 @@ export class PrivacyModalComponent implements OnInit {
     }).then(modal => modal.present());
   }
   
+  //Función para abrir modal de cambiar usuario
   openChangeUserModal(item:any){
     this.modalCtrl.create({
       component: ChangeUserComponent,
@@ -76,6 +84,7 @@ export class PrivacyModalComponent implements OnInit {
     }).then(modal => modal.present());
   }
    
+  //Función para abrir modal de cambiar email
   openChangeEmailModal(item:any){
     this.modalCtrl.create({
       component: ChangeEmailComponent,
@@ -86,6 +95,7 @@ export class PrivacyModalComponent implements OnInit {
   }
   
 
+  //Función para abrir modal de términos y condiciones
   openTermsModal(item:any){
     this.modalCtrl.create({
       component: PoliticsComponent,
@@ -110,7 +120,7 @@ export class PrivacyModalComponent implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
-            console.log('Confirm Cancel: blah');
+          
           }
         }, {
           text: 'Sí',
@@ -125,6 +135,7 @@ export class PrivacyModalComponent implements OnInit {
     await alert.present();
   }
 
+  //Función para borrar el usuario y todos sus eventos, comentarios y plazas
   deleteUser(id:string){
     this.auth.updateUser(id, {deleted: true}).subscribe({
       next: user => { 
@@ -134,35 +145,25 @@ export class PrivacyModalComponent implements OnInit {
         this.auth.logOut();
         this.modalCtrl.dismiss();
         this.navCtrl.navigateBack('/login');
-        console.log(user);
+        
       },error: (err) => {
-        console.log(err);
+        
       }
     }); 
   }
 
+  //Función para borrar todos los eventos del usuario
   deleteAllEvents(id:string){
-    this.eventService.deleteEventsByAuthor(id).subscribe({
-      next: events => {
-        console.log("eventos eliminados");
-      }
-    });
+    this.eventService.deleteEventsByAuthor(id).subscribe();
   }
-
+ //Función para borrar todos los comentarios del usuario
   deleteAllComments(id:string){
-   this.eventService.deleteUserValuations(id).subscribe({
-      next: comments => { 
-        console.log("comentarios eliminados");
-      }
-    });
+   this.eventService.deleteUserValuations(id).subscribe();
   }
 
+  //Función para borrar todas las plazas del usuario
   deleteAllPlazas(id:string){
-    this.eventService.deleteUserPlazas(id).subscribe({
-      next: plazas => { 
-        console.log("plazas eliminadas");
-      }
-    });
+    this.eventService.deleteUserPlazas(id).subscribe();
   }
 
 

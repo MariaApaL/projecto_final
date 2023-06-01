@@ -103,7 +103,7 @@ exports.getAvgParticipants = async (req, res) => {
         }
       }
     ]);
-    console.log(result);
+   
 
     if (result.length > 0) {
       res.json(result[0]);

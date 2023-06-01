@@ -110,7 +110,7 @@ exports.uploadEventPhoto = async (req, res) => {
     const event = await Event.findByIdAndUpdate(eventId, { picture: uploadResult }, { new: true });
     res.status(200).json({ message: 'Imagen subida correctamente', event });
   } catch (error) {
-    console.log(error);
+
     res.status(500).json({ error: 'Error en el servidor' });
   }
 };
@@ -199,6 +199,7 @@ exports.deleteByEventId = async (req, res) => {
   }
 };
 
+// Eliminar todos los eventos de un autor
 exports.deleteEventsByAuthor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -211,7 +212,7 @@ exports.deleteEventsByAuthor = async (req, res) => {
 };
 
 
-
+// Eliminar un evento por nombre y autor
 exports.deleteEventByNameAndAuthor = async (req, res) => {
   try {
     const { name, author } = req.body;
@@ -225,7 +226,7 @@ exports.deleteEventByNameAndAuthor = async (req, res) => {
   }
 };
 
-
+// ENCUENTRA   todos los eventos de un autor
 exports.findEventsByAuthorId = async (req, res) => {
   // const { author } = req.params.id;
   const { id } = req.params;
@@ -244,6 +245,7 @@ exports.findEventsByAuthorId = async (req, res) => {
   }
 };
 
+// obtener eventos donde el usuario es participante
 exports.getEventsByParticipantId = async (req, res) => {
   const userId = req.params.id;
 
@@ -254,7 +256,6 @@ exports.getEventsByParticipantId = async (req, res) => {
     res.status(500).json({ message: 'Ha ocurrido un error al obtener los eventos', error: err });
   }
 };
-
 
 
 exports.addParticipant = async (req, res) => {

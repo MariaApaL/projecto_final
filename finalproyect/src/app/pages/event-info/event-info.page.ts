@@ -120,11 +120,9 @@ export class EventInfoPage implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe({
       next: async (data) => {
         this.event = await data;
-        console.log("event", this.event);
-
-
-        // this.getUserEvent(this.eventId);
+ 
         this.eventDate = this.event.date;
+
         // actualiza el número de participantes
         this.participants = this.event.plazas.length;
 
@@ -138,6 +136,7 @@ export class EventInfoPage implements OnInit {
 
 
         this.category= this.event.category;
+        //para poner la letra mayuscula de cada palabra
         this.eventName = this.capitalizeWords(this.event.name);
         
         this.checkParticipants();
@@ -147,28 +146,29 @@ export class EventInfoPage implements OnInit {
     });
   }
 
+  //obtiene el usuario autor del evento
   getUserEvent(eventId: any) {
     this.auth.getUserByEventId(eventId).subscribe({
       next: async (data) => {
         this.userAuthor = await data.user;
         this.userAuthorId = data._id;
         this.checkIfmine();
-        console.log("user", this.userAuthor);
+      
         return this.userAuthor;
       }
     });
   }
 
-
-  
+//para mostrar el icono de cada categoria
   getCategoryIcon(categoryId: string): string {
     const category = this.categories.find(category => category.id === categoryId);
     return category ? category.icon : '';
   }
 
-  capitalizeWords(eventName: string) {
-    return eventName.replace(/\b\w/g, l => l.toUpperCase());
-  }
+  //Muestra el nombre de cada palabra en mayuscula la primera letra
+capitalizeWords(str: string):string {
+return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 
   navigateBack() {
@@ -176,6 +176,7 @@ export class EventInfoPage implements OnInit {
     this.navCtrl.back();
   }
 
+  //añade a favoritos o los elimina
   addFavorite() {
     if (this.isFavorite) {
       this.deleteFavorite(this.eventId);
@@ -184,33 +185,18 @@ export class EventInfoPage implements OnInit {
       this.setFavoriteEvent(this.eventId);
     }
     this.isFavorite = !this.isFavorite;
-    // localStorage.setItem(`favorite_${this.eventId}`, JSON.stringify(this.isFavorite));
+   
   }
 
 
   //llama al servicio para añadir un evento a favoritos
   setFavoriteEvent(eventId: string) {
-    this.auth.setFavorite(this.userId, eventId).subscribe({
-      next: async (data: UsersInterface) => {
-        console.log(data);
-
-      },
-      error: async (err) => {
-        console.log(err);
-      }
-    });
+    this.auth.setFavorite(this.userId, eventId).subscribe();
   }
 
   //Llama al servicio para eleminar los favoritos
   deleteFavorite(eventId: string) {
-    this.auth.deleteFavorite(this.userId, eventId).subscribe({
-      next: (data: UsersInterface) => {
-        console.log(data);
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
+    this.auth.deleteFavorite(this.userId, eventId).subscribe();
   }
 
 
@@ -227,13 +213,14 @@ export class EventInfoPage implements OnInit {
   }
 
 
+  //para añadir o eliminar participantes
   async joinOrLeaveEvent() {
     if (this.isJoined) {
       this.leaveEvent();
-      console.log("leave:", this.participants);
+
     } else {
       this.joinEvent();
-      console.log("join:", this.participants);
+  
     }
     this.isJoined = !this.isJoined;
 
@@ -287,6 +274,7 @@ export class EventInfoPage implements OnInit {
   }
 
 
+  //para unirse a un evento
   joinEvent() {
     this.eventService.addParticipant(this.eventId, this.userId).subscribe({
       next: async (data) => {
@@ -300,6 +288,7 @@ export class EventInfoPage implements OnInit {
     });
   }
 
+  //para cancelar plaza en un evento
   leaveEvent() {
     this.eventService.deleteParticipant(this.eventId, this.userId).subscribe({
       next: async (data) => {
@@ -325,16 +314,15 @@ export class EventInfoPage implements OnInit {
 
   //para mostrar el boton de reportes
   checkIfmine() {
-    console.log("user auhtor", this.userAuthorId);
-    console.log("user", this.userId);
+ 
     if (this.userAuthorId == this.userId) {
 
       this.isMine = true;
-      console.log("mine", this.isMine);
+    
 
     } else {
       this.isMine = false;
-      console.log("not mine", this.isMine);
+      
     }
   }
 
@@ -369,7 +357,7 @@ export class EventInfoPage implements OnInit {
 
   //Abre el modal de comentarios
   async openComments() {
-    console.log("eventid", this.eventId);
+  
     const modal = await this.modalCtrl.create({
       component: CommentsModalComponent,
 
@@ -388,16 +376,16 @@ export class EventInfoPage implements OnInit {
     this.auth.getUser().subscribe({
       next: async (data) => {
         this.currentUser = await data;
-        console.log(this.currentUser);
+      
         const favorites = this.currentUser.favorites?.find((fav: any) => fav == this.eventId);
-        console.log("fav", favorites);
-        // Si el usuario está en la lista de participantes, cambia el estado del botón de unirse
+        
+        // Si el evento esta en favoritos, cambia el icono
         if (favorites) {
           this.isFavorite = true;
-          console.log("user", this.isFavorite);
+          
         } else {
           this.isFavorite = false;
-          console.log("user", this.isFavorite);
+         
         }
         this.changeDetectorRef.detectChanges();
       }

@@ -14,3 +14,17 @@
 
     /* Otros estilos CSS que desees aplicar */
   }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .searchbar-container {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .button-container {
+    flex-shrink: 0;
+  }

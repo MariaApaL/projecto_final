@@ -14,6 +14,19 @@ import { ReportService } from 'src/app/services/report.service';
 })
 export class ReportUserModalComponent implements OnInit {
 
+
+//para guardar los usuarios filtrados
+  filteredUsers: UsersInterface[];
+//para guardar el numero de reportes
+   count:string;
+//para guardar los eventos filtrados
+   filteredEvents: string[];
+//para guardar la informacion de los eventos
+   eventInfo: EventsInterface[];
+//para guardar los reportes filtrados
+   filteredReports: string[];
+
+
   constructor(private modalCtrl:ModalController, 
     private eventService:EventService,
     navParams: NavParams, 
@@ -24,11 +37,7 @@ export class ReportUserModalComponent implements OnInit {
       this.count = navParams.get('count')
 
    }
-   filteredUsers: UsersInterface[];
-   count:string;
-   filteredEvents: string[];
-   eventInfo: EventsInterface[];
-   filteredReports: string[];
+  
   
 
   ngOnInit() {
@@ -46,34 +55,35 @@ export class ReportUserModalComponent implements OnInit {
   }
 
 
-
+//funcion para obtener los usuarios dependiendo del numero de reportes
   getUserByReportCount() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       if (this.count == 'moreThan10') {
-        this.filteredUsers = res.filter(user => user.reports.length >= 6 && user.reports.length < 30 && !user.deleted);
-        console.log(this.filteredUsers);
+        // Filtra los usuarios que tengan mas de 10 reportes y menos de 30
+        this.filteredUsers = res.filter(user => user.reports.length >= 10 && user.reports.length < 30 && !user.deleted);
+      
   
         // Filtra el id del evento de cada reporte y quita duplicados 
         this.filteredEvents = this.filtrarEventos(res);
-  
+           // Filtra por el tipo de reporte y elimina duplicados
         this.filteredReports = this.filtrarReport(res);
-        // Filtra por el tipo de reporte y elimina duplicados
-        console.log(this.filteredReports);
+     
+       
       } else if (this.count == 'moreThan30') {
         this.filteredUsers = res.filter(user => user.reports.length >= 30 && user.reports.length < 50 && !user.deleted);
-        console.log(this.filteredUsers);
+      
         this.filteredEvents = this.filtrarEventos(res);
         this.filteredReports = this.filtrarReport(res);
       } else {
         this.filteredUsers = res.filter(user => user.reports.length >= 50 && !user.deleted);
-        console.log(this.filteredUsers);
+       
         this.filteredEvents = this.filtrarEventos(res);
         this.filteredReports = this.filtrarReport(res);
       }
     });
   }
 
-
+//funcion para filtrar los eventos
   filtrarEventos(user: any): any[] {
     const eventosFiltrados: any[] = user.reports.map(report => report.eventId);
     return eventosFiltrados.filter((value, index, self) => {
@@ -81,6 +91,7 @@ export class ReportUserModalComponent implements OnInit {
     });
   }
 
+  //funcion para filtrar los reportes
   filtrarReport(res: any[]): any[] {
     const reportsFiltrados: any[] = res.flatMap(user => user.reports.map(report => report.report));
     return reportsFiltrados.filter((value, index, self) => {
@@ -88,25 +99,29 @@ export class ReportUserModalComponent implements OnInit {
     });
   }
 
+  //funcion para ctualizar el array de los eventos
   updateFilteredEvents(deletedEventId: string) {
     this.filteredEvents = this.filteredEvents.filter(event => event !== deletedEventId);
   }
 
+  //funcion para ir a la informacion del evento
   goEventInfo(event:string){
     this.navCtrl.navigateForward(`/event-info/${event}`);
     this.closeModal();
 
   }
 
+  //funcion para ir a la informacion del usuario
   goUserInfo(user:string){
     this.navCtrl.navigateForward(`/otheruser-page/${user}`);
     this.closeModal();
 
   }
 
+  //funcion para eliminar el evento y llamar a la funcion de actualizar
   deleteEvent(eventId:string){
     this.eventService.deleteByEventId(eventId).subscribe((res)=>{
-      console.log(res);
+     
       this.reportService.deleteReportsByEventId(eventId).subscribe(); 
       this.updateFilteredEvents(eventId);
 
@@ -115,7 +130,7 @@ export class ReportUserModalComponent implements OnInit {
 }
 
  
-
+//funcion para eliminar el usuario y todos sus eventos, comentarios y plazas
 deleteUser(id:string){
   this.auth.updateUser(id, {deleted: true}).subscribe({
     next: user => { 
@@ -124,33 +139,35 @@ deleteUser(id:string){
       this.deleteAllPlazas(id);
       this.ionViewWillEnter();
       
-      console.log(user);
+   
     },error: (err) => {
-      console.log(err);
+     
     }
   }); 
 }
 
+//funcion para eliminar todos los eventos del usuario
 deleteAllEvents(id:string){
   this.eventService.deleteEventsByAuthor(id).subscribe({
     next: events => {
-      console.log("eventos eliminados");
+    
     }
   });
 }
 
+//funcion para eliminar todos los comentarios del usuario
 deleteAllComments(id:string){
  this.eventService.deleteUserValuations(id).subscribe({
     next: comments => { 
-      console.log("comentarios eliminados");
     }
   });
 }
 
+//funcion para eliminar todas las plazas del usuario
 deleteAllPlazas(id:string){
   this.eventService.deleteUserPlazas(id).subscribe({
     next: plazas => { 
-      console.log("plazas eliminadas");
+     
     }
   });
 }

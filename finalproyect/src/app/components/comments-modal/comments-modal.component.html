@@ -49,7 +49,7 @@
           <ion-avatar>
             <img src="{{ valuation.author?.picture }}">
           </ion-avatar>
-          <h2 >{{ valuation.author.user}}</h2>
+          <h2 (click)="goToProfile(valuation.author._id)" >{{ valuation.author.user}}</h2>
         </div>
         <ion-card-content class="comment-info">
         <div class="result-stars">

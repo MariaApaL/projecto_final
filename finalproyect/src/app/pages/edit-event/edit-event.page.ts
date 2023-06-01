@@ -16,7 +16,7 @@ declare let google: any;
 export class EditEventPage implements OnInit {
 
 
-
+// Array de categorias
   categories =[
     { label: 'Cultura', value: 'cultura', checked: false },
     { label: 'Deportes', value: 'deportes', checked: false },
@@ -90,15 +90,17 @@ export class EditEventPage implements OnInit {
 
 
   ngOnInit() {
-    
+    //Nos suscribimos a los cambios del formulario
     this.subscribeToFormChanges();
+
+    //Obtenemos los datos del evento
    this.eventService.getEvent(this.eventId).subscribe({
       next: (data) => {
         this.eventData = data;
         this.eventDate = moment(this.eventData.date).format("YYYY-MM-DDTHH:mm");
         this.imagePreview = this.eventData.picture;
     
-       
+       // para mostrar los datos de la base de datos actualmente
         this.form.patchValue({
           name: this.eventData.name,
           description: this.eventData.description,
@@ -116,7 +118,7 @@ export class EditEventPage implements OnInit {
   });
   }
 
-
+//Para saber si el formulario ha cambiado de valores en algun campo
   subscribeToFormChanges() {
     this.form.valueChanges.subscribe(() => {
       this.disableButton = false;
@@ -124,25 +126,23 @@ export class EditEventPage implements OnInit {
   }
 
 
-
-  
   navigateback() {
     this.navCtrl.navigateBack('/home/user-page');
   }
 
-
+//recoge el valor del campo "location"
   onLocationChange(event: any) {
     this.location = this.autocomplete.input;
     this.newLocation = this.location;
      this.newLocation = event.target.value;
   }
 
+  //actualizar el evento
   saveChanges() {
   
       const formDate = this.form.value.date;
       const eventDate = this.eventDate;
-      console.log(formDate);
-      console.log(eventDate);
+    
   
       if (formDate !== eventDate) {
         const currentDate = new Date();
@@ -178,7 +178,7 @@ export class EditEventPage implements OnInit {
   
       this.eventService.updateEvent(this.eventId, updatedData).subscribe({
         next: (data) => {
-          console.log(data);
+          
           this.navCtrl.navigateBack('/home/user-page');
         }
       });
@@ -196,6 +196,8 @@ async presentAlert(header: string, message: string) {
   const { role } = await alert.onDidDismiss();
 }
 
+
+// google maps places autocomplete
 UpdateSearchResults() {
   if (this.autocomplete.input == '') {
     this.autocompleteItems = [];
@@ -225,35 +227,12 @@ ClearAutocomplete() {
 
 SelectSearchResult(item: any) {
   this.autocomplete.input = item.description;
-  console.log(item.description)
+
   this.autocompleteItems = [];
 
 }
 
-// onImageChange(event: any) {
-//   const file = event.target.files[0];
-//   this.image = file;
-
-//   // Código para generar una vista previa de la imagen seleccionada
-//   const reader = new FileReader();
-//   reader.onload = () => {
-//     this.imagePreview = reader.result as string;
-//   };
-//   reader.readAsDataURL(file);
-// }
-
-// openFileInput() {
-//   document.getElementById('fileInput').click();
-// }
-
-// uploadPicture(eventId: string) {
-// this.eventService.uploadEventPhoto(eventId, this.image).subscribe({
-//   next: (data) => {
-//     console.log(data);
-//   }
-// });
-// }
-
+// Para recoger la imagen seleccionada
 onImageChange(event: any) {
   const file = event.target.files[0];
   this.image = file;
@@ -266,16 +245,14 @@ onImageChange(event: any) {
   reader.readAsDataURL(file);
 }
 
+// Para abrir el explorador de archivos
 openFileInput() {
   document.getElementById('fileInput').click();
 }
 
+// Para subir la imagen al servidor
 uploadPicture(eventId: string) {
-  this.eventService.uploadEventPhoto(eventId, this.image).subscribe({ 
-    next: (data) => {
-      console.log(data);
-    }
-  });
+  this.eventService.uploadEventPhoto(eventId, this.image).subscribe();
 }
 
 }

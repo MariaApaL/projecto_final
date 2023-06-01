@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { PrivacyModalComponent } from './privacy-modal/privacy-modal.component';
 import { CreateEventModalComponent } from './create-event-modal/create-event-modal.component';
-import { EventCardComponent } from './event-card/event-card.component';
+
 import { EventMapComponent } from './event-map/event-map.component';
 import { ParticipantsListComponent } from './participants-list/participants-list.component';
 import { CommentsModalComponent } from './comments-modal/comments-modal.component';
@@ -34,7 +34,7 @@ import { ChangeEmailComponent } from './change-email/change-email.component';
     BottomSheetModalComponent,
     ErrorMessageComponent,
     CreateEventModalComponent,
-    EventCardComponent,
+ 
     EventMapComponent,
     ParticipantsListComponent,
     CommentsModalComponent,
@@ -63,7 +63,7 @@ import { ChangeEmailComponent } from './change-email/change-email.component';
     ErrorMessageComponent,
     PrivacyModalComponent,
     CreateEventModalComponent,
-    EventCardComponent,
+ 
     EventMapComponent,
     ParticipantsListComponent,
     ReportUserModalComponent,

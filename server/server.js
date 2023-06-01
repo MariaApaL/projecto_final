@@ -63,7 +63,7 @@ app.listen(PORT, () => {
 (async function() {
   try {
     await db.mongoose.connect('mongodb+srv://root:root@project.s4gvf6v.mongodb.net/?retryWrites=true&w=majority');
-    console.log("Successfully connect to MongoDB.");
+ 
     await initial();
     await initialCategories();
     await initialReports();
@@ -86,7 +86,7 @@ app.listen(PORT, () => {
             new Role({ name: "user" }).save(),
             new Role({ name: "admin" }).save()
           ]);
-          console.log("Roles agregados correctamente.");
+       
         }
       } catch (err) {
         console.error("Error al agregar roles", err);
@@ -106,7 +106,7 @@ app.listen(PORT, () => {
             new Category({ type: "relax" }).save(),
             new Category({ type: "solidario" }).save(),
           ]);
-          console.log("Categorias agregadas correctamente.");
+        
         }
       } catch (err) {
         console.error("Error al agregar categorias", err);
@@ -125,7 +125,7 @@ app.listen(PORT, () => {
             new Report({ type: "violencia" }).save(),
             new Report({ type: "fraude" }).save(),
           ]);
-          console.log("Reports agregados correctamente.");
+       
         }
       } catch (err) {
         console.error("Error al agregar repots", err);

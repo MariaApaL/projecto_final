@@ -11,8 +11,11 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class ChangeUserComponent implements OnInit {
 
+  // formulario
   form:FormGroup;
+  // id del usuario
   userId = localStorage.getItem('userId');
+  // usuario
   user:UsersInterface;
 
   constructor(private modal:ModalController,
@@ -34,7 +37,7 @@ export class ChangeUserComponent implements OnInit {
     this.modal.dismiss();
   }
 
-
+// funcion para actualizar el usuario
   update() {
     const user = this.form.value.user.trim().toLowerCase();
     const updatedData = { user: user};
@@ -43,7 +46,7 @@ export class ChangeUserComponent implements OnInit {
         next: data => {
         
           this.modal.dismiss();
-          console.log(data);
+     
         },
         error: error => {
           this.presentAlert("Error", error.error.message);
@@ -54,9 +57,10 @@ export class ChangeUserComponent implements OnInit {
     }
   }
 
+  // funcion para obtener el usuario
   getUser(){
     this.auth.getUserById(this.userId).subscribe((data)=>{
-      console.log(data);
+ 
       this.user=data.user;
     }
     )

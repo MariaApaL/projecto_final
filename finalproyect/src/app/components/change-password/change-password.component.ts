@@ -10,10 +10,13 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./change-password.component.scss'],
 })
 export class ChangePasswordComponent implements OnInit {
+  // formulario
   form:FormGroup;
+  // id del usuario
   userId = localStorage.getItem('userId');
-  user:UsersInterface;
+  // icono del password
   passwordIcon = 'eye-off';
+  
   passwordType = 'password';
 
 
@@ -38,6 +41,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
 
+  // funcion para actualizar la contraseña
   update() {
     const password = this.form.value.password;
     const updatedData = { password: password};
@@ -46,7 +50,7 @@ export class ChangePasswordComponent implements OnInit {
         next: data => {
         
           this.modal.dismiss();
-          console.log(data);
+        
         },
         error: error => {
           this.presentAlert("Error", error.error.message);

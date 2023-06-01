@@ -48,30 +48,10 @@ export class LoginPage implements OnInit {
 
 
   ngOnInit() {
-    // if (this.auth.getToken()) {
-    //   this.isLoggedIn = true;
-    //   const id = localStorage.getItem('userId');
-    //   this.auth.getUser().subscribe({
-    //     next: user => {
-    //       this.roles = user.roles;
-    //       console.log(this.roles);
-    //     },
-    //     error: err => {
-    //       console.error(err);
-    //     }
-    //   });
-    // }
+
   }
 
-
-
-  // Método para el icono del ojo en la contraseña
-  // passwordOn() {
-  //   this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
-  //   this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
-  // }
-
-
+//comprueba que las contraseñas sean iguales
   checkPassword() {
     const password = this.form.controls.password.value;
     const confirmpassword = this.form.controls.rpassword.value;
@@ -79,6 +59,7 @@ export class LoginPage implements OnInit {
     return password === confirmpassword ? true : false;
   }
 
+  //para el login
   onLogin() {
     const usermail = this.form.controls.usermail.value.trim().toLowerCase();
     const password = this.form.controls.password.value.trim();
@@ -124,7 +105,7 @@ export class LoginPage implements OnInit {
     });
     await alert.present();
     const { role } = await alert.onDidDismiss();
-    console.log('onDismiss resolved with role', role);
+    
   }
 
 

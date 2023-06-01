@@ -74,36 +74,31 @@ export class HomeAdminPage implements OnInit {
   }
 
 
-  // getUserByReportCount() {
-  //   this.auth.getUsers().subscribe(
-  //     (res) => {
-  //       this.users= res;
-  //       console.log(this.users);
-  //     })
-  //   };
-
+//muestra los usuarios con mas de 10 reportes
   getUserByReportMoreThan10() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       this.filteredUsersMorenThan10= res.filter(user => 
-        user.reports.length >= 6 && user.reports.length < 30 && 
+        user.reports.length >= 10 && user.reports.length < 30 && 
         (user.deleted === false && user.blocked === false));
-      console.log(this.filteredUsersMorenThan10);
+    
     });
   }
 
+  //muestra los usuarios con mas de 30 reportes
   getUserByReportMoreThan30() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       this.filteredUsersMorenThan30 = res.filter(user => user.reports.length >= 30 && 
         user.reports.length < 50&& user.deleted === false);
-      console.log(this.filteredUsersMorenThan30);
+
     });
   }
 
+  //muestra los usuarios con mas de 50 reportes
   getUserByReportMoreThan50() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       this.filteredUsersMorenThan50 = res.filter(user => 
         user.reports.length >= 50  && user.deleted === false );
-      console.log(this.filteredUsersMorenThan50);
+   
     });
   }
 

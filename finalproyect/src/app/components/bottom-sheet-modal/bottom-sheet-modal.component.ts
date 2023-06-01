@@ -58,7 +58,7 @@ export class BottomSheetModalComponent implements OnInit {
           cssClass: 'secondary',
           handler: (blah) => {
             this.modalCtrl.dismiss();
-            console.log('Confirm Cancel');
+            
           }
         }, {
           text: 'Sí',
@@ -66,7 +66,7 @@ export class BottomSheetModalComponent implements OnInit {
             this.auth.logOut();
             this.modalCtrl.dismiss();
             this.navCtrl.navigateBack('/login');
-            console.log('Confirm Okay');
+            
           }
         }
       ]

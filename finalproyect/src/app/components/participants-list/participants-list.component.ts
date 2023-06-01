@@ -9,6 +9,12 @@ import { EventService } from 'src/app/services/event.service';
 })
 export class ParticipantsListComponent implements OnInit {
 
+//para guardar el id del evento
+eventId:any;
+//para guardar los participantes
+participants:any[]=[];
+
+
   constructor(private eventService:EventService,
     private modalCtrl:ModalController,
     navParams: NavParams,
@@ -20,26 +26,31 @@ export class ParticipantsListComponent implements OnInit {
     this.getParticipants();
   }
 
-eventId:any;
-participants:any[]=[];
 
   dismiss() {
     this.modalCtrl.dismiss();
   }
   
-
+//funcion para obtener los participantes
   getParticipants() {
     this.eventService.getParticipants(this.eventId).subscribe({
       next: (data) => {
         this.participants = Object.values(data);
-        console.log(data);
+    
       }
     });
 
   }
 
+  //funcion para abrir el perfil de un usuario
   openUser(userId:string){
+    if(userId==localStorage.getItem('userId')){
+    this.modalCtrl.dismiss();
+    this.navCtrl.navigateForward(`home/user-page`);
+  }else{
     this.modalCtrl.dismiss();
     this.navCtrl.navigateForward(`/otheruser-page/${userId}`);
   }
+}
+
 }

@@ -12,7 +12,7 @@ import { ReportService } from 'src/app/services/report.service';
 })
 export class ReportModalComponent implements OnInit {
 
-
+//array para las opciones de reportes
   options = [
     { label: 'Es spam', report: 'spam' },
     { label: 'Lenguaje o símbolos que incitan al odio', report: 'odio' },
@@ -21,8 +21,11 @@ export class ReportModalComponent implements OnInit {
     { label: 'Fraude', report: 'fraude' },
   ];
 
+  //para guardar el id del usuario reportado
   userReportedId: string;
+  //para guardar el id del evento
   eventId: string;
+  //para guardar el usuario del localstorage
   currentUser = localStorage.getItem('userId');
 
 
@@ -43,11 +46,11 @@ export class ReportModalComponent implements OnInit {
     this.getUserByEventId(this.eventId);
   }
 
-
+//funcion para abrir un modal dependiendo de la opcion seleccionada
   chooseOptions(item: any) {
     this.reportService.addReport(this.userReportedId, item.report, this.eventId, this.currentUser).subscribe(
       res => {
-        console.log(res);
+        
         this.presentAlert('Reporte enviado');
         this.modalCtrl.dismiss();
       },
@@ -69,6 +72,7 @@ export class ReportModalComponent implements OnInit {
   
   
 
+    //funcion para obtener el usuario por el id del evento
   getUserByEventId(id: string) {
     this.auth.getUserByEventId(id).subscribe(
       res => {

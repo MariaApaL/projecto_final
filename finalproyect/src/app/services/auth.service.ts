@@ -20,7 +20,6 @@ export class AuthService {
   // inicio de sesión con los datos de usuario proporcionados en el cuerpo de la solicitud.
   login(user: string, password: string): Observable<any> {
 
-    console.log('user:', user, ' password:', password);
 
     const url = `${this.url}/login`;
 
@@ -44,7 +43,7 @@ export class AuthService {
   //  registro con los datos de usuario proporcionados en el cuerpo de la solicitud.
   register(user: string, name: string, password: string, email: string, picture:string): Observable<any> {
 
-    console.log('user:', user, ' password:', password);
+   
 
     const url = `${this.url}/register`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');

@@ -100,6 +100,7 @@ export class UserPagePage implements OnInit {
 
   }
 
+  //chequea si ls fecha del evento es valida
   isEventDateValid(date: string): boolean {
     const eventDate = new Date(date);
     const currentDate = new Date();
@@ -118,25 +119,40 @@ export class UserPagePage implements OnInit {
         this.eventCount = this.myEvents.length;
         this.displayedCreated = this.allCreated.slice(0, 5);
 
-
-
-        return this.myEvents;
-      }
-    });
-  }
-
+         // Capitalizar la primera letra de event.name
+         this.displayedCreated.forEach((event: EventsInterface) => {
+          event.name = this.capitalizeWords(event.name);
+          console.log(event.name);
+        }
+       );
+      
+        }
+      });
+    }
+  
+    capitalizeWords(str: string):string {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+  
+  //obtiene los eventos donde el usuario participa
   getEventsJoined(userId: any) {
     this.eventService.getEventsByParticipantId(userId).subscribe({
       next: (data: EventsInterface) => {
         this.joinedEvents = Object.values(data);
         this.allJoined =  this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.displayedJoined = this.allJoined.slice(0, 5);
-        return this.joinedEvents;
+        this.displayedJoined.forEach((event: EventsInterface) => {
+          event.name = this.capitalizeWords(event.name);
+          console.log(event.name);
+        }
+        );
+      
       }
     });
   }
 
 
+  // para el infitiny scrll
   loadJoined(event: any) {
     // Simula una carga asincrónica con un retraso de 1 segundo
     setTimeout(() => {
@@ -177,7 +193,7 @@ export class UserPagePage implements OnInit {
   getUser() {
     this.auth.getUserById(this.userId).subscribe({
       next: async (data) => {
-        console.log("user", data);
+        
         this.currentUser = await data;
         this.picture = this.currentUser.picture;
       }
@@ -189,11 +205,16 @@ export class UserPagePage implements OnInit {
   getFavorites(userId: any) {
     this.auth.getFavorites(userId).subscribe({
       next: (data) => {
-        console.log(data);
+       
         this.myFavs = Object.values(data);
         this.allFavs = this.myFavs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.displayedFavs = this.allFavs.slice(0, 5);
-        return this.myFavs
+        this.displayedFavs.forEach((event: EventsInterface) => {
+          event.name = this.capitalizeWords(event.name);
+          console.log(event.name);
+        }
+        );
+      
       }
     });
   }
@@ -223,7 +244,7 @@ export class UserPagePage implements OnInit {
     if (this.selectedSegment == 'my-events') {
       this.eventService.deleteEventByNameAndAuthor(name, author).subscribe({
         next: (data) => {
-          console.log(data);
+         
           this.presentAlert();
 
         },
@@ -246,13 +267,13 @@ export class UserPagePage implements OnInit {
           cssClass: 'secondary',
           handler: (blah) => {
             this.modalCtrl.dismiss();
-            console.log('Confirm Cancel');
+        
           }
         }, {
           text: 'Sí',
           handler: () => {
             this.ionViewWillEnter();
-            console.log('Confirm Okay');
+          
           }
         }
       ]
@@ -295,20 +316,21 @@ export class UserPagePage implements OnInit {
     });
   }
 
+  //para  mostrar la media de las valoraciones en el perfil
   async getValorations(userId: string) {
 
     this.auth.getValuationsByAuthor(userId).subscribe({
       next: async (data) => {
         const valuations = await data;
 
-        const values = valuations.valuations; // Acceder al array de valores
-        const valuesArray = values.map(valuation => valuation.value); // Obtener un nuevo array con los valores de "value"
+        const values = valuations.valuations; 
+        // array con los valores de "value"
+        const valuesArray = values.map(valuation => valuation.value); 
 
-        const sum = valuesArray.reduce((total, value) => total + value, 0); // Sumar los valores
-        const average = valuesArray.length > 0 ? sum / valuesArray.length : 0; // Calcular el promedio o establecerlo como 0 si el array está vacío
+        const sum = valuesArray.reduce((total, value) => total + value, 0); 
+// Calcular el promedio o establecerlo como 0 si el array está vacío
+        const average = valuesArray.length > 0 ? sum / valuesArray.length : 0; 
 
-        console.log("Valores:", valuesArray);
-        console.log("Suma:", sum);
         this.value = isNaN(average) ? 0 : average.toFixed(1)// Verificar si el promedio es NaN y mostrar 0 en su lugar
       }
     });

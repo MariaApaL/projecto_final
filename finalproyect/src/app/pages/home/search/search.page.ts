@@ -51,6 +51,8 @@ export class SearchPage implements OnInit {
 
   }
 
+  ionViewWillEnter() {
+  }
   //obtener la ubicación actual por capacitor
   async getCurrentPosition(): Promise<{ latitude: number; longitude: number }> {
     const position = await Geolocation.getCurrentPosition();
@@ -124,7 +126,7 @@ export class SearchPage implements OnInit {
 
       places.forEach((place: any) => {
         if (!place.geometry || !place.geometry.location) {
-          console.log('Returned place contains no geometry');
+        
           return;
         }
 
@@ -147,12 +149,16 @@ export class SearchPage implements OnInit {
           this.map.panTo(latLng);
         },
         (error) => {
-          console.log('Error al obtener la ubicación: ', error);
+         
         }
       );
     }
   }
 
+  capitalizeWords(str: string):string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  
   getEvents() {
     this.eventService.getEvents().subscribe({
       next: async (res: EventsInterface[]) => {
@@ -162,7 +168,12 @@ export class SearchPage implements OnInit {
   
         const currentDate = new Date();
         this.eventsFiltered = this.events.filter(event => new Date(event.date) > currentDate);
-  
+        this.eventsFiltered.forEach((event: EventsInterface) => {
+          event.name = this.capitalizeWords(event.name);
+          console.log(event.name);
+        }
+        );
+      
         this.showEventMarkers();
 
       },
@@ -171,6 +182,7 @@ export class SearchPage implements OnInit {
     });
   }
 
+  //muestra los marcadores donde esten los eventos
   showEventMarkers() {
     const geocoder = new google.maps.Geocoder();
     const infowindow = new google.maps.InfoWindow();
@@ -179,17 +191,17 @@ export class SearchPage implements OnInit {
       geocoder.geocode({ address: event.location }, (results, status) => {
         if (status === 'OK') {
           const location = results[0].geometry.location;
-          console.log(location);
+  
           const marker = new google.maps.Marker({
             position: location,
             map: this.map,
             icon: {
-              url: '../../../../assets/pin-marker.svg', // Ruta al archivo de imagen del marcador
+              url: '../../../../assets/pin-marker.svg', 
               scaledSize: new google.maps.Size(40, 40) // Tamaño del marcador
             }
           });
           this.eventId = event._id;
-          console.log(this.eventId);
+     
           marker.addListener('click', () => {
             const content = `
               <div class="infowindow-content">
@@ -205,7 +217,7 @@ export class SearchPage implements OnInit {
                 infoWindowElement.addEventListener('click', (e) => {
                   const target = e.target as HTMLElement;
                   if (target.tagName === 'H2') {
-                    console.log('click en el título',this.eventId);
+              
                     this.openInfo(this.eventId);
                   }
                 });
@@ -225,9 +237,3 @@ export class SearchPage implements OnInit {
 
   }
 }
-
-
-// const infowindowElement = document.querySelector('.infowindow-title');
-// infowindowElement.addEventListener('click', () => {
-//   this.navCtrl.navigateForward(`/event-info/${event._id}`);
-// });

@@ -78,8 +78,7 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
     
     ];
     
-    console.log('ngOnInit');
-    // this.ionViewWillEnter();
+  
    
     
   }
@@ -106,10 +105,21 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
         this.allEvents = this.myEvents.filter(event => new Date(event.date) > currentDate);
         this.allEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         this.displayedEvents = this.allEvents.slice(0, 5);
-        console.log(this.displayedEvents);
+       // Capitalizar la primera letra de event.name
+       this.displayedEvents.forEach((event: EventsInterface) => {
+        event.name = this.capitalizeWords(event.name);
+        console.log(event.name);
+      }
+     );
+    
       }
     });
   }
+
+  capitalizeWords(str: string):string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   
   loadMoreEvents(event: any) {
     // Simula una carga asincrónica con un retraso de 1 segundo

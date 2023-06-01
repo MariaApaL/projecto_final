@@ -13,21 +13,6 @@ exports.getReports = async (req, res) => {
 
 };
 
-// exports.checkReportLimit = async (req, res) => {
-//     const userId = req.params.id;
-//     const eventId = req.body.eventId;
-
-//     // consulta a la base de datos para obtener el número de reportes realizados por el usuario para el evento en las últimas 24 horas
-//     const today = new Date();
-//     const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-//     const reportCount = await Report.countDocuments({
-//         user: userId,
-//         event: eventId,
-//         createdAt: { $gte: yesterday }
-//     });
-
-//     res.send({ reports: reportCount });
-// }
 
 
 function isSameDay(date1, date2) {

@@ -11,20 +11,25 @@ declare let google: any;
 })
 export class CreateEventModalComponent implements OnInit {
 
-
+//Para guardar la categoria que se asigna
   newCategory: string = "";
-
+//formulario
   public form: FormGroup;
-  
+  //para guardar la fecha actual en formato string
  currentDate :string;
+ //Para el autocomplete de google maps
   autocomplete: { input: string; };
   autocompleteItems: any[];
   location: any;
   placeid: any;
   GoogleAutocomplete: any;
+
+  //Para la imagen
   image: any;
+  //Para la preview de la imagen
   imagePreview: string;
 
+//Para guardar la categoria que se selecciona
   categories =[
     { label: 'Cultura', value: 'cultura', checked: false },
     { label: 'Deportes', value: 'deportes', checked: false },
@@ -70,15 +75,16 @@ export class CreateEventModalComponent implements OnInit {
   
   }
 
-
+  //form control a parte para el precio
   get f() {
     return this.form.controls;
   }
   
   
+  //funcion para crear el evento
   createEvent() {
    
-    console.log(this.form.value.price);
+    
     if (this.form.valid ) {
       const name = this.form.value.eventname.toLowerCase();
       const date = this.form.value.date;
@@ -86,7 +92,6 @@ export class CreateEventModalComponent implements OnInit {
       const numPlazas = this.form.value.plazas;
       const price = this.form.value.price;
       const category = this.form.value.category;
-      console.log(category);
       const location = this.autocomplete.input;
       const author = localStorage.getItem('userId');
       const image = this.image;
@@ -115,8 +120,7 @@ export class CreateEventModalComponent implements OnInit {
       this.eventService.createEvent(name, date, location, author, numPlazas, description, price, category)
         .subscribe({
           next: (data) => {
-            console.log(data);
-            console.log(data.event._id);
+
             this.presentAlert("Evento creado", "El evento se ha creado correctamente");
             this.uploadPicture(data.event._id);
             this.closeModal();
@@ -150,7 +154,9 @@ async presentAlert(header: string, message: string) {
 }
 
 
+// PARA EL GOOGLE MAPS  AUTOCOMPLETE
 
+// recoge lo que se escriba en el input y muestra las predicciones
   UpdateSearchResults() {
     if (this.autocomplete.input == '') {
       this.autocompleteItems = [];
@@ -173,14 +179,15 @@ async presentAlert(header: string, message: string) {
       });
   }
 
+  // borrael input
   ClearAutocomplete() {
     this.autocompleteItems = []
     this.autocomplete.input = ''
   }
 
+  //guarda la predicción seleccionada
   SelectSearchResult(item: any) {
     this.autocomplete.input = item.description;
-    console.log(item.description)
     this.autocompleteItems = [];
 
   }
@@ -209,11 +216,7 @@ openFileInput() {
 }
 
 uploadPicture(eventId: string) {
-  this.eventService.uploadEventPhoto(eventId, this.image).subscribe({
-    next: (data) => {
-      console.log(data);
-    }
-  });
+  this.eventService.uploadEventPhoto(eventId, this.image).subscribe();
 
 }
 

@@ -13,9 +13,11 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class ChangeEmailComponent implements OnInit {
 
-
+// formulario
   form:FormGroup;
+  // id del usuario
   userId = localStorage.getItem('userId');
+  // email del usuario
   userEmail:UsersInterface;
 
   constructor(private modal:ModalController,
@@ -37,7 +39,7 @@ export class ChangeEmailComponent implements OnInit {
     this.modal.dismiss();
   }
 
-
+// funcion para actualizar el email
   update() {
     
     const email = this.form.value.email.trim().toLowerCase();
@@ -47,7 +49,7 @@ export class ChangeEmailComponent implements OnInit {
         next: data => {
         
           this.modal.dismiss();
-          console.log(data);
+       
         },
         error: error => {
           this.presentAlert("Error", error.error.message);
@@ -58,9 +60,10 @@ export class ChangeEmailComponent implements OnInit {
     }
   }
 
+  // funcion para obtener el email del usuario
   getUser(){
     this.auth.getUserById(this.userId).subscribe((data)=>{
-      console.log(data);
+     
       this.userEmail=data.email;
     }
     )

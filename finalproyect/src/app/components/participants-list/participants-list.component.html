@@ -15,8 +15,8 @@
       </ion-avatar>
     
       <div class="info">
-        <h2 class="user">{{participant.user}}</h2>
-        <h3 class="name">{{participant.name}}</h3>
+        <h2 class="user" (click)="openUser(participant._id)">{{participant.user}}</h2>
+        <h3 class="name"(click)="openUser(participant._id)">{{participant.name}}</h3>
       </div>
     </div>
   </ion-list>

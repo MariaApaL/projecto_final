@@ -13,14 +13,19 @@ import { AuthService } from 'src/app/services/auth.service';import { EventServic
 })
 export class OtheruserPagePage implements OnInit {
   
-  
-  isFavorite: boolean;
+//para guardar el id del usuario
   userId = localStorage.getItem('userId');
+//para guardar el id del usuario del perfil
   profileUserId:string;
+//para guardar la informacion del usuario del perfil
   profileUser:any;
+//para guardar el numero de eventos
   eventCount: number = 0;
+//para guardar los eventos creados y mostrarlos
   createdEvents:EventsInterface[]=[];
+//para las valoraciones
   value:any;
+  //para el infinity scroll
   displayedEvents: EventsInterface[] = [];
   events:EventsInterface[]=[] // Eventos que se muestran actualmente en la página
  
@@ -58,6 +63,7 @@ export class OtheruserPagePage implements OnInit {
 }
 
 
+// muestra eventos por autor
 findEventsByAuthorId(authorId: any) {
   this.eventService.findEventsByAuthorId(authorId).subscribe({
     next: async (data) => {
@@ -65,7 +71,7 @@ findEventsByAuthorId(authorId: any) {
       this.events = this.createdEvents
     
       this.createdEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-      console.log("refresco eventos")
+  
       this.eventCount = this.createdEvents.length;
       this.displayedEvents = this.events.slice(0, 5);
       
@@ -82,18 +88,18 @@ findEventsByAuthorId(authorId: any) {
       localStorage.setItem('previousUrl', location.href);
     }
 
+    //infinity scrroll
     loadMoreEvents(event: any) {
       // Simula una carga asincrónica con un retraso de 1 segundo
       setTimeout(() => {
         const startIndex = this.displayedEvents.length;
         const endIndex = startIndex + 5;
-        console.log("0",endIndex);
-    
+      
         
           const moreEvents = this.events.slice(startIndex, endIndex);
-          console.log("1", moreEvents);
+
           this.displayedEvents = this.displayedEvents.concat(moreEvents);
-          console.log("2", this.displayedEvents);
+     
     
           event.target.complete();
     
@@ -108,19 +114,20 @@ findEventsByAuthorId(authorId: any) {
       this.navCtrl.back();
     }
 
+
+    //Muetsra la media de las valoraciones en el perfil
+
     async getValorations(userId:string){
       this.auth.getValuationsByAuthor(userId).subscribe({
         next: async (data) => {
           const valuations = await data;
           
-          const values = valuations.valuations; // Acceder al array de valores
-          const valuesArray = values.map(valuation => valuation.value); // Obtener un nuevo array con los valores de "value"
+          const values = valuations.valuations; 
+          const valuesArray = values.map(valuation => valuation.value); 
           
-          const sum = valuesArray.reduce((total, value) => total + value, 0); // Sumar los valores
+          const sum = valuesArray.reduce((total, value) => total + value, 0); 
           const average = valuesArray.length > 0 ? sum / valuesArray.length : 0; // Calcular el promedio o establecerlo como 0 si el array está vacío
-          
-          console.log("Valores:", valuesArray);
-          console.log("Suma:", sum);
+   
           this.value= isNaN(average) ? 0 : average.toFixed(1)// Verificar si el promedio es NaN y mostrar 0 en su lugar
         }
       });

@@ -30,7 +30,7 @@ export class SignupPage implements OnInit {
 
     this.form = new FormGroup({
       user: new FormControl('',[Validators.required, Validators.maxLength(20), Validators.pattern(/^(?=.*[a-zA-Z]).+$/)]),
-      name: new FormControl('',[Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-Z]+$/)]),
+      name: new FormControl('',[Validators.required, Validators.maxLength(30)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.pattern(/^(?=(?:.*\d))(?=.*[A-Z])(?=.*[a-z])(?=.*[.,*!?¿¡/#$%&])\S{8,30}$/
       )]),
@@ -81,9 +81,9 @@ export class SignupPage implements OnInit {
     if(this.form.valid){
       
       
-    // const user = this.form.controls.user.value.trim().toLowerCase();
+  
     const user = this.form.controls.user.value.replace(/\s+/g, '');
-    console.log(user);
+  
     const password = this.form.controls.password.value.trim();
     const rpassword = this.form.controls.rpassword.value.trim();
     const name = this.form.controls.name.value.trim();
@@ -91,7 +91,7 @@ export class SignupPage implements OnInit {
     const picture = "../../assets/persons/avatar.svg"
     this.auth.register(user, name, password, email,picture).subscribe({
       next: res => {
-        console.log(res); 
+
         this.auth.logOut();
         this.login(res.user.user, password);
        // Guardamos el token en el localStorage
@@ -129,13 +129,7 @@ export class SignupPage implements OnInit {
 
 
   login(usermail:any, password:string){
-    this.auth.login(usermail, password).subscribe({
-      next: res => {
-        console.log("entro en login")
-        console.log('user',res);
-        // Guardamos el token en el localStorage
-  }
-});
+    this.auth.login(usermail, password).subscribe();
   }
  
 

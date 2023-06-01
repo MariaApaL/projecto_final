@@ -70,7 +70,7 @@
 
     <ion-card >
 
-      <ion-card-header class="ion-no-padding">
+      <ion-card-header class="ion-no-padding" (click)="selectEvent(event._id)">
         <div class="img-container">
         <img class="event-image" src="{{event.picture}}" />
       </div>

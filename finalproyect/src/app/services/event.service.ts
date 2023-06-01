@@ -154,7 +154,10 @@ export class EventService {
     const url = `${this.url}/addValuation/${eventId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const body = { userId, value, text };
-    return this.http.post(url, body, { headers: headers });
+    return this.http.post(url, body, { headers: headers }).pipe(
+      tap(() => {
+       this._refreshNeeded$.next();
+      }));
   }
 
   //devuelve las valoraciones de un evento
@@ -165,7 +168,7 @@ export class EventService {
   }
   //devuelve las valoraciones de un evento por autor
   getEventValuationsByAuthor(eventId: any, authorId: any): Observable<any> {
-    const url = `${this.url}/getEventValuationsByAuthor/${authorId}`;
+    const url = `${this.url}/getEventValuationsByAuthor/${eventId}/${authorId}`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     // const options = { body: body , headers: headers };
     return this.http.get(url, { headers: headers });
