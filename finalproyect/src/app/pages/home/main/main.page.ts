@@ -116,15 +116,9 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
     setTimeout(() => {
       const startIndex = this.displayedEvents.length;
       const endIndex = startIndex + 5;
-      console.log("0",endIndex);
-  
-      
-        const moreEvents = this.allEvents.slice(startIndex, endIndex);
-        console.log("1", moreEvents);
-        this.displayedEvents = this.displayedEvents.concat(moreEvents);
-        console.log("2", this.displayedEvents);
-  
-        event.target.complete();
+      const moreEvents = this.allEvents.slice(startIndex, endIndex);
+      this.displayedEvents = this.displayedEvents.concat(moreEvents);
+      event.target.complete();
   
       
       

@@ -112,10 +112,9 @@ export class UserPagePage implements OnInit {
     this.eventService.findEventsByAuthorId(authorId).subscribe({
       next: async (data: EventsInterface) => {
         this.myEvents = await Object.values(data);
-        this.allCreated = this.myEvents;
+        
 
-        this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
-        console.log("refresco eventos")
+        this.allCreated= this.myEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // ordenar los eventos por fecha
         this.eventCount = this.myEvents.length;
         this.displayedCreated = this.allCreated.slice(0, 5);
 
@@ -130,10 +129,7 @@ export class UserPagePage implements OnInit {
     this.eventService.getEventsByParticipantId(userId).subscribe({
       next: (data: EventsInterface) => {
         this.joinedEvents = Object.values(data);
-        this.allJoined = this.joinedEvents;
-        ;
-        this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        console.log(this.joinedEvents)
+        this.allJoined =  this.joinedEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.displayedJoined = this.allJoined.slice(0, 5);
         return this.joinedEvents;
       }
@@ -146,17 +142,9 @@ export class UserPagePage implements OnInit {
     setTimeout(() => {
       const startIndex = this.displayedJoined.length;
       const endIndex = startIndex + 5;
-      console.log("0", endIndex);
-
-
       const moreEvents = this.allJoined.slice(startIndex, endIndex);
-      console.log("1", moreEvents);
       this.displayedJoined = this.displayedJoined.concat(moreEvents);
-      console.log("2", this.displayedJoined);
-
       event.target.complete();
-
-
 
     }, 1000);
   }
@@ -167,18 +155,9 @@ export class UserPagePage implements OnInit {
     setTimeout(() => {
       const startIndex = this.displayedFavs.length;
       const endIndex = startIndex + 5;
-      console.log("0", endIndex);
-
-
       const moreEvents = this.allFavs.slice(startIndex, endIndex);
-      console.log("1", moreEvents);
       this.displayedFavs = this.displayedFavs.concat(moreEvents);
-      console.log("2", this.displayedFavs);
-
       event.target.complete();
-
-
-
     }, 1000);
   }
 
@@ -187,29 +166,20 @@ export class UserPagePage implements OnInit {
     setTimeout(() => {
       const startIndex = this.displayedCreated.length;
       const endIndex = startIndex + 5;
-      console.log("0", endIndex);
-
-
       const moreEvents = this.allCreated.slice(startIndex, endIndex);
-      console.log("1", moreEvents);
       this.displayedCreated = this.displayedCreated.concat(moreEvents);
-      console.log("2", this.displayedCreated);
-
       event.target.complete();
-
-
 
     }, 1000);
   }
+
+
   getUser() {
     this.auth.getUserById(this.userId).subscribe({
       next: async (data) => {
         console.log("user", data);
         this.currentUser = await data;
         this.picture = this.currentUser.picture;
-
-
-
       }
     });
 
@@ -221,13 +191,7 @@ export class UserPagePage implements OnInit {
       next: (data) => {
         console.log(data);
         this.myFavs = Object.values(data);
-        this.allFavs = this.myFavs;
-        this.myFavs = data.map(event => ({
-          ...event,
-          favorite: localStorage.getItem(`favorite_${event._id}`) === 'true'
-        }));
-
-        this.myFavs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.allFavs = this.myFavs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.displayedFavs = this.allFavs.slice(0, 5);
         return this.myFavs
       }

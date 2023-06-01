@@ -37,7 +37,7 @@ export class ReportUserModalComponent implements OnInit {
   
   }
 
-  ionViewDidEnter(){
+  ionViewWillEnter(){
     this.getUserByReportCount();
   }
 
@@ -74,8 +74,8 @@ export class ReportUserModalComponent implements OnInit {
   }
 
 
-  filtrarEventos(res: any[]): any[] {
-    const eventosFiltrados: any[] = res.flatMap(user => user.reports.map(report => report.eventId));
+  filtrarEventos(user: any): any[] {
+    const eventosFiltrados: any[] = user.reports.map(report => report.eventId);
     return eventosFiltrados.filter((value, index, self) => {
       return self.indexOf(value) === index;
     });
@@ -122,7 +122,7 @@ deleteUser(id:string){
       this.deleteAllEvents(id);
       this.deleteAllComments(id);
       this.deleteAllPlazas(id);
-      this.ionViewDidEnter();
+      this.ionViewWillEnter();
       
       console.log(user);
     },error: (err) => {

@@ -36,6 +36,9 @@ export class CalendarPage implements OnInit {
    //Para almacenar el dia seleccionado
   selectedDay: number; 
 
+  initialSlideIndex: number;
+
+
 
 
   constructor(private eventService: EventService, private navCtrl: NavController) { }
@@ -43,6 +46,7 @@ export class CalendarPage implements OnInit {
   ngOnInit() {
    
     
+  
   }
 
   ionViewWillEnter() {
@@ -50,9 +54,12 @@ export class CalendarPage implements OnInit {
       this.currentDate.toLocaleString('es-ES', { month: 'long' })
     );
     this.days = this.getDays(this.currentDate);
-    
+    console.log("hola");
     this.getEvents();
     this.currentDay = this.currentDate.getDate();
+    this.initialSlideIndex = this.getInitialSlide();
+    console.log('initialSlideIndex', this.initialSlideIndex);
+
   }
 
   capitalizeFirstLetter(str: string): string {
@@ -67,12 +74,14 @@ export class CalendarPage implements OnInit {
     const numDays = new Date(year, month + 1, 0).getDate();
     const daysArray = Array.from({ length: numDays }, (_, i) => i + 1);
   
-    if (date.getMonth() === this.currentDate.getMonth()) {
-      return daysArray.filter((day) => day >= currentDay);
-    } else {
-      return daysArray;
-    }
+    return daysArray;
+    // if (date.getMonth() === this.currentDate.getMonth()) {
+    //   return daysArray.filter((day) => day >= currentDay);
+    // } else {
+    //   return daysArray;
+    // }
   }
+
 
   getWeekDayName(day: number): string {
     const weekDays = [  'Dom','Lun', 'Mar', 'Miér', 'Juev', 'Vie', 'Sáb'];
@@ -104,21 +113,66 @@ export class CalendarPage implements OnInit {
     });
   }
 
+  selectDate(selectedDate: number) {
+    if (this.selectedDay === selectedDate && selectedDate !== this.currentDay) {
+      this.selectedDay = null;
+    } else if (this.selectedDay === selectedDate && selectedDate === this.currentDay) {
+      this.selectedDay = this.currentDay;
+    } else {
+      this.selectedDay = selectedDate;
+    }
+    this.filterEventsBySelectedDay();
+  }
+
+
   deselectDate() {
     this.selectedDay = null; // Establecer el valor de selectedDay como null para deseleccionar el día
-    this.showAllEvents(); // Mostrar todos los eventos mayores o iguales a la fecha de hoy
+    this.showAllEvents(); // Mostrar todos los eventos disponibles
+  }
+  
+  filterEventsBySelectedDay() {
+    if (this.selectedDay === null) {
+      this.showAllEvents();
+    } else {
+      const selectedDateObj = new Date(this.currentYear, this.currentDate.getMonth(), this.selectedDay);
+      selectedDateObj.setHours(0, 0, 0, 0);
+      this.filteredEvents = this.events.filter((event: EventsInterface) => {
+        const eventDate = new Date(event.date);
+        eventDate.setHours(0, 0, 0, 0);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() === selectedDateObj.getTime() && eventDate >= currentDate;
+      });
+    }
+  }
+
+  getInitialSlide(): number {
+    console.log("HOLA");
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+  
+    const currentDayIndex = this.days.findIndex(day => {
+      const date = new Date(currentYear, currentMonth, day);
+      return date.getDate() === currentDay;
+    });
+  
+    
+    return Math.floor(currentDayIndex / 4);
+  }
+
+  isCurrentDay(day: number): boolean {
+    const currentDate = new Date();
+    return (
+      day === currentDate.getDate() &&
+      currentDate.getMonth() === this.currentDate.getMonth() &&
+      currentDate.getFullYear() === this.currentDate.getFullYear()
+    );
   }
   
   showAllEvents() {
-    // const today = new Date(); // Obtener la fecha de hoy
-    // today.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00
-  
-    // this.filteredEvents = this.events.filter((event: EventsInterface) => {
-    //   const eventDate = new Date(event.date);
-    //   eventDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00 del evento
-  
-    //   return eventDate >= today; // Mostrar solo los eventos que son iguales o mayores a la fecha de hoy
-    // });
+
     const today = new Date(); // Obtener la fecha de hoy
     today.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00
   
@@ -137,20 +191,7 @@ export class CalendarPage implements OnInit {
   }
 
 
-selectDate(selectedDate: number) {
-  this.selectedDay = selectedDate;
-  const selectedDateObj = new Date(this.currentYear, this.currentDate.getMonth(), selectedDate);
-  selectedDateObj.setHours(0, 0, 0, 0);
-  this.filteredEvents = this.events.filter((event: EventsInterface) => {
-    const eventDate = new Date(event.date);
-    eventDate.setHours(0, 0, 0, 0);
-    return eventDate.getTime() === selectedDateObj.getTime();
-  });
 
-  // Asignar los eventos filtrados a this.filteredEvents
-  this.filteredEvents = this.filteredEvents;
-}
-  
 
 goToInfo(id: string) {
   this.navCtrl.navigateForward(`/event-info/${id}`);

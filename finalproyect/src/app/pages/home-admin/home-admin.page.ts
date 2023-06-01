@@ -85,7 +85,7 @@ export class HomeAdminPage implements OnInit {
   getUserByReportMoreThan10() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       this.filteredUsersMorenThan10= res.filter(user => 
-        user.reports.length >= 4 && user.reports.length < 30 && 
+        user.reports.length >= 6 && user.reports.length < 30 && 
         (user.deleted === false && user.blocked === false));
       console.log(this.filteredUsersMorenThan10);
     });
