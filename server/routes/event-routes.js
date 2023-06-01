@@ -73,7 +73,7 @@ module.exports = function (app) {
  app.get("/getEventValuationsByAuthor/:eventId/:authorId", controller.getEventValuationsByAuthor);
  //Obtener valoraciones de un usuario (las que le han puesto a sus eventos)
  app.get("/getValuationsByAuthor/:authorId", controller.getValuationsByAuthor);
- 
+ app.delete("/deleteUserValuation/:userId/:valuationId", controller.deleteUserValuation);
 app.delete("/deleteUserValuations/:id", controller.deleteUserValuations);
 
 };

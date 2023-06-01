@@ -178,4 +178,12 @@ export class EventService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.delete(url, { headers: headers });
   }
+
+  deleteUserValuation(userId: string, valuationId: string): Observable<any> {
+    
+    const url = `${this.url}/deleteUserValuation/${userId}/${valuationId}`;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.delete(url, { headers: headers });
+   
+  }
 }

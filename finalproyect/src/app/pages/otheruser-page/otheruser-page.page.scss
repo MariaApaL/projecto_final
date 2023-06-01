@@ -1,11 +1,9 @@
 ion-header {
-  --background: #fefefe;
-
-  ion-toolbar {
-    --background: #fefefe;
-  }
-
+  --background: #fef1ee;
 }
+  ion-toolbar {
+    --background: #fef1ee;
+  }
 
 .config-icon {
   font-size: 30px;
@@ -44,7 +42,7 @@ ion-content {
   }
 
   .profile {
-    background: #fef1fe;
+    background: #fef1ee;
     height:50%;
     .profile-stars {
       display: flex;
@@ -146,20 +144,12 @@ ion-segment {
     margin-left: 0;
     margin-top: 0;
 
-   
     ion-card-header {
-      .img-container {
-        width: 100%; 
-        height: 200px; 
-        overflow: hidden; 
-      }
-      
-      .event-image {
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
+      img {
+        width: 100%;
       }
     }
+
     ion-card-content {
       padding: 20px;
 
@@ -200,61 +190,17 @@ ion-segment {
 
 }
 
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
+
+ion-card-header {
+  .img-container {
+    width: 100%; /* Establece el ancho deseado para el contenedor de la imagen */
+    height: 200px; /* Establece la altura deseada para el contenedor de la imagen */
+    overflow: hidden; /* Oculta cualquier contenido que exceda las dimensiones del contenedor */
+  }
   
-
-  .members {
-    position: absolute;
-    bottom: 10px;
-    right: 0;
-
-    display: flex;
-    // justify-content: flex-end;
-
-    p {
-      padding-top: 5px;
-      padding-left: 5px;
-      color: var(--ion-color-lettering);
-      font-size: 15px;
-    }
-
-    ion-icon {
-      font-size: 20px;
-      color: var(--ion-color-tertiary);
-    }
+  .event-image {
+    width: 100%; /* Establece un ancho del 100% para que la imagen ocupe todo el espacio disponible dentro del contenedor */
+    height: 100%; /* Establece una altura del 100% para que la imagen ocupe todo el espacio disponible dentro del contenedor */
+    object-fit: cover; /* Hace que la imagen se ajuste dentro del contenedor sin deformarse, recortando si es necesario */
   }
-
-
-  .fav-buttons {
-
-    bottom: 10px;
-    left: 0;
-    display: flex;
-    align-items: center;
-
-    justify-content: flex-start;
-
-  }
-
-  .event-buttons {
-    float: right;
-    margin-left: 20px;
-
-    ion-button {
-      --background-activated: var(--ion-color-secondary);
-      font-size: 10px;
-      --background: rgb(254, 232, 230);
-
-      ion-icon {
-        font-size: 20px;
-
-        color: var(--ion-color-tertiary);
-      }
-    }
-
-  }
-
 }

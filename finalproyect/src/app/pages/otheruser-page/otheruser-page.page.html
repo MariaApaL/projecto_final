@@ -45,7 +45,7 @@
 
       </ion-segment-button>
     </ion-segment>
-    <!-- FIN DEL SEGMENTO DE MEGUSTA Y MIS EVENTOS -->
+
 
     <!--EVENTOS -->
 
@@ -68,26 +68,22 @@
         </div>
 
         <div class="name">
-          <ion-card-title class="eventname" (click)="selectEvent(event._id)"><strong>{{ event.name
+          <ion-card-title class="eventname" color="tertiary" (click)="selectEvent(event._id)"><strong>{{ event.name
               }}</strong></ion-card-title>
 
         </div>
 
-        <div class="buttons">
-          <div class="members">
-            <ion-icon name="person"></ion-icon>
-            <p class="plazas"> <strong>{{event.plazas.length}}</strong>/{{event.numPlazas}}</p>
-          </div>
-
-        </div>
+        
 
 
       </ion-card-content>
     </ion-card>
+    
+    <ion-infinite-scroll (ionInfinite)="loadMoreEvents($event)" (ionInfiniteThreshold)="loadMoreEventsThreshold = $event">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más eventos..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
  
     
-  <ion-infinite-scroll (ionInfinite)="loadMoreEvents($event)" (ionInfiniteThreshold)="loadMoreEventsThreshold = $event">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más eventos..."></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+  
 </ion-content>

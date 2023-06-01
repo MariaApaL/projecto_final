@@ -360,6 +360,22 @@ exports.deleteUserValuations = async (req, res) => {
   }
 };
 
+exports.deleteUserValuation = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const valuationId = req.params.valuationId;
+
+    await Event.updateOne(
+      { 'valuations._id': valuationId, 'valuations.author': userId },
+      { $pull: { valuations: { _id: valuationId } } }
+    );
+
+    res.status(200).json({ message: 'El comentario del usuario ha sido eliminado.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al eliminar el comentario del usuario.' });
+  }
+};
+
 exports.addValuation = async (req, res) => {
   try {
     const eventId = req.params.id;

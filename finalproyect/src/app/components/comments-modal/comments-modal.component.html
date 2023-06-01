@@ -1,21 +1,13 @@
 <ion-header>
   <ion-toolbar>
       <ion-buttons slot="start">
-          <ion-button (click)="dismiss()">Cerrar</ion-button>
+          <ion-button color="tertiary" (click)="dismiss()">Cerrar</ion-button>
       </ion-buttons>
 
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <!-- <ion-item *ngFor="let comment of comments">
-      <ion-label>
-        <h2>{{comment.name}}</h2>
-        <p>{{comment.comment}}</p>
-      </ion-label>
-    </ion-item> -->
-  </ion-list>
 
   <div class="text-area">
 
@@ -70,7 +62,9 @@
             <p class="comment-text">{{ valuation.text }}</p>
         
         </ion-card-content>
-       
+       <ion-button (click)="delete(valuation.author._id, valuation._id)" class="delete-button"  *ngIf="valuation.author._id===userId">
+        <ion-icon name="trash-outline" slot="icon-only" /></ion-button>
+   
       </ion-card>
 
     </ion-list>

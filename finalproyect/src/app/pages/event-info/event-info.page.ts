@@ -271,8 +271,13 @@ export class EventInfoPage implements OnInit {
         break;
 
       case this.isAdmin:
-        this.disabledButton = false;
+        this.disabledButton = true;
         break;
+
+        case this.isMine:
+          this.disabledButton = true;
+          break;
+
 
       default:
         this.disabledButton = false;

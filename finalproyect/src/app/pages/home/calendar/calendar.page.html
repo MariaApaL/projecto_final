@@ -39,7 +39,7 @@
     <ion-card class="event-card">
       <ion-list>
         
-        <div class="event" > 
+        <div class="event" (click)="goToInfo(event._id)" > 
             <img [src]="event.picture" />
           <ion-item lines="none">
             <ion-label>{{ event.name }}</ion-label>

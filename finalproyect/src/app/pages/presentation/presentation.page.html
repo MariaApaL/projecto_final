@@ -3,18 +3,14 @@
 
   <div class="slide-container">
     <ion-row class="banners">
-      <swiper-container class="ion-margin-top" [slidesPerView]="1" [clickable]="true">
+      <swiper-container class="ion-margin-top" [slidesPerView]="1" [clickable]="true" [pagination]="{ clickable: true, type: 'bullets' }">
+        <swiper-pagination slot="pagination"></swiper-pagination>
         <swiper-slide *ngFor="let slide of slides">
-        
-          
-            <ion-label>
-             
-              <img src="{{slide?.img_no}}"/>
-              <p>{{slide?.title}}</p>
-              
-            </ion-label>
-      
-      </swiper-slide>
+          <ion-label>
+            <img src="{{slide?.img_no}}"/>
+            <p>{{slide?.title}}</p>
+          </ion-label>
+        </swiper-slide>
       </swiper-container>
     </ion-row>
   </div>

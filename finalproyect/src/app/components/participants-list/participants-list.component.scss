@@ -1,7 +1,17 @@
+ion-header {
+    --background: #fef1ee;
+  }
+    ion-toolbar {
+      --background: #fef1ee;
+    }
+
+
+
 .participant-list {
     display: flex;
     align-items: center;
     margin:10px;
+    background-color: #fef1ee;
 }
 
 .avatar {
@@ -9,11 +19,13 @@
     padding: 10px;
     width: 90px;
     height: 90px;
+    
 }
 
 .info {
     display: flex;
     flex-direction: column;
+    background-color: #fef1ee;
 }
 
 .user {

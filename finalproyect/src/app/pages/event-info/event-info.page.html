@@ -84,7 +84,7 @@
     </div> -->
 
     <div class="join">
-      <ion-button  [disabled]="disabledButton" expand="block" class="ion-margin" (click)="joinOrLeaveEvent()"
+      <ion-button *ngIf="!isMine&&!isAdmin" [disabled]="disabledButton" expand="block" class="ion-margin" (click)="joinOrLeaveEvent()"
         class="join-button">
         {{isJoined ? "Cancelar" : "Unirse"}}
       </ion-button>

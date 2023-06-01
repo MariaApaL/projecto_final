@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 import { EventsInterface } from 'src/app/interfaces/event';
 import { EventService } from 'src/app/services/event.service';
@@ -37,18 +38,22 @@ export class CalendarPage implements OnInit {
 
 
 
-  constructor(private eventService: EventService) { }
+  constructor(private eventService: EventService, private navCtrl: NavController) { }
 
   ngOnInit() {
+   
+    
+  }
+
+  ionViewWillEnter() {
     this.currentMonth = this.capitalizeFirstLetter(
       this.currentDate.toLocaleString('es-ES', { month: 'long' })
     );
     this.days = this.getDays(this.currentDate);
+    
     this.getEvents();
     this.currentDay = this.currentDate.getDate();
-    
   }
-
 
   capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -147,9 +152,10 @@ selectDate(selectedDate: number) {
 }
   
 
+goToInfo(id: string) {
+  this.navCtrl.navigateForward(`/event-info/${id}`);
 }
 
 
-
-
+}
 

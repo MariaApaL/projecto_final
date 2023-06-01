@@ -230,4 +230,12 @@ export class CommentsModalComponent implements OnInit {
       }
     );
   }
-}
+
+  delete(userId:string, valuationId:string){
+    this.eventService.deleteUserValuation(userId, valuationId).subscribe({
+      next: (res: any) => {
+        this.ionViewDidEnter();
+      }
+    });
+    }
+  }
