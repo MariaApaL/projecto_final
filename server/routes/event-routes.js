@@ -17,10 +17,6 @@ module.exports = function (app) {
 
   app.post(
     "/createEvent",
-    [
-      verifyEvent.checkIfEventExists,
-
-    ],
     controller.createEvent
   );
 
