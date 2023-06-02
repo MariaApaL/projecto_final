@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { user } from '@angular/fire/auth';
 import { AlertController, ModalController, NavController, NavParams } from '@ionic/angular';
 import { triggerAsyncId } from 'async_hooks';
 import { EventsInterface } from 'src/app/interfaces/event';
@@ -62,11 +63,13 @@ export class ReportUserModalComponent implements OnInit {
         // Filtra los usuarios que tengan mas de 10 reportes y menos de 30
         this.filteredUsers = res.filter(user => user.reports.length >= 10 && user.reports.length < 30 && !user.deleted);
       
-  
+        console.log(this.filteredUsers); 
         // Filtra el id del evento de cada reporte y quita duplicados 
         this.filteredEvents = this.filtrarEventos(res);
            // Filtra por el tipo de reporte y elimina duplicados
         this.filteredReports = this.filtrarReport(res);
+        
+        console.log(this.filteredReports);
      
        
       } else if (this.count == 'moreThan30') {
@@ -84,13 +87,16 @@ export class ReportUserModalComponent implements OnInit {
   }
 
 //funcion para filtrar los eventos
-  filtrarEventos(user: any): any[] {
+filtrarEventos(user: any): any[] {
+  if (user.reports && Array.isArray(user.reports)) {
     const eventosFiltrados: any[] = user.reports.map(report => report.eventId);
     return eventosFiltrados.filter((value, index, self) => {
       return self.indexOf(value) === index;
     });
+  } else {
+    return [];
   }
-
+}
   //funcion para filtrar los reportes
   filtrarReport(res: any[]): any[] {
     const reportsFiltrados: any[] = res.flatMap(user => user.reports.map(report => report.report));
@@ -98,6 +104,15 @@ export class ReportUserModalComponent implements OnInit {
       return self.indexOf(value) === index;
     });
   }
+
+  getReportType(reportId: string): string {
+    let reportType = '';
+    this.auth.getReportById(reportId).subscribe((report) => {
+      reportType = report.type; // Suponiendo que el nombre del informe se encuentra en la propiedad 'name'
+    });
+    return reportType;
+  }
+
 
   //funcion para ctualizar el array de los eventos
   updateFilteredEvents(deletedEventId: string) {
@@ -171,5 +186,6 @@ deleteAllPlazas(id:string){
     }
   });
 }
+
 
 }

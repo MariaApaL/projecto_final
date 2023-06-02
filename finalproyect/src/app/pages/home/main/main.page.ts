@@ -108,7 +108,7 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
        // Capitalizar la primera letra de event.name
        this.displayedEvents.forEach((event: EventsInterface) => {
         event.name = this.capitalizeWords(event.name);
-        console.log(event.name);
+      
       }
      );
     
@@ -117,7 +117,9 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
   }
 
   capitalizeWords(str: string):string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    const capitalizedStr = str.charAt(0).toUpperCase() + str.slice(1);
+  this.changeDetectorRef.detectChanges();
+  return capitalizedStr;
   }
 
   
@@ -128,6 +130,10 @@ loadMoreEventsThreshold: number; // Umbral de carga para el infinite scroll
       const endIndex = startIndex + 5;
       const moreEvents = this.allEvents.slice(startIndex, endIndex);
       this.displayedEvents = this.displayedEvents.concat(moreEvents);
+      this.displayedEvents.forEach((event: EventsInterface) => {
+        event.name = this.capitalizeWords(event.name);
+      
+      });
       event.target.complete();
   
       

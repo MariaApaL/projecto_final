@@ -68,7 +68,7 @@ exports.getReportsByType = async (req, res) => {
     try {
         // Verificamos que exista el usuario y el tipo de reporte
         const { id } = req.params;
-        const { reportType } = req.body;
+        const { reportType } = req.params;
         const user = await User.findById(id).populate('reports');
         if (!user) {
             return res.status(404).json({ message: 'No se encontró el usuario.' });
@@ -81,6 +81,18 @@ exports.getReportsByType = async (req, res) => {
     }
 };
 
+exports.getReportById = async (req, res) => {
+    try {
+      const report = await Report.findOne({ _id: req.params.id});
+      if (!report) {
+        return res.status(404).send({ message: "Reporte no encontrado" });
+      }
+      res.send(report);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  };
+  
 exports.deleteReportsByEventId = async (req, res) => {
     const  eventId  = req.params.id;
 

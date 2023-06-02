@@ -4,7 +4,8 @@ const eventSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Por favor, escriba un nombre para el evento'],
-        trim: true
+        trim: true,
+        
     },
     category:
     {

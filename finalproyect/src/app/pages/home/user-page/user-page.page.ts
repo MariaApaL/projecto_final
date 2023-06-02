@@ -160,6 +160,10 @@ export class UserPagePage implements OnInit {
       const endIndex = startIndex + 5;
       const moreEvents = this.allJoined.slice(startIndex, endIndex);
       this.displayedJoined = this.displayedJoined.concat(moreEvents);
+      this.displayedJoined.forEach((event: EventsInterface) => {
+        event.name = this.capitalizeWords(event.name);
+      
+      });
       event.target.complete();
 
     }, 1000);
@@ -173,6 +177,10 @@ export class UserPagePage implements OnInit {
       const endIndex = startIndex + 5;
       const moreEvents = this.allFavs.slice(startIndex, endIndex);
       this.displayedFavs = this.displayedFavs.concat(moreEvents);
+      this.displayedFavs.forEach((event: EventsInterface) => {
+        event.name = this.capitalizeWords(event.name);
+      
+      });
       event.target.complete();
     }, 1000);
   }
@@ -184,6 +192,10 @@ export class UserPagePage implements OnInit {
       const endIndex = startIndex + 5;
       const moreEvents = this.allCreated.slice(startIndex, endIndex);
       this.displayedCreated = this.displayedCreated.concat(moreEvents);
+      this.displayedCreated.forEach((event: EventsInterface) => {
+        event.name = this.capitalizeWords(event.name);
+      
+      });
       event.target.complete();
 
     }, 1000);
