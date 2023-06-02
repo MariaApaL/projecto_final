@@ -2,7 +2,7 @@ import { Component, NgZone, OnInit } from '@angular/core';
 import { EventService } from 'src/app/services/event.service';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
 
@@ -39,6 +39,8 @@ export class EditEventPage implements OnInit {
     image: any;
     form: FormGroup;
   
+    //recoge valores iniciales del formulario
+    formInitialValues: any;
     imagePreview: string; 
   
     //id del evento
@@ -77,14 +79,27 @@ export class EditEventPage implements OnInit {
     this.autocomplete = { input: '' };
     this.autocompleteItems = [];
 
-    this.form = this.formBuilder.group({
-      name: ['', [ Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.minLength(10), Validators.maxLength(40)]],
-      description: ['', [ Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.maxLength(300)]],
-      numPlazas: ['', [ Validators.pattern(/^(?!0$)[1-9][0-9]{0,2}$/), Validators.maxLength(3)]],
-      price: ['', [Validators.pattern(/^(?!.*[.,]$)(?!^[-+])(?!^0[.,])(?!^0+$)\d{1,3}(?:\.\d{1,2})?$/), Validators.maxLength(3)]],
-      category: [''],
-      date: ['']
-    });
+    // this.form = this.formBuilder.group({
+    //   name: ['', [ Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.minLength(10), Validators.maxLength(40)]],
+    //   description: ['', [ Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.maxLength(300)]],
+    //   numPlazas: ['', [ Validators.pattern(/^(?!0$)[1-9][0-9]{0,2}$/), Validators.maxLength(3)]],
+    //   price: ['', [Validators.pattern(/^(?!.*[.,]$)(?!^[-+])(?!^0[.,])(?!^0+$)\d{1,3}(?:\.\d{1,2})?$/), Validators.maxLength(3)]],
+    //   category: [''],
+    //   date: ['']
+    // });
+
+    this.form = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.minLength(10), Validators.maxLength(40)]),
+      date: new FormControl(''),
+      description: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-zA-Z]).+$/), Validators.maxLength(300)]),
+      numPlazas: new FormControl('', [Validators.required, Validators.pattern(/^(?!0$)[1-9][0-9]{0,2}$/),Validators.maxLength(3)]),
+      price: new FormControl(0, 
+      [Validators.required,
+      Validators.pattern(/^\d{1,3}(\.\d{1,2})?$/),
+      Validators.maxLength(3),
+      Validators.min(0),]),
+      category: new FormControl('')
+    })
   }
 
 
@@ -92,6 +107,7 @@ export class EditEventPage implements OnInit {
   ngOnInit() {
     //Nos suscribimos a los cambios del formulario
     this.subscribeToFormChanges();
+    this.formInitialValues = { ...this.form.value };
 
     //Obtenemos los datos del evento
    this.eventService.getEvent(this.eventId).subscribe({
@@ -125,6 +141,10 @@ export class EditEventPage implements OnInit {
     });
   }
 
+  get f() {
+    return this.form.controls;
+  }
+  
 
   navigateback() {
     this.navCtrl.navigateBack('/home/user-page');
@@ -137,11 +157,28 @@ export class EditEventPage implements OnInit {
      this.newLocation = event.target.value;
   }
 
+  isFormChanged() {
+    const formValues = this.form.value;
+    return JSON.stringify(formValues) !== JSON.stringify(this.formInitialValues);
+  }
+
   //actualizar el evento
   saveChanges() {
   
       const formDate = this.form.value.date;
       const eventDate = this.eventDate;
+
+      if (!this.isFormChanged()) {
+        // No se realizaron cambios en el formulario, se puede salir de la función
+        return;
+      }
+
+      if (this.form.invalid) {
+        // Si el formulario es inválido, muestra una alerta o realiza alguna acción según tu requerimiento
+        this.presentAlert("Error", "Por favor, completa todos los campos correctamente.");
+        return;
+      }
+
       if (formDate !== eventDate) {
         const currentDate = new Date();
         const minimumDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
@@ -161,8 +198,8 @@ export class EditEventPage implements OnInit {
           return;
         }
       }
-      
-      const updatedData = {
+    
+        const updatedData = {
         name: this.form.value.name,
         description: this.form.value.description,
         date: formDate,
@@ -181,6 +218,8 @@ export class EditEventPage implements OnInit {
           this.navCtrl.navigateBack('/home/user-page');
         }
       });
+     
+      
   }
 
 async presentAlert(header: string, message: string) {

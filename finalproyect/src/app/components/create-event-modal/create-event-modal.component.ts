@@ -138,6 +138,8 @@ export class CreateEventModalComponent implements OnInit {
           }
         });
   
+  }else{
+    this.presentAlert("Error al crear el evento", "Debes rellenar todos los campos correctamente");
   }
   }
 

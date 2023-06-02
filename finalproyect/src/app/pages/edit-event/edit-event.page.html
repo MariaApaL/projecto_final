@@ -9,117 +9,118 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list>
-     <!-- SUBIR FOTOS -->
-     <div class="img-container" (click)="openFileInput()">
-      <input type="file" id="fileInput" style="display: none" (change)="onImageChange($event)" accept="image/*">
-      
-      <div class="preview-image" *ngIf="imagePreview">
-        <img [src]="imagePreview" />
-      </div>
-    
-      <div class="edit-icon">
-        <ion-icon name="create-outline"></ion-icon>
-      </div>
-    </div>
- 
-    
-    <form [formGroup]="form">
-      
-   <!-- NOMBRE DEL EVENTO -->
-  <ion-item>
-    <ion-label position="floating">Nombre del evento</ion-label>
-    <ion-input formControlName="name" maxLength="40" type="text"></ion-input>
-  </ion-item>
-
-  <!-- CONTROL DE ERRORES -->
- <app-error-message class="validator" [field]="form.controls.name" 
- [valid]="true" message="Formato errorneo"></app-error-message>
- <app-error-message class="validator" [field]="form.controls.name" [empty]="true"
- message="Campo Obligatorio"></app-error-message>
-       
-
-  <!-- DESCRIPCIÓN DEL EVENTO -->
-  <ion-item>
-    <ion-label position="floating">Descripción</ion-label>
-    <ion-textarea maxLength="300" formControlName="description"></ion-textarea>
-  </ion-item>
-
-  <!-- CONTROL DE ERRORES -->
-  <app-error-message class="validator" [field]="form.controls.description" [empty]="true"
-            message="Campo Obligatorio"></app-error-message>
-        <app-error-message class="validator" [field]="form.controls.description" [valid]="true" message="Formato errorneo"></app-error-message>
-       
-
-    <!-- NÚMERO DE PLAZAS -->
-    <ion-item>
-      <ion-label position="floating">Número de plazas</ion-label>
-      <ion-input formControlName="numPlazas" value="0" type="number" maxLength="3"></ion-input>
-    </ion-item>
-
-<!-- CONTROL DE ERRORES -->
-<app-error-message class="validator" [field]="form.controls.numPlazas" [empty]="true"
-message="Campo Obligatorio"></app-error-message>
-<app-error-message class="validator" [field]="form.controls.numPlazas" [valid]="true"
-message="Escriba un número correcto"></app-error-message>
-
-
-
-    <!-- PRECIO DEL EVENTO -->
-    <ion-item>
-      <ion-label position="floating">Precio</ion-label>
-      <ion-input formControlName="price" type="number" mmaxLength="3"></ion-input>
-    </ion-item>
-
-    <!-- CONTROL DE ERRORES -->
-
-<app-error-message class="validator" [field]="form.controls.price" [valid]="true"
-message="Escriba un precio correcto"></app-error-message>
-<app-error-message class="validator" [field]="form.controls.price" [empty]="true"
-message="Campo Obligatorio (Introduzca 0 si es gratis )"></app-error-message>
-
-<ion-item class="date-item">
-  <ion-label>Fecha y Hora</ion-label>
-  <ion-datetime-button datetime="datetime"></ion-datetime-button>
-
-  <ion-modal [keepContentsMounted]="true">
-    <ng-template>
-      <ion-datetime locale="es-ES" formControlName="date" [(ngModel)]="date" id="datetime"
-        displayFormat="DD-MM-YYYY HH:mm"></ion-datetime>
-    </ng-template>
-  </ion-modal>
-</ion-item>
-
-    <ion-item>
-      <ion-select placeholder="Elige una Categoría" formControlName="category">
-        <ion-select-option *ngFor="let category of categories" value={{category.value}}>{{category.label}}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    
-   
-  </form>
+  <form id="form" [formGroup]="form">
+    <!-- SUBIR FOTOS -->
   
-
-
-
-    <ion-item>
-      <ion-label position="floating">Ubicación</ion-label>
-      <ion-input [clearInput]="true" 
-      (ionChange)="onLocationChange($event)"
-      [(ngModel)]="autocomplete.input" 
-      (ionInput)="UpdateSearchResults()" 
-      (ionClear)="ClearAutocomplete()"></ion-input>
+    <div class="img-container" *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Preview de la imagen">
+    </div>
+   <input id="fileInput" type="file" style="display: none" (change)="onImageChange($event)" accept="image/*">
+  
+  <ion-item class="picture">
+    <ion-label fixed>Subir foto</ion-label>
+    <input type="file" (change)="onImageChange($event)" accept="image/*" style="display: none">
+    <ion-button slot="end" color="tertiary" (click)="openFileInput()">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+    </ion-button>
   </ion-item>
-
-
-
-  <ion-list [hidden]="autocompleteItems.length == 0">
-      <ion-item *ngFor="let item of autocompleteItems" tappable (click)="SelectSearchResult(item)">
-          {{ item.description }}
+  
+  
+    <!-- NOMBRE DEL EVENTO -->
+    <ion-item>
+      <ion-label position="floating">Nombre del evento</ion-label>
+      <ion-input formControlName="name" maxLength="40" type="text"></ion-input>
+    </ion-item>
+  
+    <!-- CONTROL DE ERRORES -->
+    <app-error-message class="validator" [field]="form.controls.name" [empty]="true"
+              message="Campo Obligatorio"></app-error-message>
+          <app-error-message class="validator" [field]="form.controls.name" [valid]="true" message="Debe ser más largo"></app-error-message>
+         
+  
+     <!-- DESCRIPCIÓN DEL EVENTO -->
+     <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea maxLength="300" formControlName="description"></ion-textarea>
+    </ion-item>
+  
+    <!-- CONTROL DE ERRORES -->
+    <app-error-message class="validator" [field]="form.controls.description" [empty]="true"
+              message="Campo Obligatorio"></app-error-message>
+          <app-error-message class="validator" [field]="form.controls.description" [valid]="true" message="Formato errorneo"></app-error-message>
+         
+  
+      <!-- NÚMERO DE PLAZAS -->
+      <ion-item>
+        <ion-label position="floating">Número de plazas</ion-label>
+        <ion-input formControlName="numPlazas" value="0" type="number" maxLength="3"></ion-input>
       </ion-item>
-  </ion-list>
+  
+  <!-- CONTROL DE ERRORES -->
+  <app-error-message class="validator" [field]="form.controls.numPlazas" [empty]="true"
+  message="Campo Obligatorio"></app-error-message>
+  <app-error-message class="validator" [field]="form.controls.numPlazas" [valid]="true"
+  message="Escriba un número correcto"></app-error-message>
+  
+  
+  
+      <!-- PRECIO DEL EVENTO -->
+      <ion-item>
+        <ion-label position="floating">Precio</ion-label>
+        <ion-input formControlName="price" type="number" maxLength="3"></ion-input>
+      </ion-item>
+  
+      <!-- CONTROL DE ERRORES -->
+      <div class="price-error"*ngIf="f.price.touched && f.price.errors">
+        <div class="validator"*ngIf="f.price.errors.required">Campo Obligatorio</div>
+        <div class="validator"*ngIf="f.price.errors.pattern">Escriba un número válido (máximo 3 dígitos y 2 decimales).</div>
+        <div class="validator"*ngIf="f.price.errors.min">Escriba un número válido</div>
+      </div>
+  
+  
+  
+    <!-- FECHA DEL EVENTO  -->
+    <ion-item class="date-item">
+      <ion-label>Fecha</ion-label>
+      <ion-datetime-button datetime="datetime"></ion-datetime-button>
     
-  </ion-list>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime locale="es-ES" formControlName="date" [(ngModel)]="date" id="datetime" ></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+  
+      <!-- CONTROL DE ERRORES -->
+      <app-error-message class="validator" [field]="form.controls.date" [empty]="true"
+  message="Campo Obligatorio"></app-error-message>
+  <!-- CATEGORIA DE EVENTO -->
+  
+  <ion-item>
+    <ion-select placeholder="Elige una Categoría" formControlName="category">
+      <ion-select-option *ngFor="let category of categories" value={{category.value}}>{{category.label}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+    </form> 
+  
+    
+  
+  
+        <!-- LUGAR DEL EVENTO -->
+        <ion-item>
+          <ion-label position="floating">Ubicación</ion-label>
+          <ion-input [clearInput]="true" [(ngModel)]="autocomplete.input" (ionInput)="UpdateSearchResults()" (ionClear)="ClearAutocomplete()"></ion-input>
+      </ion-item>
+  
+  
+  
+      <ion-list [hidden]="autocompleteItems.length == 0">
+          <ion-item *ngFor="let item of autocompleteItems" tappable (click)="SelectSearchResult(item)">
+              {{ item.description }}
+          </ion-item>
+      </ion-list>
+   
   <br>
 <ion-button expand="block" [disabled]="disableButton" color="tertiary" (click)="saveChanges()" class="ion-padding confirm-button"> Confirmar </ion-button>
 <br>
