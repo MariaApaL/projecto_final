@@ -41,9 +41,10 @@ export class ReportUserModalComponent implements OnInit {
   
   
 
-  ngOnInit() {
+  async ngOnInit() {
      
       this.getUserByReportCount();
+     
   
   }
 
@@ -105,15 +106,17 @@ filtrarEventos(user: any): any[] {
     });
   }
 
-  getReportType(reportId: string): string {
-    let reportType = '';
-    this.auth.getReportById(reportId).subscribe((report) => {
-      reportType = report.type; // Suponiendo que el nombre del informe se encuentra en la propiedad 'name'
-    });
-    return reportType;
+
+  
+   getReportType(reportId: string) {
+
+      const report = this.reportService.getReportById(reportId).subscribe((res)=>{
+        console.log(res);
+      });
+    
+    
+  
   }
-
-
   //funcion para ctualizar el array de los eventos
   updateFilteredEvents(deletedEventId: string) {
     this.filteredEvents = this.filteredEvents.filter(event => event !== deletedEventId);

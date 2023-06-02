@@ -49,5 +49,9 @@ export class ReportService {
       return this.http.delete(url, { headers: headers });
     }
 
-
+    getReportById(id: any): Observable<any> {
+      const url = `${this.url}/getReportById/${id}`;
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+      return this.http.get(url, { headers: headers });
+    }
 }

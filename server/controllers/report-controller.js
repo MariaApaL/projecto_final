@@ -81,7 +81,7 @@ exports.getReportsByType = async (req, res) => {
     }
 };
 
-exports.getReportById = async (req, res) => {
+exports.getReportById= async (req, res) => {
     try {
       const report = await Report.findOne({ _id: req.params.id});
       if (!report) {

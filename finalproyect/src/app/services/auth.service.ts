@@ -171,9 +171,5 @@ export class AuthService {
     return this.http.post(url, body, { headers: headers });
   }
 
-  getReportById(id: any): Observable<any> {
-    const url = `${this.url}/getReportById/${id}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.get(url, { headers: headers });
-  }
+
 }
