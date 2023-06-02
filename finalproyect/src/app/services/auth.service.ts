@@ -75,6 +75,11 @@ export class AuthService {
     localStorage.removeItem('userRole')
   }
 
+  isAdmin(): boolean {
+    // Devuelve true si el usuario es administrador
+    return localStorage.getItem('userRole') === 'admin';
+  }
+  
   //  devuelve el token del usuario almacenado en el localStorage.
   getToken() {
     return localStorage.getItem('token');

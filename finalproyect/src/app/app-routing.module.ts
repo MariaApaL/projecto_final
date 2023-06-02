@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 
 const routes: Routes = [
@@ -14,15 +15,18 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'presentation',
-    loadChildren: () => import('./pages/presentation/presentation.module').then( m => m.PresentationPageModule)
+    loadChildren: () => import('./pages/presentation/presentation.module').then( m => m.PresentationPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'signup',
-    loadChildren: () => import('./pages/signup/signup.module').then( m => m.SignupPageModule)
+    loadChildren: () => import('./pages/signup/signup.module').then( m => m.SignupPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'forgot-pass',
@@ -35,6 +39,7 @@ const routes: Routes = [
   {
     path: 'home-admin',
     loadChildren: () => import('./pages/home-admin/home-admin.module').then( m => m.HomeAdminPageModule),
+    canActivate: [AuthGuard],
     
   },
   {

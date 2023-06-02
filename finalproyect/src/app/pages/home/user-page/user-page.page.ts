@@ -350,13 +350,4 @@ export class UserPagePage implements OnInit {
     });
   }
 
-  handleRefresh(event) {
-    setTimeout(() => {
-      this.getUser();
-      
-  
-    
-    
-    }, 1000);
-  }
 }
