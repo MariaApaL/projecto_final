@@ -8,14 +8,14 @@ const User = db.user;
 
 checkIfEventExists = (req, res, next) => {
   Event.findOne({
-    name: req.body.name,
+ 
     date: req.body.date,
     author: req.body.author
   })
   .exec()
   .then(event => {
     if (event) {
-      res.status(400).send({ message: "Error, ya existe un evento con el mismo nombre, fecha y autor" });
+      res.status(400).send({ message: "Error, ya existe un evento con esa fecha y autor" });
       return;
     }
     
