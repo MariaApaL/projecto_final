@@ -25,3 +25,15 @@ checkIfEventExists = (req, res, next) => {
     return;
   });
 };
+  
+  
+  module.exports = checkIfEventExists;
+
+
+
+const verifyEvent = {
+    checkIfEventExists,
+  
+};
+
+module.exports = verifyEvent;
