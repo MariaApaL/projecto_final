@@ -142,26 +142,26 @@ export class EditEventPage implements OnInit {
   
       const formDate = this.form.value.date;
       const eventDate = this.eventDate;
-    
-  
       if (formDate !== eventDate) {
         const currentDate = new Date();
         const minimumDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
         const maximumDate = new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000);
-  
-        if (formDate < minimumDate) {
+      
+        const selectedDate = new Date(formDate);
+      
+        if (selectedDate < minimumDate) {
           // La fecha del evento es menor a la fecha mínima permitida
           this.presentAlert("Error al actualizar", "La fecha debe ser al menos 24 horas a partir de la fecha actual");
           return;
         }
-  
-        if (formDate > maximumDate) {
+      
+        if (selectedDate > maximumDate) {
           // La fecha del evento es mayor a un año a partir de la fecha actual
           this.presentAlert("Error al actualizar", "La fecha no puede ser mayor a un año a partir de la fecha actual");
           return;
         }
       }
-  
+      
       const updatedData = {
         name: this.form.value.name,
         description: this.form.value.description,
@@ -171,18 +171,16 @@ export class EditEventPage implements OnInit {
         numPlazas: this.form.value.numPlazas,
         category: this.form.value.category
       };
-  
+      
       if (this.image != null) {
         this.uploadPicture(this.eventId);
       }
-  
+      
       this.eventService.updateEvent(this.eventId, updatedData).subscribe({
         next: (data) => {
-          
           this.navCtrl.navigateBack('/home/user-page');
         }
       });
-
   }
 
 async presentAlert(header: string, message: string) {

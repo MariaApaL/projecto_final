@@ -44,7 +44,7 @@ module.exports = function (app) {
 
   app.delete("/deleteByEventId/:id", controller.deleteByEventId);
 
-  app.delete("/deleteEventByNameAndAuthor", controller.deleteEventByNameAndAuthor);
+  app.delete("/deleteEventByIdAndAuthor", controller.deleteEventByIdAndAuthor);
 
   app.delete("/deleteEventsByAuthor/:id", controller.deleteEventsByAuthor);
 

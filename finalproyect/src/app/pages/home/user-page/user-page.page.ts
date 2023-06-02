@@ -240,9 +240,10 @@ export class UserPagePage implements OnInit {
 
 
   //Para poder eliminar un evento
-  deleteEvent(name: string, author: string) {
+  deleteEvent(eventId: string) {
+
     if (this.selectedSegment == 'my-events') {
-      this.eventService.deleteEventByNameAndAuthor(name, author).subscribe({
+      this.eventService.deleteEventByIdAndAuthor(eventId, this.userId).subscribe({
         next: (data) => {
          
           this.presentAlert();

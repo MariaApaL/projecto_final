@@ -87,9 +87,9 @@ export class EventService {
   }
 
   //elimina un evento por nombre y autor
-  deleteEventByNameAndAuthor(name: string, author: string) {
-    const body = { name, author };
-    const URL = `${this.url}/deleteEventByNameAndAuthor`;
+  deleteEventByIdAndAuthor(eventId: string, author: string) {
+    const body = { eventId, author };
+    const URL = `${this.url}/deleteEventByIdAndAuthor`;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const options = { headers: headers, body: body };
     return this.http.delete(URL, options);

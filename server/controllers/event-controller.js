@@ -213,10 +213,10 @@ exports.deleteEventsByAuthor = async (req, res) => {
 
 
 // Eliminar un evento por nombre y autor
-exports.deleteEventByNameAndAuthor = async (req, res) => {
+exports.deleteEventByIdAndAuthor = async (req, res) => {
   try {
-    const { name, author } = req.body;
-    const evento = await Event.findOneAndDelete({ name, author });
+    const { eventId, author } = req.body;
+    const evento = await Event.findOneAndDelete({ _id: eventId, author });
     if (!evento) {
       return res.status(404).send({ message: "Evento no encontrado" });
     }
