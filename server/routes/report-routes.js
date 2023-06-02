@@ -12,7 +12,7 @@ module.exports = function(app) {
 
   app.get("/getReports", controller.getReports);
 
-  app.getReportById("/getReportById/:id", controller.getReportById);
+  app.get("/getReportById/:id", controller.getReportById);
 
  //agregar reporte 
 
