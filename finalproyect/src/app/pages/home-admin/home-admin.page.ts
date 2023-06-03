@@ -77,9 +77,10 @@ export class HomeAdminPage implements OnInit {
 //muestra los usuarios con mas de 10 reportes
   getUserByReportMoreThan10() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
-      this.filteredUsersMorenThan10= res.filter(user => 
-        user.reports.length >= 10 && user.reports.length < 30 && 
-        (user.deleted === false && user.blocked === false));
+      this.filteredUsersMorenThan10= res.filter
+      (user => user.reports.length >= 10 && user.reports.length < 30 && !user.deleted);
+
+        console.log(this.filteredUsersMorenThan10);
     
     });
   }
@@ -88,7 +89,7 @@ export class HomeAdminPage implements OnInit {
   getUserByReportMoreThan30() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       this.filteredUsersMorenThan30 = res.filter(user => user.reports.length >= 30 && 
-        user.reports.length < 50&& user.deleted === false);
+        user.reports.length < 50 && user.deleted === false);
 
     });
   }

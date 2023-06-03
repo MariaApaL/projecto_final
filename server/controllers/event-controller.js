@@ -189,7 +189,7 @@ exports.updateEvent = async (req, res) => {
 exports.deleteByEventId = async (req, res) => {
   try {
     const eventId = req.params.id;
-    await Event.findByIdAndDelete(eventId);
+   const event =  await Event.findByIdAndDelete(eventId);
     if (!eventId) {
       return res.status(404).send({ message: "Evento no encontrado" });
     }

@@ -21,10 +21,11 @@
       </ion-card-header>
       <ion-card-content>
        <ion-list>
-        <h2>Tipo de denuncias</h2>
-        <ion-item >
-          <ion-badge>{{ user.reports._id }}</ion-badge>
-        </ion-item>
+        <!-- <h2>Eventos Denunciados</h2>
+        <ion-item *ngFor="let type of reportTypes">
+          <ion-badge slot="end" color="tertiary">{{type}}</ion-badge>
+      
+        </ion-item> -->
         <h2>Eventos Denunciados</h2>
         <ion-item   *ngFor="let event of filtrarEventos(user)">
           

@@ -108,15 +108,22 @@ filtrarEventos(user: any): any[] {
 
 
   
-   getReportType(reportId: string) {
-
-      const report = this.reportService.getReportById(reportId).subscribe((res)=>{
-        console.log(res);
-      });
-    
-    
-  
+  getReportTypes() {
+    for (const reportId of this.filteredReports) {
+      this.getReportType(reportId);
+    }
+    console.log("hola");
   }
+  
+  reportTypes: string[] = [];
+
+getReportType(reportId: string) {
+  this.reportService.getReportById(reportId).subscribe((res: any) => {
+    const reportType = res.type;
+    this.reportTypes.push(reportType);
+    console.log("hola") // Almacena el tipo de reporte en el array reportTypes
+  });
+}
   //funcion para ctualizar el array de los eventos
   updateFilteredEvents(deletedEventId: string) {
     this.filteredEvents = this.filteredEvents.filter(event => event !== deletedEventId);
@@ -136,17 +143,25 @@ filtrarEventos(user: any): any[] {
 
   }
 
-  //funcion para eliminar el evento y llamar a la funcion de actualizar
-  deleteEvent(eventId:string){
-    this.eventService.deleteByEventId(eventId).subscribe((res)=>{
-     
-      this.reportService.deleteReportsByEventId(eventId).subscribe(); 
+  deleteEvent(eventId: string) {
+    this.eventService.deleteByEventId(eventId).subscribe((res) => {
+      this.closeModal();
+      this.presentAlert('Evento eliminado');
       this.updateFilteredEvents(eventId);
-
-    }
-    );
-}
-
+        
+      this.reportService.deleteReportsByEventId(eventId).subscribe();
+    });
+  }
+  
+  async presentAlert(message: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Alerta',
+      message: message,
+      buttons: ['Aceptar']
+    });
+  
+    await alert.present();
+  }
  
 //funcion para eliminar el usuario y todos sus eventos, comentarios y plazas
 deleteUser(id:string){

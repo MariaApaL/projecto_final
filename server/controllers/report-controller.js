@@ -39,15 +39,15 @@ exports.addReport = async (req, res) => {
         }
 
         const today = new Date();
-        const eventReportsToday = reportedUser.reports.filter(report =>
-            report.eventId.toString() === eventId &&
-            isSameDay(report.created, today) &&
-            report.userId.toString() === userId
-        );
+        // const eventReportsToday = reportedUser.reports.filter(report =>
+        //     report.eventId.toString() === eventId &&
+        //     isSameDay(report.created, today) &&
+        //     report.userId.toString() === userId
+        // );
 
-        if (eventReportsToday.length >= 2) {
-            return res.status(400).json({ message: 'Ya has realizado los reportes diarios máximos a este evento' });
-        }
+        // if (eventReportsToday.length >= 2) {
+        //     return res.status(400).json({ message: 'Ya has realizado los reportes diarios máximos a este evento' });
+        // }
 
         reportedUser.reports.push({
             report: report,
