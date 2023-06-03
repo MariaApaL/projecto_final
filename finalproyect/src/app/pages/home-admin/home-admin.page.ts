@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { PrivacyModalComponent } from 'src/app/components/privacy-modal/privacy-modal.component';
 import { ReportUserModalComponent } from 'src/app/components/report-user-modal/report-user-modal.component';
 import { UsersInterface } from 'src/app/interfaces/user';
@@ -16,10 +17,7 @@ import { ReportService } from 'src/app/services/report.service';
 export class HomeAdminPage implements OnInit {
 
 
-  editEvent() {
-    throw new Error('Method not implemented.');
-  }
-
+  subscription: Subscription;
 
   constructor(private auth: AuthService,
     private navCtrl: NavController,
@@ -41,6 +39,16 @@ export class HomeAdminPage implements OnInit {
     this.getUserByReportMoreThan10();
     this.getUserByReportMoreThan30();
     this.getUserByReportMoreThan50();
+    
+    this.subscription= this.auth._refreshNeeded$.subscribe(() => {
+     this.getUserByReportMoreThan10();
+    this.getUserByReportMoreThan30();
+    this.getUserByReportMoreThan50();
+    
+        });
+    
+
+    
   }
 
 

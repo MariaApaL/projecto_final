@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { user } from '@angular/fire/auth';
 import { AlertController, ModalController, NavController, NavParams } from '@ionic/angular';
 import { triggerAsyncId } from 'async_hooks';
+import { Subscription } from 'rxjs';
 import { EventsInterface } from 'src/app/interfaces/event';
 import { UsersInterface } from 'src/app/interfaces/user';
 import { AuthService } from 'src/app/services/auth.service';
@@ -26,6 +27,7 @@ export class ReportUserModalComponent implements OnInit {
    eventInfo: EventsInterface[];
 //para guardar los reportes filtrados
    filteredReports: string[];
+   subscription: Subscription;
 
 
   constructor(private modalCtrl:ModalController, 
@@ -43,13 +45,20 @@ export class ReportUserModalComponent implements OnInit {
 
   async ngOnInit() {
      
-      this.getUserByReportCount();
+    
      
   
   }
 
   ionViewWillEnter(){
+    
     this.getUserByReportCount();
+    this.subscription= this.auth._refreshNeeded$.subscribe(() => {
+     
+  this.getUserByReportCount();
+    });
+
+  
   }
 
   closeModal(){
@@ -163,8 +172,8 @@ filtrarEventos(user: any): any[] {
 
   deleteEvent(eventId: string) {
     this.eventService.deleteByEventId(eventId).subscribe((res) => {
-      this.closeModal();
-      this.presentAlert('Evento eliminado');
+      // this.closeModal();
+       this.presentAlert('Evento eliminado');
    
       this.reportService.deleteReportsByEventId(eventId).subscribe();
     });
