@@ -16,21 +16,17 @@
         <ion-card-title (click)="goUserInfo(user._id)">{{user.user}}</ion-card-title>
         <div class="button">
           <ion-button color="primary" size="small"(click)="deleteUser(user._id)">Borrar</ion-button>
-        
+      
         </div>
       </ion-card-header>
       <ion-card-content>
        <ion-list>
-        <!-- <h2>Eventos Denunciados</h2>
-        <ion-item *ngFor="let type of reportTypes">
-          <ion-badge slot="end" color="tertiary">{{type}}</ion-badge>
-      
-        </ion-item> -->
+       
         <h2>Eventos Denunciados</h2>
-        <ion-item   *ngFor="let event of filtrarEventos(user)">
+        <ion-item   *ngFor="let eventId of getUniqueEventIds(user.reports)">
           
-          <ion-badge slot="end" color="tertiary"(click)="goEventInfo(event)">{{event}}</ion-badge>
-          <ion-badge slot="end" color="primary" (click)="deleteEvent(event)">Borrar</ion-badge>
+          <ion-badge slot="end" color="tertiary"(click)="goEventInfo(eventId)">{{eventId}}</ion-badge>
+          <ion-badge slot="end" color="primary" (click)="deleteEvent(eventId)">Borrar</ion-badge>
         </ion-item>
        </ion-list>
       </ion-card-content>

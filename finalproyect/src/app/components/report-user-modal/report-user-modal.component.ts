@@ -58,34 +58,75 @@ export class ReportUserModalComponent implements OnInit {
 
 
 //funcion para obtener los usuarios dependiendo del numero de reportes
+  // getUserByReportCount() {
+  //   this.auth.getUsers().subscribe((res: UsersInterface[]) => {
+  //     if (this.count == 'moreThan10') {
+  //       // Filtra los usuarios que tengan mas de 10 reportes y menos de 30
+  //       this.filteredUsers = res.filter(user => user.reports.length >= 10 && user.reports.length < 30 && !user.deleted);
+      
+  //       console.log(this.filteredUsers); 
+  //       // Filtra el id del evento de cada reporte y quita duplicados 
+  //       this.filteredEvents = this.filtrarEventos(res);
+  //          // Filtra por el tipo de reporte y elimina duplicados
+  //       this.filteredReports = this.filtrarReport(res);
+        
+  //       console.log(this.filteredReports);
+     
+       
+  //     } else if (this.count == 'moreThan30') {
+  //       this.filteredUsers = res.filter(user => user.reports.length >= 30 && user.reports.length < 50 && !user.deleted);
+      
+  //       this.filteredEvents = this.filtrarEventos(res);
+  //       this.filteredReports = this.filtrarReport(res);
+  //     } else {
+  //       this.filteredUsers = res.filter(user => user.reports.length >= 50 && !user.deleted);
+       
+  //       this.filteredEvents = this.filtrarEventos(res);
+  //       this.filteredReports = this.filtrarReport(res);
+  //     }
+  //   });
+  // }
+
   getUserByReportCount() {
     this.auth.getUsers().subscribe((res: UsersInterface[]) => {
       if (this.count == 'moreThan10') {
-        // Filtra los usuarios que tengan mas de 10 reportes y menos de 30
+        // Filtra los usuarios que tengan más de 10 reportes y menos de 30
         this.filteredUsers = res.filter(user => user.reports.length >= 10 && user.reports.length < 30 && !user.deleted);
-      
-        console.log(this.filteredUsers); 
-        // Filtra el id del evento de cada reporte y quita duplicados 
-        this.filteredEvents = this.filtrarEventos(res);
-           // Filtra por el tipo de reporte y elimina duplicados
-        this.filteredReports = this.filtrarReport(res);
+  
+        // Obtén un array de eventId
+        const eventIdArray = this.filteredUsers.flatMap(user => user.reports.map(report => report.eventId));
         
-        console.log(this.filteredReports);
-     
-       
+        // Obtén un array de report
+        const reportArray = this.filteredUsers.flatMap(user => user.reports.map(report => report.report));
+        
+
       } else if (this.count == 'moreThan30') {
         this.filteredUsers = res.filter(user => user.reports.length >= 30 && user.reports.length < 50 && !user.deleted);
-      
-        this.filteredEvents = this.filtrarEventos(res);
-        this.filteredReports = this.filtrarReport(res);
+        
+        // Obtén un array de eventId
+        const eventIdArray = this.filteredUsers.flatMap(user => user.reports.map(report => report.eventId));
+        
+        // Obtén un array de report
+        const reportArray = this.filteredUsers.flatMap(user => user.reports.map(report => report.report));
+        
       } else {
         this.filteredUsers = res.filter(user => user.reports.length >= 50 && !user.deleted);
-       
-        this.filteredEvents = this.filtrarEventos(res);
-        this.filteredReports = this.filtrarReport(res);
+        
+        // Obtén un array de eventId
+        const eventIdArray = this.filteredUsers.flatMap(user => user.reports.map(report => report.eventId));
+        
+        // Obtén un array de report
+        const reportArray = this.filteredUsers.flatMap(user => user.reports.map(report => report.report));
+      
       }
     });
   }
+  getUniqueEventIds(reports: any[]): string[] {
+    const eventIds = reports.map(report => report.eventId);
+    return eventIds.filter((value, index, self) => self.indexOf(value) === index);
+  }
+
+ 
 
 //funcion para filtrar los eventos
 filtrarEventos(user: any): any[] {
@@ -106,29 +147,6 @@ filtrarEventos(user: any): any[] {
     });
   }
 
-
-  
-  getReportTypes() {
-    for (const reportId of this.filteredReports) {
-      this.getReportType(reportId);
-    }
-    console.log("hola");
-  }
-  
-  reportTypes: string[] = [];
-
-getReportType(reportId: string) {
-  this.reportService.getReportById(reportId).subscribe((res: any) => {
-    const reportType = res.type;
-    this.reportTypes.push(reportType);
-    console.log("hola") // Almacena el tipo de reporte en el array reportTypes
-  });
-}
-  //funcion para ctualizar el array de los eventos
-  updateFilteredEvents(deletedEventId: string) {
-    this.filteredEvents = this.filteredEvents.filter(event => event !== deletedEventId);
-  }
-
   //funcion para ir a la informacion del evento
   goEventInfo(event:string){
     this.navCtrl.navigateForward(`/event-info/${event}`);
@@ -147,8 +165,7 @@ getReportType(reportId: string) {
     this.eventService.deleteByEventId(eventId).subscribe((res) => {
       this.closeModal();
       this.presentAlert('Evento eliminado');
-      this.updateFilteredEvents(eventId);
-        
+   
       this.reportService.deleteReportsByEventId(eventId).subscribe();
     });
   }
