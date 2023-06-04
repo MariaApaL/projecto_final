@@ -51,6 +51,14 @@ export class HomeAdminPage implements OnInit {
     
   }
 
+  handleRefresh(event) {
+    setTimeout(() => {
+      this.getUserByReportMoreThan10();
+    this.getUserByReportMoreThan30();
+    this.getUserByReportMoreThan50();
+      event.target.complete();
+    }, 2000);
+  }
 
   logOut() {
     this.auth.logOut();

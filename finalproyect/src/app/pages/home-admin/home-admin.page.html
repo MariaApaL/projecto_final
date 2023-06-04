@@ -1,6 +1,8 @@
 <ion-menu contentId="main-content" type="overlay">
 
   <ion-content class="ion-padding">
+
+
     <ion-list>
       <ion-item class="ion-margin-top" button="true" (click)="chooseOptions(item)" *ngFor="let item of options">
         <ion-label>{{ item?.label }}</ion-label>
@@ -22,6 +24,10 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
+        
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
     <div class="panel">
       <h1>CONTROL DE DENUNCIAS</h1>
      
